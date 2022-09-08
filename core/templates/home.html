@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero is-fullheight-with-navbar has-background-info-dark">
+  <div class="hero-head">
+  <div class="container mt-6">
+
+    <h1 class="title has-text-light">Physics STSS Database Home</h1>
+    <h3 class="subtitle has-text-warning">Welcome to the Sciences Technical Support Services asset and job status website</h3>
+ 
+    <div class="content">
+      <h4 class="subtitle mb-0 pb-0 has-text-primary">Data Records</h4>
+      <ul class="has-text-primary">
+        <li>Assets: {{ assets }}</li>
+        <li>Jobs: {{ jobs }}</li>
+        <li>Customers: {{ customers }}</li>
+        <li>Photos: {{ pictures }}</li>
+        <li>Documents: {{ documents }}</li>
+        <li>Videos: {{ videos }}</li>
+      </ul>     
+    </div>
+  </div>
+</div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "registration/bulma.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column"></div>
+      <div class="column">
+        <h1 class="title">Account Login</h1>
+        {% if form.errors %}
+        <p class="subtitle is-danger">Your username and password didn't match. Please try again.</p>
+        {% endif %}
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          <div class="field">
+            <label class="label">{{ form.username.label }}</label>
+            <div class="control">{% render_field form.username class="input" %}</div>
+          </div>
+          <div class="field">
+            <label class="label">{{ form.password.label }}</label>
+            <div class="control">{% render_field form.password class="input" %}</div>
+          </div>
+          <div class="control">
+            <button class="button is-primary">Login</button>
+          </div>
+          <div>
+            <input type="hidden" name="next" value="{{ next }}" />
+          </div>
+        </form>
+      </div>
+      <div class="column"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

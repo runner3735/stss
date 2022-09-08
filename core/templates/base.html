@@ -1,0 +1,85 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block title %}<title>Middlebury STSS Database</title>{% endblock %}
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-5.15.2-web/css/all.min.css">
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <style>[x-cloak] {display: none; }</style>
+</head>
+
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  {% block navbar %}
+  <nav class="navbar has-background-light" role="navigation">
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="{% url 'home' %}"><strong>Home</strong></a>
+        <a class="navbar-item" href="{% url 'home' %}"><strong>Rooms</strong></a>
+        <div class="navbar-item has-dropdown is-hoverable">
+
+          <a class="navbar-link"><strong>Assets</strong></a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'home' %}">Browse</a>
+            <a class="navbar-item" href="{% url 'home' %}">Add</a>
+          </div>
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link"><strong>Jobs</strong></a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'home' %}">Browse</a>
+            <a class="navbar-item" href="{% url 'home' %}">Add</a>
+          </div>
+        </div>
+
+        <a class="navbar-item" href="{% url 'home' %}"><strong>Tags</strong></a>
+        <a class="navbar-item" href="{% url 'home' %}"><strong>Customers</strong></a>
+        <a class="navbar-item" href="{% url 'home' %}"><strong>Photos</strong></a>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link"><strong>Videos</strong></a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'home' %}" disabled>Browse</a>
+            <a class="navbar-item" href="{% url 'home' %}">Add YouTube Video</a>
+          </div>
+        </div>
+
+      </div>
+      <div class="navbar-end">
+        <a class="navbar-item" href="{% url 'home' %}" title="upload pictures, documents, and videos"><strong>Upload</strong></a>
+
+        {% if user.is_authenticated %}
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link"><strong>{{ user.get_username }}</strong></a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'home' %}">My Photos</a>
+            <a class="navbar-item" href="{% url 'home' %}">My Documents</a>
+            <a class="navbar-item" href="{% url 'home' %}">My Videos</a>
+            <a class="navbar-item" href="{% url 'password_change'%}?next={{request.path}}">Change Password</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button has-background-info-dark has-text-light" href="{% url 'logout'%}?next={{request.path}}"><strong>Log Out</strong></a>
+          </div>
+        </div>
+        {% else %}
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button has-background-info-dark has-text-light" href="{% url 'login'%}?next={{request.path}}"><strong>Log In</strong></a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  {% endblock %}
+  {% block content %}
+  {% endblock %}
+</body>
+</html>
