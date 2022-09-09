@@ -118,9 +118,9 @@ USE_TZ = True
 
 FILE_UPLOAD_PERMISSIONS = 0o644
 STATIC_ROOT = os.getenv('STATIC_ROOT')
-STATIC_URL = '/static/'
+STATIC_URL = '/stss/static/'
 MEDIA_ROOT = os.getenv('MEDIA_ROOT')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/stss/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
