@@ -4,8 +4,9 @@
 # import physics.ffutil as ff
 
 # from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import render
-# from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.contrib.auth.decorators import login_required
 # from django.shortcuts import get_object_or_404
@@ -26,6 +27,28 @@ def home(request):
   context['documents'] = Document.objects.all().count()
   context['videos'] = Video.objects.all().count()
   return render(request, 'home.html', context)
+
+class AssetList(ListView):
+    model = Asset
+    paginate_by = 15
+    template_name = 'assets.html'
+
+    def get_queryset(self):
+        status = self.request.GET.get('status', 'ALL')
+        search = self.request.GET.get('search', '')
+        q = Asset.objects.all()
+        if status != 'ALL':
+            q = q.filter(status=status)
+        if search:
+            q = q.filter(Q(nickname__icontains=search) | Q(identifier__icontains=search) | Q(description__icontains=search))
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super(AssetList, self).get_context_data(**kwargs)
+        context['status'] = self.request.GET.get('status', 'ALL')
+        context['search'] = self.request.GET.get('search', '')
+        context['statuses'] = {'In Service': '1', 'Discarded': '2', 'Gifted': '3', 'Parts Only': '4', 'Faculty Left': '5', 'Returned': '6', 'Lost': '7', 'Missing': '8', 'Unknown': '9' }
+        return context
 
 # # List View
 
