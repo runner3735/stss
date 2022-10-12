@@ -33,7 +33,9 @@ def duration(filepath):
 def generate_thumb(video): # generates thumbnail from video, and sets thumbnail
     filepath = video.filepath()
     temppath = os.path.join(MEDIA_ROOT, 'temp', 'thumbnail.jpg')
+    temppath = filepath + '.jpg'
     args = ['ffmpeg', '-i', filepath, '-vf', 'scale=-1:450', '-frames:v', '1', temppath]
+    #subprocess.run(args)
     ffmpeg = subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if ffmpeg.returncode == 0:
         videodir = os.path.dirname(video.file.name)

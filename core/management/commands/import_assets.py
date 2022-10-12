@@ -233,8 +233,10 @@ class Command(BaseCommand):
             a.identifier = identifier
             a.nickname = instrument['Nickname']
             if not a.nickname: a.nickname = ''
-            a.description = instrument['InstrumentName']
-            if not a.description: a.description = ''
+            a.name = instrument['InstrumentName']
+            if not a.name:
+                a.name = a.nickname
+                a.nickname = ''
             a.model = instrument['Model']
             if not a.model: a.model = ''
             a.serial = instrument['SerialNumber']

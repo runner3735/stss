@@ -1,0 +1,22 @@
+
+{% extends "physics/baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Edit Description</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Edit Description</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">Description</label>
+    <div class="control">{% render_field form.description class="textarea" rows="6" %}</div>
+</div>
+<div class="control">
+    <button class="button is-danger">Update</button>
+    <a href="{% url 'setup' setup.id %}?tab=description" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

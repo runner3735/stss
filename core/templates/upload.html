@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Files</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-5.15.2-web/css/all.min.css">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'physics/favicon.ico' %}" type="image/x-icon">
+
+    <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+    <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+</head>
+
+<body class="has-background-link-dark">
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+        <div class="container">
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-9 has-background-link-light">
+                    <h1 class="title has-text-centered">Upload Pictures, Documents, and Videos</h1>
+                    <form enctype='multipart/form-data' action="{% url 'file-upload' %}" method='POST' class="dropzone is-primary"
+                        id="my-dropzone">
+                        {% csrf_token %}
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                        <input type="hidden" name="model" value="{{ model }}" />
+                        <input type="hidden" name="pk" value="{{ pk }}" />
+                    </form>
+                    <div class="has-text-centered">
+                        {% if model %}
+                        <a href="{% url model pk %}" class="button is-link mt-4">Done</a>
+                        {% else %}
+                        <a href="{% url 'home' %}" class="button is-link mt-4">Done</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </div>
+    </section>
+    <script>
+        Dropzone.autoDiscover = false;
+        const myDropzone = new Dropzone('#my-dropzone', {
+            url: '/stss/file/upload/',
+            maxFiles: 20,
+        })
+    </script>
+</body>
+
+</html>

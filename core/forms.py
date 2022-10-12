@@ -1,39 +1,24 @@
 
 from django import forms
-from .models import Setup, Document, Video, Note, Picture, Tag, Component, Course
+from .models import Asset, Document, Video, Note, Picture, Tag
 
-class SetupForm(forms.ModelForm):
+class AssetForm(forms.ModelForm):
     class Meta:
-        model = Setup
-        fields = ['name', 'description', 'courses', 'room', 'location']
+        model = Asset
+        fields = ['name', 'nickname', 'location']
     
     def clean_name(self):
         return self.cleaned_data['name'].title()
 
-class SetupNameForm(forms.ModelForm):
+class AssetNameForm(forms.ModelForm):
     class Meta:
-        model = Setup
-        fields = ['name',]
+        model = Asset
+        fields = ['name', 'nickname',]
 
-class SetupDescriptionForm(forms.ModelForm):
+class AssetLocationForm(forms.ModelForm):
     class Meta:
-        model = Setup
-        fields = ['description',]
-
-class SetupRoomForm(forms.ModelForm):
-    class Meta:
-        model = Setup
-        fields = ['room',]
-
-class SetupLocationForm(forms.ModelForm):
-    class Meta:
-        model = Setup
+        model = Asset
         fields = ['location',]
-
-class CourseForm(forms.ModelForm):
-    class Meta:
-        model = Course
-        fields = ['number', 'name']
 
 class DocumentForm(forms.ModelForm):
     class Meta:
@@ -72,17 +57,17 @@ class TagForm(forms.ModelForm):
                 raise forms.ValidationError("You can only edit the casing of a Tag object.  You cannot change its content.")
         return data
 
-class ComponentForm(forms.ModelForm):
-    class Meta:
-        model = Component
-        fields = ['name',]
+# class ComponentForm(forms.ModelForm):
+#     class Meta:
+#         model = Component
+#         fields = ['name',]
     
-    def clean_name(self):
-        data = self.cleaned_data['name']
-        if self.instance.pk:
-            if data.lower() != self.instance.name.lower():
-                raise forms.ValidationError("You can only edit the casing of a Component object.  You cannot change its content.")
-        return data
+#     def clean_name(self):
+#         data = self.cleaned_data['name']
+#         if self.instance.pk:
+#             if data.lower() != self.instance.name.lower():
+#                 raise forms.ValidationError("You can only edit the casing of a Component object.  You cannot change its content.")
+#         return data
 
 class VideoForm(forms.ModelForm):
     class Meta:

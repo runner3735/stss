@@ -1,0 +1,23 @@
+
+{% for note in notable.notes.all %}
+<div class="box">
+    <article class="media">
+        <div class="media-content">
+            <div class="content">
+                <p>
+                    <strong>{{ note.contributor.first_name }}
+                        {{ note.contributor.last_name }}</strong>
+                    <small>wrote on {{ note.created | date:"m-d-Y"}}</small>
+                    {% if user == note.contributor %}
+                    <a hx-get="{% url 'note-edit' note.id %}" hx-target="#dialog">
+                        <span class="icon is-small mx-2"><i class="fas fa-edit"></i></span>
+                    </a>
+                    {% endif %}
+                    <br>
+                    {{ note.text | urlize | linebreaks }}
+                </p>
+            </div>
+        </div>
+    </article>
+</div>
+{% endfor %}

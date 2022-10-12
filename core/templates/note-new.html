@@ -1,0 +1,20 @@
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>New Note</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">New Note</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <div class="control">{% render_field form.text class="textarea" rows="10" placeholder="Type your note here..." %}</div>
+</div>
+<div class="control">
+    <button class="button is-success">Add Note</button>
+    <a href="{{ next }}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

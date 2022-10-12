@@ -192,7 +192,7 @@ class Video(models.Model):
   def detail(self):
     return reverse('video', args=[self.id])
 
-  def model(self):
+  def modeltype(self):
     return 'video'
 
   def __str__(self):
@@ -243,7 +243,7 @@ class Asset(models.Model):
 
     identifier = models.CharField(validators=[rxidentifier], max_length=16, unique=True)
     nickname = models.CharField(max_length=128, blank=True)
-    description = models.TextField(max_length=1024, blank=True)
+    name = models.CharField(max_length=128, blank=True)
     model = models.CharField(max_length=128, blank=True)
     serial = models.CharField(max_length=128, blank=True)
     location = models.CharField(max_length=64, blank=True)
@@ -264,6 +264,12 @@ class Asset(models.Model):
     class Meta: 
         ordering = ["-id"]
 
+    def detail(self):
+      return reverse('asset', args=[self.id])
+
+    def modeltype(self):
+      return 'asset'
+
     def __str__(self):
         if self.nickname: return self.nickname
-        return self.description.splitlines()[0]
+        return self.name

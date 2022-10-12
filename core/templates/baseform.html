@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block title %}
+    <title>Form</title>
+    {% endblock %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-5.15.2-web/css/all.min.css">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'physics/favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body class="has-background-link-dark">
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+        <div class="container">
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-7 has-background-link-light">
+                    {% block heading %}
+                    {% endblock %}
+                    {% if form.errors %}
+                    <article class="message is-danger">
+                        <div class="message-header">
+                            <p>Errors</p>
+                        </div>
+                        <div class="message-body">
+                            {% for field in form %}
+                            {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </article>
+                    {% endif %}
+                    {% if fileform %}
+                    <form enctype="multipart/form-data" method="post" action="">
+                    {% else %}
+                    <form method="post" action="">
+                    {% endif %}
+                        {% csrf_token %}
+                        {% block content %}
+                        {% endblock %}
+                        <div>
+                            <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                        </div>
+                    </form>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+        </div>
+    </section>
+</body>
+
+</html>

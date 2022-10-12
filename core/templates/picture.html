@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-info-dark">
+    <div class="hero-head">
+        <div class="columns is-vcentered">
+            <div class="column is-narrow has-text-right">
+                <p><a href="{{ picture.file.url }}" class="button is-warning m-3">Fullscreen</a></p>
+
+                {% if user == picture.contributor %}
+                <p><a href="{% url 'picture-edit' picture.id %}" class="button is-warning m-3">Edit Picture</a></p>
+                <p><a href="{% url 'picture-delete' picture.id %}?next={{ request.GET.next }}"
+                    class="button is-warning m-3">Delete Picture</a></p>
+                {% endif %}
+            </div>
+            <div class="column is-narrow has-text-centered">
+                <h3 class="title has-text-light mt-3">{{ picture.name }}</h3>
+                <img src="{{ picture.file.url }}" alt="" style="max-height:85vh;">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}

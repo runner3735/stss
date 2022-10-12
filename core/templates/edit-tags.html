@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+    <div class="hero-head">
+        <div class="container mt-6">
+            <h1 class="title has-text-light mt-6">{{ taggable }}</h1>
+        </div>
+        <div class="container mt-4">
+            {% if form.errors %}
+            <article class="message is-danger">
+                <div class="message-header">
+                    <p>Errors</p>
+                </div>
+                <div class="message-body">
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+            </article>
+            {% endif %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="field is-horizontal">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">{% render_field form.text class="input" %}</div>
+                        <div class="control"><button class="button is-danger">Add Tag</button></div>
+                    </div>
+                    <div class="field mx-4">
+                        <div class="control">
+                            <a href="{{ taggable.detail }}" class="button is-link">Done</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container mt-4">
+            <h3 class="subtitle has-text-light">Current Tags</h3>
+            <div class="tags">
+                {% for tag in taggable.tags.all %}
+                <span class="tag has-background-success-dark has-text-light is-medium">
+                    {{ tag }}<a href="{% url 'untag' taggable.modeltype taggable.id tag.id %}" class="delete is-small has-background-black"></a>
+                </span>
+                {% empty %}
+                <p class="subtitle has-text-light">This item currently has no tags</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="container mt-5">
+            <h3 class="subtitle has-text-light">All Tags (click to add)</h3>
+            <div class="tags">
+                {% for tag in tags.all %}
+                <a class="tag has-background-success-dark has-text-light is-medium" href="{% url 'addtag' taggable.modeltype taggable.id tag.id %}">
+                    {{ tag }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

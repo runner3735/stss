@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+    <div class="hero-head">
+        <div class="container mt-6">
+            <h1 class="title has-text-light mt-6">{{ roomable }}</h1>
+        </div>
+        <div class="container mt-4">
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="field is-horizontal">
+                    <div class="field mx-4">
+                        <div class="control">
+                            <a href="{{ roomable.detail }}" class="button is-link">Done</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container mt-5">
+            <h3 class="subtitle has-text-light">Select A Room</h3>
+            <div class="tags">
+                {% for room in rooms.all %}
+                <a class="tag has-background-success-dark has-text-light is-medium" href="{% url 'selectroom' roomable.modeltype roomable.id room.id %}">
+                    {{ room }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

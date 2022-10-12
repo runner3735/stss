@@ -1,0 +1,28 @@
+
+{% extends "base.html" %}
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+<div class="hero-head py-5">
+    <div class="container">
+        <h1 class="title has-text-light">{{ contactable }}</h1>
+        <h3 class="subtitle has-text-light">Select Contacts</h3>
+        <div class="tags">
+            {% for contact in contacts %}
+            {% if contact in selected %}
+            <span class="tag is-danger is-medium">
+                {{ contact }}<a href="{% url 'uncontact' contactable.modeltype contactable.id contact.id %}"
+                    class="delete is-small has-background-black"></a>
+            </span>
+            {% else %}
+            <a href="{% url 'addcontact' contactable.modeltype contactable.id contact.id %}"
+                class="tag has-background-danger-dark has-text-light is-medium">{{ contact }}</a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <a href="{{ contactable.detail }}" class="button is-link">Done</a>
+    </div>
+</div>
+</section>
+{% endblock %}
