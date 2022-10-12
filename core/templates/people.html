@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -38,30 +39,36 @@
                     </form>
                 </div>
                 <div class="column is-narrow">
-                    <h1 class="title has-text-light">Asset List</h1>
+                    <h1 class="title has-text-light">Contacts and Customers</h1>
                     
-                    {% if asset_list %}
+                    {% if person_list %}
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Inventoried</th>
-                                <th>Asset Tag</th>
-                                <th>Item</th>
-                                <th>Model</th>
-                                <th>Room</th>
+                                <th>Name</th>
+                                <th>Departments</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Office</th>
                                 <th>View</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for asset in asset_list %}
+                            {% for person in person_list %}
                             <tr>
-                                <td>{{ asset.inventoried | date:"Y-m-d" }}</td>
-                                <td>{{ asset.identifier }}</td>
-                                <td>{{ asset }}</td>
-                                <td>{{ asset.model }}</td>
-                                <td>{{ asset.room }}</td>
+                                <td>{{ person }}</td>
+                                <td>
+                                    <div class="tags">
+                                        {% for department in person.departments.all %}
+                                        <a href="" class="tag is-link is-medium">{{ department }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>{{ person.email }}</td>
+                                <td>{{ person.phone }}</td>
+                                <td>{{ person.office }}</td>
                                 <td class="has-text-centered">
-                                    <a href="{% url 'asset' asset.id %}">
+                                    <a href="{% url 'person' person.id %}">
                                         <span class="icon is-small"><i class="fas fa-eye"></i></span>
                                     </a>
                                 </td>
@@ -70,7 +77,7 @@
                         </tbody>
                     </table>
                     {% else %}
-                    <h1 class="title has-text-light">No assets matched your search query.</h1>
+                    <h1 class="title has-text-light">No people matched your search query.</h1>
                     {% endif %}
                     
                     {% if page_obj.paginator.num_pages > 1 %}

@@ -6,6 +6,7 @@ urlpatterns = [
   # Home
   path('', views.home, name='home'),
   path('assets', views.AssetList.as_view(), name='assets'),
+  path('people', views.PersonList.as_view(), name='people'),
 
 #   # Course
 #   path('course/new/', views.course_new, name='course-new'),
@@ -43,7 +44,7 @@ urlpatterns = [
 
   # Person
   # path('people/', views.people, name='people'),
-  # path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
+  path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
   # path('person/<int:pk>/edit/', views.person_edit, name='person-edit'),
   # path('person/<int:pk>/delete/', views.person_delete, name='person-delete'),
   path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),

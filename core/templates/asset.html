@@ -79,7 +79,7 @@
                                 <td>
                                     <div class="tags">
                                         {% for contact in asset.contacts.all %}
-                                        <a href=""
+                                        <a href="{% url 'person' contact.id %}"
                                             class="tag is-danger is-medium">{{ contact }}</a>
                                         {% endfor %}
                                     </div>

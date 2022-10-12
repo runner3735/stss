@@ -1,0 +1,135 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero is-fullheight-with-navbar has-background-info">
+  <div class="hero-head">
+    <div class="container mt-6">
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <table class="table is-striped is-fullwidth">
+            <tbody>
+              <tr>
+                <th>First Name</th>
+                <td><strong>{{ person.first }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Last Name</th>
+                <td><strong>{{ person.last }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Phone</th>
+                <td><strong>{{ person.phone }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td><strong>{{ person.email }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Office</th>
+                <td><strong>{{ person.office }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Departments</th>
+                <td>
+                  <div class="tags">
+                    {% for dept in person.departments.all %}
+                    <a href="" class="tag is-link is-medium">{{ dept }}</a>
+                    {% endfor %}
+                  </div>
+                </td>
+                <td></td>
+              </tr>
+
+              <tr>
+                <th>Status</th>
+                <td><strong></strong></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="container my-4" x-data="{ tab: '{{ request.GET.tab }}' }" x-cloak>
+      <div class="tabs is-toggle is-fullwidth">
+        <ul>
+          <li :class="tab === 'assets' ? 'is-active' : 'has-background-light'">
+            <a @click="tab = 'assets'">
+              <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
+              <span>Assets</span>
+            </a>
+          </li>
+          <li :class="tab === 'jobs' ? 'is-active' : 'has-background-light'">
+            <a @click="tab = 'jobs'">
+              <span class="icon is-small"><i class="fas fa-image"></i></span>
+              <span>Jobs as Customer</span>
+            </a>
+          </li>
+          <li :class="tab === 'tasks' ? 'is-active' : 'has-background-light'">
+            <a @click="tab = 'tasks'">
+              <span class="icon is-small"><i class="far fa-file-alt"></i></span>
+              <span>Jobs as Technician</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div x-show="tab === 'assets'">
+          {% if person.assets.all %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Inventoried</th>
+                <th>Asset Tag</th>
+                <th>Item</th>
+                <th>Model</th>
+                <th>Room</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for asset in person.assets.all %}
+              <tr>
+                <td>{{ asset.inventoried | date:"Y-m-d" }}</td>
+                <td>{{ asset.identifier }}</td>
+                <td>{{ asset }}</td>
+                <td>{{ asset.model }}</td>
+                <td>{{ asset.room }}</td>
+                <td class="has-text-centered">
+                  <a href="{% url 'asset' asset.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+        <div x-show="tab === 'jobs'">
+        </div>
+        <div x-show="tab === 'tasks'">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div id="modal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="box has-background-link-dark">
+      <div id="dialog" hx-target="this"></div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
+<script src="{% static 'dialog.js' %}"></script>
+{% endblock %}

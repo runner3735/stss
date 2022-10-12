@@ -22,11 +22,33 @@ def home(request):
   context = {}
   context['assets'] = Asset.objects.all().count()
   context['jobs'] = 0
-  context['customers'] = Person.objects.all().count()
+  context['people'] = Person.objects.all().count()
   context['pictures'] = Picture.objects.all().count()
   context['documents'] = Document.objects.all().count()
   context['videos'] = Video.objects.all().count()
   return render(request, 'home.html', context)
+
+class PersonList(ListView):
+    model = Person
+    paginate_by = 15
+    template_name = 'people.html'
+
+    def get_queryset(self):
+        status = self.request.GET.get('status', 'ALL')
+        search = self.request.GET.get('search', '')
+        q = Person.objects.all()
+        # if status != 'ALL':
+        #     q = q.filter(status=status)
+        if search:
+            q = q.filter(Q(last__icontains=search) | Q(first__icontains=search))
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super(PersonList, self).get_context_data(**kwargs)
+        context['status'] = self.request.GET.get('status', 'ALL')
+        context['search'] = self.request.GET.get('search', '')
+        context['statuses'] = {'Active': '1', 'Inactive': '2' }
+        return context
 
 class AssetList(ListView):
     model = Asset
@@ -49,6 +71,11 @@ class AssetList(ListView):
         context['search'] = self.request.GET.get('search', '')
         context['statuses'] = {'In Service': '1', 'Discarded': '2', 'Gifted': '3', 'Parts Only': '4', 'Faculty Left': '5', 'Returned': '6', 'Lost': '7', 'Missing': '8', 'Unknown': '9' }
         return context
+
+class PersonDetail(DetailView):
+  model = Person
+  context_object_name = 'person'
+  template_name = 'person.html'
 
 class AssetDetail(DetailView):
   model = Asset
