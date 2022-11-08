@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture
-from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm
+from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm
 
 def home(request):
   context = {}
@@ -48,6 +48,28 @@ class PersonList(ListView):
         context['status'] = self.request.GET.get('status', 'ALL')
         context['search'] = self.request.GET.get('search', '')
         context['statuses'] = {'Active': '1', 'Inactive': '2' }
+        return context
+
+class PurchaseList(ListView):
+    model = Purchase
+    paginate_by = 15
+    template_name = 'purchases.html'
+
+    def get_queryset(self):
+        method = self.request.GET.get('method', 'ALL')
+        search = self.request.GET.get('search', '')
+        q = Purchase.objects.all()
+        if method != 'ALL':
+            q = q.filter(method=method)
+        if search:
+            q = q.filter(Q(vendor__icontains=search) | Q(reference__icontains=search))
+        return q
+
+    def get_context_data(self, **kwargs):
+        context = super(PurchaseList, self).get_context_data(**kwargs)
+        context['method'] = self.request.GET.get('method', 'ALL')
+        context['search'] = self.request.GET.get('search', '')
+        context['methods'] = {'Credit Card': '1', 'Purchase Order': '2'}
         return context
 
 class AssetList(ListView):
@@ -107,6 +129,32 @@ def asset_edit_name(request, pk):
   else:
     form = AssetNameForm(instance=asset)
   return render(request, 'asset-edit-name.html', {'form': form})
+
+@login_required
+def asset_add_purchase(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = PurchaseForm(request.POST)
+    if form.is_valid():
+      purchase = form.save()
+      asset.purchases.add(purchase)
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'PurchasesChanged'
+      return response
+  else:
+    form = PurchaseForm()
+  return render(request, 'asset-add-purchase.html', {'form': form})
+
+@login_required
+def purchase_new(request):
+  if request.method == 'POST':
+    form = PurchaseForm(request.POST)
+    if form.is_valid():
+      form.save()
+      return HttpResponseRedirect(reverse('purchases'))
+  else:
+    form = PurchaseForm()
+  return render(request, 'purchase-new.html', {'form': form})
 
 def asset_location(request, pk):
   asset=get_object_or_404(Asset, pk=pk)

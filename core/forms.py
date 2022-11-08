@@ -1,6 +1,9 @@
 
 from django import forms
-from .models import Asset, Document, Video, Note, Picture, Tag
+from .models import Asset, Document, Video, Note, Picture, Tag, Purchase
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class AssetForm(forms.ModelForm):
     class Meta:
@@ -56,6 +59,12 @@ class TagForm(forms.ModelForm):
             if data.lower() != self.instance.text.lower():
                 raise forms.ValidationError("You can only edit the casing of a Tag object.  You cannot change its content.")
         return data
+
+class PurchaseForm(forms.ModelForm):
+    class Meta:
+        model = Purchase
+        fields = ['date', 'vendor', 'method', 'reference', 'cost']
+        widgets = {'date': DateInput()}
 
 # class ComponentForm(forms.ModelForm):
 #     class Meta:

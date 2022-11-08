@@ -1,0 +1,38 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>New Purchase</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">New Purchase</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">Date</label>
+    <div class="control">{% render_field form.date class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Vendor</label>
+    <div class="control">{% render_field form.vendor class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Method</label>
+    <div class="control">{% render_field form.method class="select" %}</div>
+</div>
+<div class="field">
+    <label class="label">Reference</label>
+    <div class="control">{% render_field form.reference class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Cost</label>
+    <div class="control">{% render_field form.cost class="input" %}</div>
+</div>
+<div class="control">
+    <button class="button is-danger">Create</button>
+    <a href="{% url 'purchases' %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

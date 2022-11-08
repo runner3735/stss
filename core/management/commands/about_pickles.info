@@ -1,0 +1,20 @@
+
+**** original database tables ****
+
+people = ['Name', 'Department', 'Phone', 'Office', 'Email', 'DBStatus']
+
+instruments = ['AssetTag', 'InventoryDate', 'InstrumentName', 'Nickname', 'Manufacturer', 'Model', 'SerialNumber', 'PurchaseDate', 'Vendor', 'PurchaseOrder', 'Cost', 
+'Department', 'Contact', 'Room', 'OldRoom', 'DecommissionDate', 'OperatorManual', 'ServiceManual', 'Notes', 'RemovalReason', 'DBStatus']
+
+jobs =
+
+maintenance = 
+
+**** helper tables ****
+
+departments = maps strings found in department fields to the full verbose department name
+manufacturers = maps strings to manufacturer names
+names = maps strings to (first, last) name pairs
+oldnames = maps incomplete or misspelled name pair strings to properly spelled or complete name pair strings
+dualnames = maps strings found in name fields to a "fixed" string that can be properly parsed later in the import (e.g., Sharon, McMahon  -->  Sharon/McMahon)
+lastnames = maps last names to first names

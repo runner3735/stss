@@ -1,280 +1,192 @@
 
+# this script imports the instruments table, and creates Person, Department, Room, Manufacturer, Purchase, Tag, Note and Asset objects
+
 import pickle, re
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from ...models import Department, Person, Manufacturer, Purchase, Tag, Room, Note, Asset
 
+# instrument fields
 # ['AssetTag', 'InventoryDate', 'InstrumentName', 'Nickname', 'Manufacturer', 'Model', 'SerialNumber', 'PurchaseDate', 'Vendor', 
 # 'PurchaseOrder', 'Cost', 'Department', 'Contact', 'Room', 'OldRoom', 'DecommissionDate', 'OperatorManual', 'ServiceManual', 'Notes', 
 # 'RemovalReason', 'DBStatus']
 instruments = {}
+
 departments = {}
 names = {}
 dualnames = {}
 manufacturers = {}
-lastnames = {}
+rooms = {}
 
-rx1 = re.compile(r"^['A-Za-z-]+$")
-rx2 = re.compile(r"^([ 'A-Za-z-]+),([ 'A-Za-z-]+)\.?$")
-rx3 = re.compile(r"^(['A-Za-z-]+)\.? (['A-Za-z-]+)$")
-rx_manufacturer = re.compile(r"^(.+?)( |,|\.|Co|Corp|Ltd|Inc)+$")
 rx_asset = re.compile(r"^(M/C X\d\d\d\d|OE-\d\d\d\d)$")
-rx_room = re.compile(r"^(MBH|MBH |)(\d\d\d[A-Z]?|R0\d)$")
 rx_job = re.compile(r"^\d\d-\d\d\d$")
 
 def LoadPickles():
-    global instruments, departments, names, dualnames, manufacturers
-    instruments = pickle.load(open('/mediafiles/db/instruments.p', 'rb'))
-    departments = pickle.load(open('/mediafiles/db/departments.p', 'rb'))
-    names = pickle.load(open('/mediafiles/db/names.p', 'rb'))
-    dualnames = pickle.load(open('/mediafiles/db/dualnames.p', 'rb'))
-    manufacturers = pickle.load(open('/mediafiles/db/manufacturers.p', 'rb'))
-
-def SavePickles():
-    #pickle.dump(departments, open('/mediafiles/db/departments.p', 'wb'))
-    pickle.dump(names, open('/mediafiles/db/names.p', 'wb'))
-    pickle.dump(lastnames, open('/mediafiles/db/lastnames.p', 'wb'))
-    #pickle.dump(dualnames, open('/mediafiles/db/dualnames.p', 'wb'))
-    #pickle.dump(manufacturers, open('/mediafiles/db/manufacturers.p', 'wb'))
-    print('pickles saved')
-
-def GetManufacturer(instrument):
-    text = instrument['Manufacturer']
-    if not text: return
-    if text.lower() == 'n/a': return
-    texts = []
-    for m in text.split('/'):
-        m = CleanManufacturer(m)
-        m = manufacturers.get(m, m)
-        if m.lower() in ['tss', 'stss']: m = ''
-        if m: texts.append(m)
-    if not texts: return
-    return '/'.join(texts)
-
-def CleanManufacturer(text):
-    text = text.strip()
-    text = text.replace(' - ', '-')
-    m = rx_manufacturer.match(text)
-    if m: return m[1]
-    return text
-
-def GetPeople(instrument):
-    text = instrument['Contact']
-    if not text: return []
-    p_objects = []
-    for first, last in GetNamePairs(text):
-        p, created = Person.objects.get_or_create(first=first, last=last)
-        if created: print('Created Person:', first, last)
-        p_objects.append(p)
-    return p_objects
-
-def GetNamePairs(text): # returns a list of first, last tuples
-    global names
-    if text in dualnames: text = dualnames[text]
-    namepairs = []
-    for name in text.split('/'):
-        namepair = GetFirstLast(name)
-        if namepair in names:
-            namepair = names[namepair]
-        else:
-            print('New Namepair:', namepair)
-            names[namepair] = namepair
-        namepairs.append(namepair)
-    return namepairs
-
-def GetFirstLast(name):
-    first, last = ParseName(name)
-    if first: first = first[0].upper() + first[1:]
-    if last: last = last[0].upper() + last[1:]
-    return first, last
-
-def ParseName(name):
-    global lastnames
-    name = name.strip()
-    m = rx2.match(name)
-    if m: return m[2].strip(), m[1].strip()
-    m = rx3.match(name)
-    if m: return m[1], m[2]
-    m = rx1.match(name)
-    if m:
-        if name in lastnames:
-            namepair = lastnames[name], name
-            return names[namepair]
-        NameLookup(name)
-        print('Last Name:', name)
-        first = input("Enter First Name:")
-        lastnames[name] = first
-        return first, name
-    print('PARSE ERROR: ' + name)
-    first = input("Enter First Name:")
-    last = input("Enter Last Name:")
-    return first, last
-
-def GetDepartment(instrument):
-    global departments
-    text = instrument['Department']
-    if not text: return
-    depts = text.split('/')
-    if len(depts) > 1: print('MULTIPLE DEPARTMENTS:', text)
-    dept = depts[0].strip()
-    if not dept in departments:
-        print('UNKNOWN DEPARTMENT:', dept)
-        departments[dept] = input('Enter Full Department Name > ')
-    D, created = Department.objects.get_or_create(name=departments[dept])
-    return D
-
-def GetPurchase(instrument):
-    pd = instrument['PurchaseDate']
-    v = instrument['Vendor']
-    po = instrument['PurchaseOrder']
-    c = instrument['Cost']
-    if pd or v or po or c:
-        p = Purchase()
-        if pd: p.date = pd
-        if v: p.vendor = v
-        if po: p.reference = po
-        if c: p.cost = c
-        p.save()
-        return p
-
-def CreatePurchase():
-    p = Purchase()
-    p.date = '2017-02-14'
-    p.vendor = 'Tech Core Supplies'
-    p.method = 1
-    p.reference = 'some text'
-    p.cost = '1295.0'
-    p.save()
-
-def InstrumentStatus(instrument):
-    text = instrument['RemovalReason']
-    if not text: return 1
-    if text == 'Discarded': return 2
-    elif text == 'Gifted': return 3
-    elif text == 'Parts Only': return 4
-    elif text == 'Faculty Left': return 5
-    elif text == 'Returned': return 6
-    elif text == 'lost at sea': return 7
-    elif text == 'Stolen': return 8
-    print('UNRECOGNIZED RemovalReason:', text)
-    return 9
-
-def RemovalNote(instrument, admin):
-    dd = instrument['DecommissionDate']
-    rr = instrument['RemovalReason']
-    if dd: dd = 'Date Removed From Service: ' + dd + '\n'
-    else: dd = ''
-    if rr: rr = 'Reason For Removal: ' + rr + '\n'
-    else: rr = ''
-    text = dd + rr
-    if text: return CreateNote(text, admin)
-
-def InstrumentNote(instrument, admin):
-    text = instrument['Notes']
-    if text: return CreateNote(text, admin)
-
-def CreateNote(text, user):
-        n = Note()
-        n.text = text
-        n.contributor = user
-        n.save()
-        return n
-
-def GetRoom(instrument):
-    text = instrument['Room']
-    if not text: return
-    m = rx_room.match(text.upper())
-    if m: return m[2]
-
-def CheckInstruments(): # for testing
-    for identifier, instrument in instruments.items():
-        text = instrument['Manufacturer']
-        if not text: continue
-        m = GetManufacturer(instrument)
-        if not m: print(text)
-
-def CheckRooms(): # for testing
-    others = set()
-    for identifier, instrument in instruments.items():
-        text = instrument['Room']
-        if not text: continue
-        m = rx_room.match(text.upper())
-        #if m: print(text, ' --> ', m[2])
-        if not m: others.add(text)
-    for t in others:
-        lines = t.splitlines()
-        print(' --> '.join(lines))
-
-def NameLookup(text):
-    text = text.lower()
-    for name in names:
-        if text in ' '.join(name).lower():
-            print(names[name])
+    global instruments, departments, names, dualnames, manufacturers, rooms
+    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
+    departments = pickle.load(open('/www/stss/db/departments.p', 'rb'))
+    names = pickle.load(open('/www/stss/db/names.p', 'rb'))
+    dualnames = pickle.load(open('/www/stss/db/dualnames.p', 'rb'))
+    manufacturers = pickle.load(open('/www/stss/db/manufacturers.p', 'rb'))
+    rooms = pickle.load(open('/www/stss/db/rooms.p', 'rb'))
 
 def DeleteAssets():
     for a in Asset.objects.all():
         a.delete()
         print(a.identifier, ' DELETED')
 
-class Command(BaseCommand):
+def ImportInstruments():
+    if not User.objects.get(username='admin'): return
+    for i in instruments.values():
+        asset = GetAsset(i['AssetTag'])
+        if not asset: continue
+        AddNames(asset, i['InstrumentName'], i['Nickname'])
+        AddModel(asset, i['Model'])
+        AddSerial(asset, i['SerialNumber'])
+        AddRoom(asset, i['Room'])
+        AddInventoried(asset, i['InventoryDate'])
+        AddManufacturer(asset, i['Manufacturer'])
+        AddDepartment(asset, i['Department'])
+        AddPurchase(asset, i)
+        asset.status = GetStatus(asset, i['RemovalReason'])
+        AddRemovalNote(asset, i['DecommissionDate'])
+        AddContacts(asset, i['Contact'])
+        AddTags(asset, i)
+        AddNotes(asset, i['Notes'])
+        asset.save()
 
-    def import_instruments(self):
-        admin = User.objects.get(username='admin')
-        oman = Tag.objects.get(text='Operator Manual')
-        sman = Tag.objects.get(text='Service Manual')
-        for identifier, instrument in instruments.items():
-            if rx_job.match(identifier): continue
-            if not rx_asset.match(identifier):
-                print('Bad Identifier:', identifier)
-                print(instrument)
-                continue
-            print('Importing:', identifier)
-            a = Asset()
-            a.identifier = identifier
-            a.nickname = instrument['Nickname']
-            if not a.nickname: a.nickname = ''
-            a.name = instrument['InstrumentName']
-            if not a.name:
-                a.name = a.nickname
-                a.nickname = ''
-            a.model = instrument['Model']
-            if not a.model: a.model = ''
-            a.serial = instrument['SerialNumber']
-            if not a.serial: a.serial = ''
-            room = GetRoom(instrument)
-            a.location = ''
-            if room:
-                R, created = Room.objects.get_or_create(text=room)
-                a.room = R
-            elif instrument['Room']:
-                lines = instrument['Room'].splitlines()
-                a.location = ' --> '.join(lines)
-            if instrument['InventoryDate']: a.inventoried = instrument['InventoryDate']
-            a.save()
-            m = GetManufacturer(instrument)
-            if m:
-                M, created = Manufacturer.objects.get_or_create(name=m)
-                a.manufacturer = M
-            d = GetDepartment(instrument)
-            if d: a.department = d
-            p = GetPurchase(instrument)
-            if p: a.purchases.add(p)
-            s = InstrumentStatus(instrument)
-            if s: a.status = s
-            n = RemovalNote(instrument, admin)
-            if n: a.notes.add(n)
-            for p in GetPeople(instrument):
-                a.contacts.add(p)
-            if instrument['OperatorManual']: a.tags.add(oman)
-            if instrument['ServiceManual']: a.tags.add(sman)
-            n = InstrumentNote(instrument, admin)
-            if n: a.notes.add(n)
-            a.save()
+def GetAsset(text):
+    if rx_asset.match(text):
+        asset, created = Asset.objects.get_or_create(identifier=text)
+        return asset
+    if not rx_job.match(text): print('Bad Asset Identifier:', text)
+
+def AddNames(asset, name, nickname):
+    if name and nickname:
+        asset.name = name
+        if nickname != name: asset.nickname = nickname
+    elif nickname:
+        asset.name = nickname
+    elif name:
+        asset.name = name
+
+def AddModel(asset, text):
+    if text: asset.model = text
+
+def AddSerial(asset, text):
+    if text: asset.serial = text
+
+def AddRoom(asset, text):
+    if not text: return
+    if text.strip() in rooms:
+        room = rooms[text.strip()]
+        R, created = Room.objects.get_or_create(text=room)
+        asset.room = R
+    else:
+        asset.location = ' --> '.join(text.splitlines())
+
+def AddInventoried(asset, text):
+    if text: asset.inventoried = text
+
+def AddManufacturer(asset, text):
+    if not text: return
+    options = []
+    for line in text.splitlines():
+        for part in line.split('/'):
+            m = manufacturers[part.strip()]
+            if m: options.append(m)
+    selected = SelectManufacturer(options)
+    if selected:
+        M, created = Manufacturer.objects.get_or_create(name=selected)
+        asset.manufacturer = M
+
+def SelectManufacturer(options):
+    if len(options) == 1: return options[0]
+    for i, option in enumerate(options): print(i, option)
+    selected = input('select option or o for other > ')
+    if not selected: return
+    if selected != 'o': return options[int(selected)]
+    selected = input('enter manufacturer > ')
+    return selected
+
+def AddDepartment(asset, text):
+    if not text: return
+    dept = text.strip()
+    if dept in departments:
+        D, created = Department.objects.get_or_create(name=departments[dept])
+        asset.department = D
+    else:
+        print('UNKNOWN DEPARTMENT:', asset.identifier, dept)
+
+def AddPurchase(asset, instrument):
+    if not HasPurchase(instrument): return
+    p = Purchase()
+    p.date = instrument['PurchaseDate']
+    p.vendor = instrument['Vendor']
+    p.reference = instrument['PurchaseOrder']
+    p.cost = instrument['Cost']
+    p.save()
+    asset.purchases.add(p)
+
+def HasPurchase(instrument):
+    if instrument['PurchaseDate']: return True
+    if instrument['Vendor']: return True
+    if instrument['PurchaseOrder']: return True
+    if instrument['Cost']: return True
+
+def GetStatus(asset, text):
+    if not text: return 1
+    if text == 'Discarded': return 2
+    if text == 'Gifted': return 3
+    if text == 'Parts Only': return 4
+    if text == 'Faculty Left': return 5
+    if text == 'Returned': return 6
+    if text == 'lost at sea': return 7
+    if text == 'Stolen': return 8
+    print('UNRECOGNIZED RemovalReason:', asset.identifier, text)
+    return 9
+
+def AddRemovalNote(asset, text):
+    if not text: return
+    text = 'Date Removed From Service: ' + text
+    AddNote(asset, text)
+
+def AddNote(asset, text):
+        n = Note()
+        n.text = text
+        n.contributor = User.objects.get(username='admin')
+        n.save()
+        asset.notes.add(n)
+
+def AddContacts(asset, text):
+    if not text: return
+    if text in dualnames: text = dualnames[text]
+    for part in text.split('/'):
+        AddContact(asset, part.strip())
+
+def AddContact(asset, text):
+    if not text: return
+    if text in names:
+        first, last = names[text]
+        person, created = Person.objects.get_or_create(first=first, last=last)
+        asset.contacts.add(person)
+    else:
+        print("Not Found In Names Dictionary:", text)
+
+def AddTags(asset, instrument):
+    if instrument['OperatorManual']:
+        T = Tag.objects.get_or_create(text='Operator Manual')
+        asset.tags.add(T)
+    if instrument['ServiceManual']:
+        T = Tag.objects.get_or_create(text='Service Manual')
+        asset.tags.add(T)
+
+def AddNotes(asset, text):
+    if text: AddNote(asset, text)
+
+class Command(BaseCommand):
 
     def handle(self, *args, **options):
         LoadPickles()
-        #CheckInstruments()
-        #CheckRooms()
         #DeleteAssets()
-        self.import_instruments()
-        SavePickles()
+        ImportInstruments()
