@@ -95,6 +95,9 @@ def AddManufacturer(asset, text):
         for part in line.split('/'):
             m = manufacturers[part.strip()]
             if m: options.append(m)
+    if not options:
+        print('Ignoring Manufacturer Text:', text)
+        return
     selected = SelectManufacturer(options)
     if selected:
         M, created = Manufacturer.objects.get_or_create(name=selected)
@@ -102,6 +105,7 @@ def AddManufacturer(asset, text):
 
 def SelectManufacturer(options):
     if len(options) == 1: return options[0]
+    options.append(' / '.join(options))
     for i, option in enumerate(options): print(i, option)
     selected = input('select option or o for other > ')
     if not selected: return
@@ -122,8 +126,8 @@ def AddPurchase(asset, instrument):
     if not HasPurchase(instrument): return
     p = Purchase()
     p.date = instrument['PurchaseDate']
-    p.vendor = instrument['Vendor']
-    p.reference = instrument['PurchaseOrder']
+    if instrument['Vendor']: p.vendor = instrument['Vendor']
+    if instrument['PurchaseOrder']: p.reference = instrument['PurchaseOrder']
     p.cost = instrument['Cost']
     p.save()
     asset.purchases.add(p)
@@ -175,10 +179,10 @@ def AddContact(asset, text):
 
 def AddTags(asset, instrument):
     if instrument['OperatorManual']:
-        T = Tag.objects.get_or_create(text='Operator Manual')
+        T, created = Tag.objects.get_or_create(text='Operator Manual')
         asset.tags.add(T)
     if instrument['ServiceManual']:
-        T = Tag.objects.get_or_create(text='Service Manual')
+        T, created = Tag.objects.get_or_create(text='Service Manual')
         asset.tags.add(T)
 
 def AddNotes(asset, text):
