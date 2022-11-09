@@ -128,9 +128,9 @@ def AddPurchase(asset, instrument):
     p.date = instrument['PurchaseDate']
     if instrument['Vendor']: p.vendor = instrument['Vendor']
     if instrument['PurchaseOrder']: p.reference = instrument['PurchaseOrder']
-    p.cost = instrument['Cost']
+    p.total = instrument['Cost']
     p.save()
-    asset.purchases.add(p)
+    asset.purchases.add(p, through_defaults={'cost': p.total})
 
 def HasPurchase(instrument):
     if instrument['PurchaseDate']: return True

@@ -63,7 +63,7 @@ class TagForm(forms.ModelForm):
 class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Purchase
-        fields = ['date', 'vendor', 'method', 'reference', 'cost']
+        fields = ['date', 'vendor', 'method', 'reference', 'total']
         widgets = {'date': DateInput()}
 
 # class ComponentForm(forms.ModelForm):

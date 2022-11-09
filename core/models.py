@@ -46,7 +46,7 @@ class Purchase(models.Model):
     vendor = models.CharField(max_length=128, blank=True)
     method = models.SmallIntegerField(choices=[(1, 'Credit Card'), (2, 'Purchase Order')], blank=True, null=True)
     reference = models.CharField(max_length=128, blank=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
         ordering = ["-id"]
@@ -259,7 +259,7 @@ class Asset(models.Model):
     documents = models.ManyToManyField(Document, related_name='assets', editable=False)
     pictures = models.ManyToManyField(Picture, related_name='assets', editable=False)
     videos = models.ManyToManyField(Video, related_name='assets', editable=False)
-    purchases = models.ManyToManyField(Purchase, related_name='assets', editable=False)
+    purchases = models.ManyToManyField(Purchase, related_name='assets', editable=False, through='LineItem')
 
     class Meta: 
         ordering = ["-id"]
@@ -273,3 +273,12 @@ class Asset(models.Model):
     def __str__(self):
         if self.nickname: return self.nickname
         return self.name
+
+class LineItem(models.Model):
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return self.cost
+
