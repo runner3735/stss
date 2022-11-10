@@ -1,0 +1,24 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Add Asset To Purchase</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Add Asset To Purchase</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <div class="control">{% render_field form.number class="input" placeholder="Enter four digit asset number..." %}</div>
+</div>
+<div class="field mt-5">
+    <div class="control">{% render_field form.cost class="input" placeholder="Enter cost excluding shipping..." %}</div>
+</div>
+<div class="control">
+    <button class="button is-success">Add Asset</button>
+    <a href="" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

@@ -15,8 +15,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.urls import reverse
 
-from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture
-from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm
+from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem
+from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm
 
 def home(request):
   context = {}
@@ -98,6 +98,40 @@ class PersonDetail(DetailView):
   model = Person
   context_object_name = 'person'
   template_name = 'person.html'
+
+def purchase_detail(request, pk): # this is an alternative to PurchaseDetail that adds items to the context
+  purchase = get_object_or_404(Purchase, pk=pk)
+  items = LineItem.objects.filter(purchase=purchase)
+  return render(request, 'purchase.html', {'purchase': purchase, 'items': items})
+
+def purchase_add_asset(request, pk):
+  purchase = get_object_or_404(Purchase, pk=pk)
+  if request.method == 'POST':
+    form = AssetNumberForm(request.POST)
+    if form.is_valid():
+      asset_tag = 'M/C X' + str(form.cleaned_data['number']).zfill(4)
+      asset_cost = form.cleaned_data['cost']
+      asset = Asset.objects.get(identifier=asset_tag)
+      purchase.assets.add(asset, through_defaults={'cost': asset_cost})
+      return HttpResponseRedirect(reverse('purchase', args=[pk]))
+  else:
+    form = AssetNumberForm()
+  return render(request, 'purchase-add-asset.html', {'form': form})
+
+def purchase_update_total(request, pk):
+  purchase = get_object_or_404(Purchase, pk=pk)
+  items = LineItem.objects.filter(purchase=purchase)
+  total = 0
+  for item in items:
+    if item.cost: total += item.cost
+  purchase.total = total
+  purchase.save()
+  return HttpResponseRedirect(reverse('purchase', args=[pk]))
+
+class PurchaseDetail(DetailView):
+  model = Purchase
+  context_object_name = 'purchase'
+  template_name = 'purchase.html'
 
 class AssetDetail(DetailView):
   model = Asset

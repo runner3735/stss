@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero is-fullheight-with-navbar has-background-info">
+  <div class="hero-head">
+    <div class="container mt-6">
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <table class="table is-striped is-fullwidth">
+            <tbody>
+              <tr>
+                <th>Date</th>
+                <td><strong>{{ purchase.date }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Vendor</th>
+                <td><strong>{{ purchase.vendor }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Method</th>
+                <td><strong>{{ purchase.get_method_display }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Reference</th>
+                <td><strong>{{ purchase.reference }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td><strong>{{ purchase.total }}</strong></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% if purchase.lineitem_set.all %}
+      <h3 class="subtitle has-text-light">Assets</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Cost</th>
+            <th>Asset Tag</th>
+            <th>Item</th>
+            <th>Model</th>
+            <th>Room</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in purchase.lineitem_set.all %}
+          <tr>
+            <td>{{ item.cost }}</td>
+            <td>{{ item.asset.identifier }}</td>
+            <td>{{ item.asset }}</td>
+            <td>{{ item.asset.model }}</td>
+            <td>{{ item.asset.room }}</td>
+            <td class="has-text-centered">
+              <a href="{% url 'asset' item.asset.id %}">
+                <span class="icon is-small"><i class="fas fa-eye"></i></span>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+      <div>
+        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link">Add Asset</a>
+        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mx-4">Update Total</a>
+    </div>
+    </div>
+  </div>
+</section>
+<div id="modal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="box has-background-link-dark">
+      <div id="dialog" hx-target="this"></div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
+<script src="{% static 'dialog.js' %}"></script>
+{% endblock %}

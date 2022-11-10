@@ -105,6 +105,7 @@ def AddManufacturer(asset, text):
 
 def SelectManufacturer(options):
     if len(options) == 1: return options[0]
+    return ' / '.join(options) # I was always selecting the multiple option, so just make it automatic
     options.append(' / '.join(options))
     for i, option in enumerate(options): print(i, option)
     selected = input('select option or o for other > ')
