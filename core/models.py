@@ -41,9 +41,18 @@ class Manufacturer(models.Model):
     def __str__(self):
         return self.name
 
+class Vendor(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
 class Purchase(models.Model):
     date = models.DateField(blank=True, null=True)
-    vendor = models.CharField(max_length=128, blank=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, blank=True, null=True)
     method = models.SmallIntegerField(choices=[(1, 'Credit Card'), (2, 'Purchase Order')], blank=True, null=True)
     reference = models.CharField(max_length=128, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
