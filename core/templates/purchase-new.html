@@ -17,7 +17,14 @@
 </div>
 <div class="field">
     <label class="label">Vendor</label>
-    <div class="control">{% render_field form.vendor class="input" %}</div>
+    <div class="control">
+        <input type="text" name="vendor" maxlength="128" class="input" id="id_vendor" list="vendors">
+        <datalist id="vendors">
+        <option value="Omicron">
+        <option value="Zebratech">
+        <option value="Pennsylvania">
+        </datalist>
+    </div>
 </div>
 <div class="field">
     <label class="label">Method</label>
@@ -26,6 +33,10 @@
 <div class="field">
     <label class="label">Reference</label>
     <div class="control">{% render_field form.reference class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Shipping</label>
+    <div class="control">{% render_field form.shipping class="input" %}</div>
 </div>
 <div class="field">
     <label class="label">Total</label>

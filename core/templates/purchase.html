@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% load static %}
 
@@ -31,6 +30,11 @@
                 <td></td>
               </tr>
               <tr>
+                <th>Shipping</th>
+                <td><strong>{{ purchase.shipping }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
                 <th>Total</th>
                 <td><strong>{{ purchase.total }}</strong></td>
                 <td></td>
@@ -39,6 +43,50 @@
           </table>
         </div>
       </div>
+
+      <div>
+        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link">Add Asset</a>
+        <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mx-4">Add Attachments</a>
+        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link">Update Total</a>
+      </div>
+      <div class="mt-4 mb-10">
+
+      {% if purchase.documents.all %}
+      <h3 class="subtitle has-text-light">Attachments</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Contributor</th>
+            <th>File</th>
+            <th class="has-text-centered">Edit</th>
+            <th class="has-text-centered">Unlink</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for document in purchase.documents.all %}
+          <tr>
+            <td>{{ document.name }}</td>
+            <td>{{ document.contributor.first_name }}
+              {{ document.contributor.last_name }}</td>
+            <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
+            {% if user == document.contributor %}
+            <td class="has-text-centered">
+              <a href=""><span class="icon is-small"><i class="fas fa-edit"></i></span></a>
+            </td>
+            <td class="has-text-centered">
+              <a href=""><span class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+            </td>
+            {% else %}
+            <td></td>
+            <td></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
       {% if purchase.lineitem_set.all %}
       <h3 class="subtitle has-text-light">Assets</h3>
       <table class="table">
@@ -70,9 +118,6 @@
         </tbody>
       </table>
       {% endif %}
-      <div>
-        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link">Add Asset</a>
-        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mx-4">Update Total</a>
     </div>
     </div>
   </div>

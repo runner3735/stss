@@ -4,7 +4,7 @@
 import pickle, re
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from ...models import Department, Person, Manufacturer, Purchase, Tag, Room, Note, Asset
+from ...models import Department, Person, Manufacturer, Tag, Room, Note, Asset
 
 # instrument fields
 # ['AssetTag', 'InventoryDate', 'InstrumentName', 'Nickname', 'Manufacturer', 'Model', 'SerialNumber', 'PurchaseDate', 'Vendor', 
@@ -47,7 +47,6 @@ def ImportInstruments():
         AddInventoried(asset, i['InventoryDate'])
         AddManufacturer(asset, i['Manufacturer'])
         AddDepartment(asset, i['Department'])
-        AddPurchase(asset, i)
         asset.status = GetStatus(asset, i['RemovalReason'])
         AddRemovalNote(asset, i['DecommissionDate'])
         AddContacts(asset, i['Contact'])
@@ -122,22 +121,6 @@ def AddDepartment(asset, text):
         asset.department = D
     else:
         print('UNKNOWN DEPARTMENT:', asset.identifier, dept)
-
-def AddPurchase(asset, instrument):
-    if not HasPurchase(instrument): return
-    p = Purchase()
-    p.date = instrument['PurchaseDate']
-    if instrument['Vendor']: p.vendor = instrument['Vendor']
-    if instrument['PurchaseOrder']: p.reference = instrument['PurchaseOrder']
-    p.total = instrument['Cost']
-    p.save()
-    asset.purchases.add(p, through_defaults={'cost': p.total})
-
-def HasPurchase(instrument):
-    if instrument['PurchaseDate']: return True
-    if instrument['Vendor']: return True
-    if instrument['PurchaseOrder']: return True
-    if instrument['Cost']: return True
 
 def GetStatus(asset, text):
     if not text: return 1

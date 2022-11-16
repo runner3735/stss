@@ -15,7 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.urls import reverse
 
-from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem
+from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm
 
 def home(request):
@@ -62,7 +62,7 @@ class PurchaseList(ListView):
         if method != 'ALL':
             q = q.filter(method=method)
         if search:
-            q = q.filter(Q(vendor__icontains=search) | Q(reference__icontains=search))
+            q = q.filter(Q(vendor__name__icontains=search) | Q(reference__icontains=search))
         return q
 
     def get_context_data(self, **kwargs):
@@ -121,7 +121,10 @@ def purchase_add_asset(request, pk):
 def purchase_update_total(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
   items = LineItem.objects.filter(purchase=purchase)
-  total = 0
+  if purchase.shipping:
+    total = purchase.shipping
+  else:
+    total = 0
   for item in items:
     if item.cost: total += item.cost
   purchase.total = total
@@ -184,7 +187,13 @@ def purchase_new(request):
   if request.method == 'POST':
     form = PurchaseForm(request.POST)
     if form.is_valid():
-      form.save()
+      p = form.save()
+      vendor = request.POST.get('vendor').strip()
+      if vendor:
+        v, created = Vendor.objects.get_or_create(name=vendor)
+        if created: print("Created Vendor:", vendor)
+        p.vendor = v
+        p.save()
       return HttpResponseRedirect(reverse('purchases'))
   else:
     form = PurchaseForm()
@@ -297,6 +306,8 @@ def get_instance(model, pk):
     instance = get_object_or_404(Asset, pk=pk)
   elif model == 'person':
     instance = get_object_or_404(Person, pk=pk)
+  elif model == 'purchase':
+    instance = get_object_or_404(Purchase, pk=pk)
   else:
     instance = None
   return instance
@@ -355,7 +366,6 @@ def upload(request, model="", pk=""):
 @login_required
 def file_upload(request):
   if request.method == 'POST':
-    print('POST:', request.POST)
     file = request.FILES.get('file')
     model = request.POST.get('model', None)
     pk = request.POST.get('pk', None)
@@ -364,7 +374,9 @@ def file_upload(request):
     else:
       attachable = None
     ext = os.path.splitext(file.name)[1]
-    if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']:
+    if model == 'purchase':
+      create_document(request, file, attachable)
+    elif ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']:
       create_picture(request, file, attachable)
     elif ext.lower() in ['.mp4', '.flv', '.webm', '.mkv', '.mov']:
       create_video(request, file, attachable)

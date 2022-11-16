@@ -50,18 +50,7 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
 
-class Purchase(models.Model):
-    date = models.DateField(blank=True, null=True)
-    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, blank=True, null=True)
-    method = models.SmallIntegerField(choices=[(1, 'Credit Card'), (2, 'Purchase Order')], blank=True, null=True)
-    reference = models.CharField(max_length=128, blank=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-    class Meta:
-        ordering = ["-id"]
-
-    def __str__(self):
-        return str(self.date)
 
 class Tag(models.Model):
   text = models.CharField(max_length=128, unique=True)
@@ -245,7 +234,22 @@ class Person(models.Model):
 
     def __str__(self):
         return self.first + ' ' + self.last
-      
+
+class Purchase(models.Model):
+    date = models.DateField(blank=True, null=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, blank=True, null=True)
+    method = models.SmallIntegerField(choices=[(1, 'Credit Card'), (2, 'Purchase Order')], blank=True, null=True)
+    reference = models.CharField(max_length=128, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    shipping = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    documents = models.ManyToManyField(Document, related_name='purchases', editable=False)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return str(self.date)
+
 class Asset(models.Model):
     rxidentifier = RegexValidator(regex=r'^(M/C X\d\d\d\d|OE-\d\d\d\d)$', message="Asset Tag is not in the correct format")
     status_choices=[(1, 'In Service'), (2, 'Discarded'), (3, 'Gifted'), (4, 'Parts Only'), (5, 'Faculty Left'), (6, 'Returned'), (7, 'Lost'), (8, 'Missing'), (9, 'Unknown')]
