@@ -197,7 +197,8 @@ def purchase_new(request):
       return HttpResponseRedirect(reverse('purchases'))
   else:
     form = PurchaseForm()
-  return render(request, 'purchase-new.html', {'form': form})
+  vendors = Vendor.objects.values_list('name', flat=True)
+  return render(request, 'purchase-new.html', {'form': form, 'vendors': vendors})
 
 def asset_location(request, pk):
   asset=get_object_or_404(Asset, pk=pk)

@@ -18,11 +18,11 @@
 <div class="field">
     <label class="label">Vendor</label>
     <div class="control">
-        <input type="text" name="vendor" maxlength="128" class="input" id="id_vendor" list="vendors">
-        <datalist id="vendors">
-        <option value="Omicron">
-        <option value="Zebratech">
-        <option value="Pennsylvania">
+        <input type="text" name="vendor" maxlength="128" class="input" id="id_vendor" list="vendor_list">
+        <datalist id="vendor_list">
+        {% for v in vendors %}
+        <option value="{{ v }}">
+        {% endfor %}
         </datalist>
     </div>
 </div>
