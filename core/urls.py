@@ -33,7 +33,7 @@ urlpatterns = [
   path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
   
 #   # Activity
-#   path('activities/', views.ActivityList.as_view(), name='activities'),
+  path('vendors/', views.VendorList.as_view(), name='vendors'),
 #   path('activitiesbypicture/', views.ActivitiesByPicture.as_view(), name='activities-by-picture'),
 #   path('activity/new/', views.activity_new, name='activity-new'),
 
@@ -47,6 +47,7 @@ urlpatterns = [
   # Person
   # path('people/', views.people, name='people'),
   path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
+  path('vendor/<int:pk>/', views.VendorDetail.as_view(), name='vendor'),
   # path('person/<int:pk>/edit/', views.person_edit, name='person-edit'),
   # path('person/<int:pk>/delete/', views.person_delete, name='person-delete'),
   path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),

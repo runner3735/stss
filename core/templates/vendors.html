@@ -1,0 +1,20 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+<div class="hero-head py-5">
+    <div class="container">
+        <h1 class="title has-text-light">Vendors</h1>
+        <div>
+            {% for vendor in vendors %}
+            <div class="mb-3">
+            <a href="{% url 'vendor' vendor.id %}"
+                class="tag has-background-link has-text-light is-medium">{{ vendor }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}

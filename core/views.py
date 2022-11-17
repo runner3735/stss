@@ -50,6 +50,11 @@ class PersonList(ListView):
         context['statuses'] = {'Active': '1', 'Inactive': '2' }
         return context
 
+class VendorList(ListView):
+    model = Vendor
+    template_name = 'vendors.html'
+    context_object_name = 'vendors'
+
 class PurchaseList(ListView):
     model = Purchase
     paginate_by = 15
@@ -135,6 +140,11 @@ class PurchaseDetail(DetailView):
   model = Purchase
   context_object_name = 'purchase'
   template_name = 'purchase.html'
+
+class VendorDetail(DetailView):
+  model = Vendor
+  context_object_name = 'vendor'
+  template_name = 'vendor.html'
 
 class AssetDetail(DetailView):
   model = Asset
