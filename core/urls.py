@@ -25,13 +25,27 @@ urlpatterns = [
 
   # Asset
   path('asset/<int:pk>/', views.AssetDetail.as_view(), name='asset'),
+  path('asset/new/', views.asset_new, name='asset-new'),
   path('asset/<int:pk>/name/edit/', views.asset_edit_name, name='asset-edit-name'),
   path('asset/<int:pk>/name/', views.asset_name, name='asset-name'),
   path('asset/<int:pk>/location/edit/', views.asset_edit_location, name='asset-edit-location'),
   path('asset/<int:pk>/location/', views.asset_location, name='asset-location'),
   path('asset/<int:pk>/nickname/', views.asset_nickname, name='asset-nickname'),
   path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
-  
+
+  path('asset/<int:pk>/manufacturer/edit/', views.asset_edit_manufacturer, name='asset-edit-manufacturer'),
+  path('asset/<int:pk>/manufacturer/', views.asset_manufacturer, name='asset-manufacturer'),
+  path('asset/<int:pk>/model/edit/', views.asset_edit_model, name='asset-edit-model'),
+  path('asset/<int:pk>/model/', views.asset_model, name='asset-model'),
+  path('asset/<int:pk>/serial/edit/', views.asset_edit_serial, name='asset-edit-serial'),
+  path('asset/<int:pk>/serial/', views.asset_serial, name='asset-serial'),
+  path('asset/<int:pk>/status/edit/', views.asset_edit_status, name='asset-edit-status'),
+  path('asset/<int:pk>/status/', views.asset_status, name='asset-status'),
+  path('asset/<int:pk>/department/edit/', views.asset_edit_department, name='asset-edit-department'),
+  path('asset/<int:pk>/department/', views.asset_department, name='asset-department'),
+  path('asset/<int:pk>/inventoried/edit/', views.asset_edit_inventoried, name='asset-edit-inventoried'),
+  path('asset/<int:pk>/inventoried/', views.asset_inventoried, name='asset-inventoried'),
+
 #   # Activity
   path('vendors/', views.VendorList.as_view(), name='vendors'),
 #   path('activitiesbypicture/', views.ActivitiesByPicture.as_view(), name='activities-by-picture'),

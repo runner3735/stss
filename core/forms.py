@@ -17,10 +17,36 @@ class AssetNumberForm(forms.Form):
     number = forms.DecimalField(label='Asset Number', max_digits=4, decimal_places=0)
     cost = forms.DecimalField(label='Cost', max_digits=10, decimal_places=2)
 
+class AssetIdentifierForm(forms.Form):
+    identifier = forms.DecimalField(label='Asset Tag Number', max_digits=4, decimal_places=0)
+
+class TextForm(forms.Form):
+    text = forms.CharField(label='Text', max_length=128)
+
 class AssetNameForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ['name', 'nickname',]
+
+class AssetModelForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['model',]
+
+class AssetInventoriedForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['inventoried',]
+
+class AssetSerialForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['serial',]
+
+class AssetStatusForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['status',]
 
 class AssetLocationForm(forms.ModelForm):
     class Meta:

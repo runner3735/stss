@@ -1,5 +1,5 @@
 
-import os
+import os, datetime
 # import subprocess
 # import physics.ytdlp as yt
 import core.ffutil as ff
@@ -16,7 +16,8 @@ from django.http import JsonResponse
 from django.urls import reverse
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
-from .forms import AssetForm, AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm
+from .forms import AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
+from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm
 
 def home(request):
   context = {}
@@ -151,9 +152,20 @@ class AssetDetail(DetailView):
   context_object_name = 'asset'
   template_name = 'asset.html'
 
-def asset_name(request, pk):
-  asset=get_object_or_404(Asset, pk=pk)
-  return HttpResponse('<strong>' + asset.name + '</strong>')
+@login_required
+def asset_new(request):
+  if request.method == 'POST':
+    form = AssetIdentifierForm(request.POST)
+    if form.is_valid():
+      asset_tag = 'M/C X' + str(form.cleaned_data['identifier']).zfill(4)
+      asset, created = Asset.objects.get_or_create(identifier=asset_tag)
+      return HttpResponseRedirect(asset.detail())
+  else:
+    form = AssetIdentifierForm()
+  manufacturers = Manufacturer.objects.values_list('name', flat=True)
+  return render(request, 'asset-new.html', {'form': form, 'manufacturers': manufacturers})
+
+
 
 def asset_nickname(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
@@ -162,6 +174,10 @@ def asset_nickname(request, pk):
 def asset_notes(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
   return render(request, 'notes.html', {'notable': asset})
+
+def asset_name(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  return HttpResponse('<strong>' + asset.name + '</strong>')
 
 @login_required
 def asset_edit_name(request, pk):
@@ -176,6 +192,156 @@ def asset_edit_name(request, pk):
   else:
     form = AssetNameForm(instance=asset)
   return render(request, 'asset-edit-name.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+def asset_manufacturer(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  return HttpResponse('<strong>' + asset.manufacturer.name + '</strong>')
+  
+@login_required
+def asset_edit_manufacturer(request, pk):
+  if request.method == 'POST':
+    form = TextForm(request.POST)
+    if form.is_valid():
+      asset=get_object_or_404(Asset, pk=pk)
+      manufacturer, created = Manufacturer.objects.get_or_create(name=form.cleaned_data['text'])
+      asset.manufacturer = manufacturer
+      asset.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetManufacturerChanged'
+      return response
+  else:
+    form = TextForm()
+  manufacturers = Manufacturer.objects.values_list('name', flat=True)
+  return render(request, 'asset-edit-manufacturer.html', {'form': form, 'manufacturers': manufacturers})
+
+def asset_model(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  return HttpResponse('<strong>' + asset.model + '</strong>')
+  
+@login_required
+def asset_edit_model(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = AssetModelForm(request.POST, instance=asset)
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetModelChanged'
+      return response
+  else:
+    form = AssetModelForm(instance=asset)
+  if asset.manufacturer:
+    models = Asset.objects.filter(manufacturer=asset.manufacturer).values_list('model', flat=True)
+    models = list(set(models))
+    models.sort()
+  else:
+    models = []
+  return render(request, 'asset-edit-model.html', {'form': form, 'models': models})
+
+def asset_serial(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  return HttpResponse('<strong>' + asset.serial + '</strong>')
+  
+@login_required
+def asset_edit_serial(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = AssetSerialForm(request.POST, instance=asset)
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetSerialChanged'
+      return response
+  else:
+    form = AssetSerialForm(instance=asset)
+  return render(request, 'asset-edit-serial.html', {'form': form})
+
+def asset_department(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  return HttpResponse('<strong>' + asset.department.name + '</strong>')
+
+@login_required
+def asset_edit_department(request, pk):
+  if request.method == 'POST':
+    selected = request.POST.get('department')
+    asset=get_object_or_404(Asset, pk=pk)
+    department = Department.objects.get(name=selected)
+    asset.department = department
+    asset.save()
+    response = HttpResponse(status=204)
+    response['HX-Trigger'] = 'assetDepartmentChanged'
+    return response
+  departments = Department.objects.values_list('name', flat=True)
+  return render(request, 'asset-edit-department.html', {'departments': departments})
+
+def asset_status(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if asset.status:
+    return HttpResponse('<strong>' + asset.get_status_display() + '</strong>')
+  else:
+    return HttpResponse('')
+
+@login_required
+def asset_edit_status(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = AssetStatusForm(request.POST, instance=asset)
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetStatusChanged'
+      return response
+  else:
+    form = AssetStatusForm(instance=asset)
+  return render(request, 'asset-edit-status.html', {'form': form})
+
+def asset_inventoried(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if asset.inventoried:
+    return HttpResponse('<strong>' + asset.inventoried.strftime('%B %-d, %Y') + '</strong>')
+  return HttpResponse('')
+
+@login_required
+def asset_edit_inventoried(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = AssetInventoriedForm(request.POST, instance=asset)
+    if 'today' in request.POST:
+      asset.inventoried = datetime.date.today()
+      asset.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetInventoriedChanged'
+      return response
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetInventoriedChanged'
+      return response
+  else:
+    form = AssetInventoriedForm(instance=asset)
+  return render(request, 'asset-edit-inventoried.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
 
 @login_required
 def asset_add_purchase(request, pk):

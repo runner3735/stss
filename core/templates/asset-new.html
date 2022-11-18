@@ -1,0 +1,21 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Add/Edit Asset</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Add/Edit Asset</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <div class="control">{% render_field form.identifier class="input" placeholder="Enter four digit asset number..." %}</div>
+</div>
+<div class="control">
+    <button class="button is-success">Add/Edit Asset</button>
+    <a href="{% url 'home' %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

@@ -25,7 +25,6 @@
                                     </a>
                                 </td>
                             </tr>
-                            {% if asset.nickname %}
                             <tr>
                                 <th>Nickname</th>
                                 <td hx-trigger="assetNameChanged from:body" hx-get="{% url 'asset-nickname' asset.id %}" hx-target="this">
@@ -36,21 +35,38 @@
                                     </a>
                                 </td>
                             </tr>
-                            {% endif %}
                             <tr>
                                 <th>Manufacturer</th>
-                                <td><strong>{{ asset.manufacturer }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetManufacturerChanged from:body" hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.manufacturer }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-manufacturer' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Model</th>
-                                <td><strong>{{ asset.model }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetModelChanged from:body" hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.model }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-model' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Serial Number</th>
-                                <td><strong>{{ asset.serial }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetSerialChanged from:body" hx-get="{% url 'asset-serial' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.serial }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-serial' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Room</th>
@@ -70,8 +86,14 @@
                             </tr>
                             <tr>
                                 <th>Department</th>
-                                <td><strong>{{ asset.department }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetDepartmentChanged from:body" hx-get="{% url 'asset-department' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.department }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-department' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                             </div>
                             <tr>
@@ -104,19 +126,32 @@
                             </tr>
                             <tr>
                                 <th>Status</th>
-                                <td><strong>{{ asset.get_status_display }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetStatusChanged from:body" hx-get="{% url 'asset-status' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.get_status_display }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-status' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Inventoried</th>
-                                <td><strong>{{ asset.inventoried }}</strong></td>
-                                <td></td>
+                                <td hx-trigger="assetInventoriedChanged from:body" hx-get="{% url 'asset-inventoried' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.inventoried | date:"F j, Y" }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-inventoried' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     <div>
-                        <a href="{% url 'upload-to' 'asset' asset.id %}" class="button is-link">Add Files</a>
-                        <a href="{% url 'add-note' 'asset' asset.id %}" class="button is-link mx-4">Add Note</a>
+                        <a href="{% url 'add-note' 'asset' asset.id %}" class="button is-link mr-4">Add Note</a>
+                        <a href="{% url 'upload-to' 'asset' asset.id %}" class="button is-link mr-4">Add Files</a>
+                        <a href="" class="button is-link mr-4">Add Purchase Info</a>
                     </div>
                 </div>
             </div>
@@ -283,7 +318,7 @@
                         </tbody>
                     </table>
                     {% endif %}
-                    <a href="" class="button is-link">Add Purchase Info</a>
+                    
                 </div>
             </div>
         </div>
