@@ -255,9 +255,7 @@ def asset_edit_model(request, pk):
   else:
     form = AssetModelForm(instance=asset)
   if asset.manufacturer:
-    models = Asset.objects.filter(manufacturer=asset.manufacturer).values_list('model', flat=True)
-    models = list(set(models))
-    models.sort()
+    models = Asset.objects.filter(manufacturer=asset.manufacturer).order_by('model').distinct().values_list('model', flat=True)
   else:
     models = []
   return render(request, 'asset-edit-model.html', {'form': form, 'models': models})
