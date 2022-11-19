@@ -30,6 +30,7 @@ urlpatterns = [
   path('asset/<int:pk>/name/', views.asset_name, name='asset-name'),
   path('asset/<int:pk>/location/edit/', views.asset_edit_location, name='asset-edit-location'),
   path('asset/<int:pk>/location/', views.asset_location, name='asset-location'),
+  path('asset/<int:pk>/nickname/edit', views.asset_edit_nickname, name='asset-edit-nickname'),
   path('asset/<int:pk>/nickname/', views.asset_nickname, name='asset-nickname'),
   path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
 

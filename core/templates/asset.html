@@ -27,10 +27,10 @@
                             </tr>
                             <tr>
                                 <th>Nickname</th>
-                                <td hx-trigger="assetNameChanged from:body" hx-get="{% url 'asset-nickname' asset.id %}" hx-target="this">
+                                <td hx-trigger="assetNicknameChanged from:body" hx-get="{% url 'asset-nickname' asset.id %}" hx-target="this">
                                     <strong>{{ asset.nickname }}</strong>
                                 </td>
-                                <td><a hx-get="{% url 'asset-edit-name' asset.id %}" hx-target="#dialog">
+                                <td><a hx-get="{% url 'asset-edit-nickname' asset.id %}" hx-target="#dialog">
                                         <span class="icon is-small"><i class="fas fa-edit"></i></span>
                                     </a>
                                 </td>

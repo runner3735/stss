@@ -26,7 +26,12 @@ class TextForm(forms.Form):
 class AssetNameForm(forms.ModelForm):
     class Meta:
         model = Asset
-        fields = ['name', 'nickname',]
+        fields = ['name',]
+
+class AssetNicknameForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['nickname',]
 
 class AssetModelForm(forms.ModelForm):
     class Meta:

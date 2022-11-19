@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
-from .forms import AssetNameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
+from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm
 
 def home(request):
@@ -165,11 +165,23 @@ def asset_new(request):
   manufacturers = Manufacturer.objects.values_list('name', flat=True)
   return render(request, 'asset-new.html', {'form': form, 'manufacturers': manufacturers})
 
-
-
 def asset_nickname(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
   return HttpResponse('<strong>' + asset.nickname + '</strong>')
+
+@login_required
+def asset_edit_nickname(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  if request.method == 'POST':
+    form = AssetNicknameForm(request.POST, instance=asset)
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetNicknameChanged'
+      return response
+  else:
+    form = AssetNicknameForm(instance=asset)
+  return render(request, 'asset-edit-nickname.html', {'form': form})
 
 def asset_notes(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
