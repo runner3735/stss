@@ -17,7 +17,7 @@ from django.urls import reverse
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
-from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm
+from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
 
 def home(request):
   context = {}
@@ -168,6 +168,33 @@ def asset_new(request):
     form = AssetIdentifierForm()
   manufacturers = Manufacturer.objects.values_list('name', flat=True)
   return render(request, 'asset-new.html', {'form': form, 'manufacturers': manufacturers})
+
+@login_required
+def asset_clone(request, pk):
+  original = get_object_or_404(Asset, pk=pk)
+  form = AssetCloneForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      asset_tag = 'M/C X' + str(form.cleaned_data['identifier']).zfill(4)
+      asset, created = Asset.objects.get_or_create(identifier=asset_tag)
+      if created:
+        asset.manufacturer = original.manufacturer
+        asset.model = original.model
+        asset.name =  original.name
+        asset.serial = form.cleaned_data['serial']
+        asset.status = 1
+        asset.inventoried = datetime.date.today()
+        if form.cleaned_data['room']: asset.room = original.room
+        if form.cleaned_data['department']: asset.department = original.department
+        if form.cleaned_data['contacts'] and original.contacts:
+          for contact in original.contacts.all(): asset.contacts.add(contact)
+        if form.cleaned_data['tags'] and original.tags:
+          for tag in original.tags.all(): asset.tags.add(tag)
+        asset.save()
+        return HttpResponseRedirect(asset.detail())
+      else:
+        form.add_error('identifier', 'That asset tag number is already in use.')
+  return render(request, 'asset-clone.html', {'form': form, 'asset': original})
 
 def asset_nickname(request, pk):
   asset=get_object_or_404(Asset, pk=pk)

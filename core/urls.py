@@ -34,6 +34,7 @@ urlpatterns = [
   path('asset/<int:pk>/nickname/', views.asset_nickname, name='asset-nickname'),
   path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
   path('asset/<int:pk>/info/edit/', views.asset_edit_info, name='asset-edit-info'),
+  path('asset/<int:pk>/clone/', views.asset_clone, name='asset-clone'),
 
   path('asset/<int:pk>/manufacturer/edit/', views.asset_edit_manufacturer, name='asset-edit-manufacturer'),
   path('asset/<int:pk>/manufacturer/', views.asset_manufacturer, name='asset-manufacturer'),

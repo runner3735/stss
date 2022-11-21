@@ -1,0 +1,47 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Clone Asset</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Clone Asset {{ asset.identifier }}</h1>
+<h3 class="subtitle">manufacturer, model, and name are cloned by default</h3>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <label class="label">Asset Tag Number</label>
+    <div class="control">{% render_field form.identifier class="input" placeholder="Enter new four digit asset number..." %}</div>
+</div>
+<div class="field">
+    <label class="label">Serial Number</label>
+    <div class="control">{% render_field form.serial class="input" placeholder="Enter serial number..." %}</div>
+</div>
+<div class="field">
+    <div class="control">
+        <label class="checkbox">{% render_field form.room %} Clone Room </label>
+    </div>
+</div>
+<div class="field">
+    <div class="control">
+        <label class="checkbox">{% render_field form.department %} Clone Department </label>
+    </div>
+</div>
+<div class="field">
+    <div class="control">
+        <label class="checkbox">{% render_field form.contacts %} Clone Contacts </label>
+    </div>
+</div>
+<div class="field">
+    <div class="control">
+        <label class="checkbox">{% render_field form.tags %} Clone Tags </label>
+    </div>
+</div>
+<div class="control">
+    <button class="button is-success">Clone</button>
+    <a href="{% url 'asset' asset.id %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

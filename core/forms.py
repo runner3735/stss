@@ -20,6 +20,14 @@ class AssetNumberForm(forms.Form):
 class AssetIdentifierForm(forms.Form):
     identifier = forms.DecimalField(label='Asset Tag Number', max_digits=4, decimal_places=0)
 
+class AssetCloneForm(forms.Form):
+    identifier = forms.DecimalField(label='Asset Tag Number', max_digits=4, decimal_places=0)
+    serial = forms.CharField(max_length=128, required=False)
+    room = forms.BooleanField(required=False)
+    department = forms.BooleanField(required=False)
+    contacts = forms.BooleanField(required=False)
+    tags = forms.BooleanField(required=False)
+
 class TextForm(forms.Form):
     text = forms.CharField(label='Text', max_length=128)
 
