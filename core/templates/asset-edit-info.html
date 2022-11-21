@@ -1,0 +1,36 @@
+
+{% load widget_tweaks %}
+{% url 'asset-model-options' as model_options %}
+{% url 'asset-name-options' as name_options %}
+
+<form hx-post="{{ request.path }}">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label has-text-link-light">Manufacturer</label>
+        <div class="control">
+            {% render_field form.manufacturer class="input" list="manufacturer_list" hx-get=model_options hx-trigger="load, change" hx-target="#model_list" %}
+            <datalist id="manufacturer_list">
+                {% for o in manufacturers %}
+                <option value="{{ o }}">
+                {% endfor %}
+            </datalist>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label has-text-link-light">Model Number</label>
+        <div class="control">
+            {% render_field form.model class="input" list="model_list" hx-get=name_options hx-trigger="load, change" hx-target="#name_list" %}
+            <datalist id="model_list"></datalist>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label has-text-link-light">Name</label>
+        <div class="control">
+            {% render_field form.name class="input" list="name_list" %}
+            <datalist id="name_list"></datalist>
+        </div>
+    </div>
+    <div class="control">
+        <button class="button is-danger">Update</button>
+    </div>
+</form>

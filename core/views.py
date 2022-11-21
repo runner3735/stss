@@ -17,7 +17,7 @@ from django.urls import reverse
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
-from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm
+from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm
 
 def home(request):
   context = {}
@@ -159,6 +159,10 @@ def asset_new(request):
     if form.is_valid():
       asset_tag = 'M/C X' + str(form.cleaned_data['identifier']).zfill(4)
       asset, created = Asset.objects.get_or_create(identifier=asset_tag)
+      if created:
+        asset.status = 1
+        asset.inventoried = datetime.date.today()
+        asset.save()
       return HttpResponseRedirect(asset.detail())
   else:
     form = AssetIdentifierForm()
@@ -209,13 +213,27 @@ def asset_edit_name(request, pk):
 
 
 
-
-
-
-
-
-
-
+@login_required
+def asset_edit_info(request, pk):
+  asset=get_object_or_404(Asset, pk=pk)
+  form = AssetInfoForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      manufacturer, created = Manufacturer.objects.get_or_create(name=form.cleaned_data['manufacturer'])
+      if created: print('Created Manufacturer:', manufacturer.name)
+      asset.manufacturer = manufacturer
+      asset.model = form.cleaned_data['model']
+      asset.name = form.cleaned_data['name']
+      asset.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'assetInfoChanged'
+      return response
+  else:
+    if asset.manufacturer: form.fields['manufacturer'].initial = asset.manufacturer.name
+    form.fields['model'].initial = asset.model
+    form.fields['name'].initial = asset.name
+  manufacturers = Manufacturer.objects.values_list('name', flat=True)
+  return render(request, 'asset-edit-info.html', {'form': form, 'manufacturers': manufacturers})
 
 def asset_manufacturer(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
@@ -241,7 +259,23 @@ def asset_edit_manufacturer(request, pk):
 def asset_model(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
   return HttpResponse('<strong>' + asset.model + '</strong>')
-  
+
+def asset_model_options(request):
+  manufacturer = request.GET.get('manufacturer')
+  if manufacturer:
+    options = Asset.objects.filter(manufacturer__name=manufacturer).order_by('model').distinct().values_list('model', flat=True)
+  else:
+    options = []
+  return render(request, 'datalist-options.html', {'options': options})
+
+def asset_name_options(request):
+  model = request.GET.get('model')
+  if model:
+    options = Asset.objects.filter(model=model).order_by('name').distinct().values_list('name', flat=True)
+  else:
+    options = []
+  return render(request, 'datalist-options.html', {'options': options})
+
 @login_required
 def asset_edit_model(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
@@ -326,32 +360,20 @@ def asset_inventoried(request, pk):
 @login_required
 def asset_edit_inventoried(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
+  form = AssetInventoriedForm(request.POST or None, instance=asset)
   if request.method == 'POST':
-    form = AssetInventoriedForm(request.POST, instance=asset)
     if 'today' in request.POST:
       asset.inventoried = datetime.date.today()
       asset.save()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'assetInventoriedChanged'
-      return response
+      return HttpResponse(status=204, headers={'HX-Trigger': 'assetInventoriedChanged'})
+    if 'clear' in request.POST:
+      asset.inventoried = None
+      asset.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'assetInventoriedChanged'})
     if form.is_valid():
       form.save()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'assetInventoriedChanged'
-      return response
-  else:
-    form = AssetInventoriedForm(instance=asset)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'assetInventoriedChanged'})
   return render(request, 'asset-edit-inventoried.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
 
 @login_required
 def asset_add_purchase(request, pk):

@@ -23,6 +23,11 @@ class AssetIdentifierForm(forms.Form):
 class TextForm(forms.Form):
     text = forms.CharField(label='Text', max_length=128)
 
+class AssetInfoForm(forms.Form):
+    manufacturer = forms.CharField(label='Manufacturer', max_length=128, required=False)
+    model = forms.CharField(label='Model', max_length=128, required=False)
+    name = forms.CharField(label='Name', max_length=128, required=False)
+
 class AssetNameForm(forms.ModelForm):
     class Meta:
         model = Asset

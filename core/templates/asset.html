@@ -16,11 +16,33 @@
                                 <td></td>
                             </tr>
                             <tr>
+                                <th>Manufacturer</th>
+                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.manufacturer }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Model</th>
+                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
+                                    <strong>{{ asset.model }}</strong>
+                                </td>
+                                <td>
+                                    <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
+                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>Name</th>
-                                <td hx-trigger="assetNameChanged from:body" hx-get="{% url 'asset-name' asset.id %}" hx-target="this">
+                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-name' asset.id %}" hx-target="this">
                                     <strong>{{ asset.name }}</strong>
                                 </td>
-                                <td><a hx-get="{% url 'asset-edit-name' asset.id %}" hx-target="#dialog">
+                                <td><a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
                                         <span class="icon is-small"><i class="fas fa-edit"></i></span>
                                     </a>
                                 </td>
@@ -31,28 +53,6 @@
                                     <strong>{{ asset.nickname }}</strong>
                                 </td>
                                 <td><a hx-get="{% url 'asset-edit-nickname' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Manufacturer</th>
-                                <td hx-trigger="assetManufacturerChanged from:body" hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.manufacturer }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-manufacturer' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Model</th>
-                                <td hx-trigger="assetModelChanged from:body" hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.model }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-model' asset.id %}" hx-target="#dialog">
                                         <span class="icon is-small"><i class="fas fa-edit"></i></span>
                                     </a>
                                 </td>
