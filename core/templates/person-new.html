@@ -1,0 +1,30 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>New Person</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">New Person</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <label class="label">Last Name</label>
+    {% url 'last-names' as last_names %}
+    <div class="control">{% render_field form.last class="input" placeholder="Enter last name first..." list="last_list" hx-get=last_names hx-trigger="keyup changed" hx-target="#last_list" %}</div>
+    <datalist id="last_list"></datalist>
+</div>
+<div class="field mt-5">
+    <label class="label">First Name</label>
+    {% url 'first-names' as first_names %}
+    <div class="control">{% render_field form.first class="input" placeholder="Enter first name next..." list="first_list" hx-get=first_names hx-trigger="click" hx-include="#id_last"  hx-target="#first_list" %}</div>
+    <datalist id="first_list"></datalist>
+</div>
+<div class="control">
+    <button class="button is-success mr-4">Create</button>
+    <a href="{% url 'home' %}" class="button is-link mr-4">Cancel</a>
+</div>
+{% endblock %}

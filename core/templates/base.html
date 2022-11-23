@@ -20,12 +20,12 @@
       <div class="navbar-start">
         <a class="navbar-item" href="{% url 'home' %}"><strong>Home</strong></a>
         <a class="navbar-item" href="{% url 'rooms' %}"><strong>Rooms</strong></a>
-        <div class="navbar-item has-dropdown is-hoverable">
 
+        <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link"><strong>Assets</strong></a>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="{% url 'assets' %}">Browse</a>
-            <a class="navbar-item" href="{% url 'asset-new' %}">Add/Edit</a>
+            <a class="navbar-item" href="{% url 'asset-new' %}">New/Edit</a>
           </div>
         </div>
 
@@ -37,8 +37,15 @@
           </div>
         </div>
 
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link"><strong>People</strong></a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="{% url 'people' %}">Browse</a>
+            <a class="navbar-item" href="{% url 'person-new' %}">New</a>
+          </div>
+        </div>
+
         <a class="navbar-item" href="{% url 'home' %}"><strong>Tags</strong></a>
-        <a class="navbar-item" href="{% url 'people' %}"><strong>People</strong></a>
         <a class="navbar-item" href="{% url 'home' %}"><strong>Photos</strong></a>
 
         <div class="navbar-item has-dropdown is-hoverable">

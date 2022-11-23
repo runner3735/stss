@@ -79,6 +79,11 @@ class PersonPhoneForm(forms.ModelForm):
         model = Person
         fields = ['phone',]
 
+class PersonNewForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['first', 'last',]
+
 class PersonEmailForm(forms.ModelForm):
     class Meta:
         model = Person

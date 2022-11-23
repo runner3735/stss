@@ -75,6 +75,7 @@ urlpatterns = [
   path('addcontact/<str:model>/<int:pk>/<int:contact>/', views.addcontact, name='addcontact'),
   # path('people/<str:model>/<int:pk>/', views.edit_people, name='edit-people'),
 
+  path('person/new/', views.person_new, name='person-new'),
   path('person/<int:pk>/phone/edit/', views.person_edit_phone, name='person-edit-phone'),
   path('person/<int:pk>/phone/', views.person_phone, name='person-phone'),
   path('person/<int:pk>/email/edit/', views.person_edit_email, name='person-edit-email'),
@@ -88,6 +89,9 @@ urlpatterns = [
   # path('purchase/<int:pk>/', views.purchase_detail, name='purchase'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
+
+  path('first/names', views.first_names, name='first-names'),
+  path('last/names', views.last_names, name='last-names'),
 
 #   # Tag
 #   path('tags/', views.tags, name='tags'),

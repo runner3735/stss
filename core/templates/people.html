@@ -50,6 +50,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Office</th>
+                                <th>Status</th>
                                 <th>View</th>
                             </tr>
                         </thead>
@@ -67,6 +68,7 @@
                                 <td>{{ person.email }}</td>
                                 <td>{{ person.phone }}</td>
                                 <td>{{ person.office }}</td>
+                                <td>{{ person.get_status_display }}</td>
                                 <td class="has-text-centered">
                                     <a href="{% url 'person' person.id %}">
                                         <span class="icon is-small"><i class="fas fa-eye"></i></span>

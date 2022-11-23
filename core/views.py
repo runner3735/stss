@@ -18,7 +18,7 @@ from django.urls import reverse
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
-from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm
+from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm
 
 def home(request):
   context = {}
@@ -181,6 +181,17 @@ def asset_new(request):
   return render(request, 'asset-new.html', {'form': form, 'manufacturers': manufacturers})
 
 @login_required
+def person_new(request):
+  form = PersonNewForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      person = form.save(commit=False)
+      person.status = 1
+      person.save()
+      return HttpResponseRedirect(person.detail())
+  return render(request, 'person-new.html', {'form': form})
+
+@login_required
 def asset_clone(request, pk):
   original = get_object_or_404(Asset, pk=pk)
   form = AssetCloneForm(request.POST or None)
@@ -297,6 +308,22 @@ def asset_edit_manufacturer(request, pk):
 def asset_model(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
   return HttpResponse('<strong>' + asset.model + '</strong>')
+
+def last_names(request):
+  last = request.GET.get('last')
+  if last:
+    options = Person.objects.filter(last__istartswith=last).order_by('last').distinct().values_list('last', flat=True)
+  else:
+    options = []
+  return render(request, 'datalist-options.html', {'options': options})
+
+def first_names(request):
+  last = request.GET.get('last')
+  if last:
+    options = Person.objects.filter(last=last).order_by('first').distinct().values_list('first', flat=True)
+  else:
+    options = []
+  return render(request, 'datalist-options.html', {'options': options})
 
 def asset_model_options(request):
   manufacturer = request.GET.get('manufacturer')
