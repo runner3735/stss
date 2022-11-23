@@ -8,19 +8,7 @@
 <section class="hero is-fullheight has-background-dark">
     <div class="hero-head">
         <div class="container mt-6">
-            <h1 class="title has-text-light mt-6">{{ roomable }}</h1>
-        </div>
-        <div class="container mt-4">
-            <form method="post" action="">
-                {% csrf_token %}
-                <div class="field is-horizontal">
-                    <div class="field mx-4">
-                        <div class="control">
-                            <a href="{{ roomable.detail }}" class="button is-link">Done</a>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            <h1 class="title has-text-light mt-6">{{ roomable.identifier }} {{ roomable }}</h1>
         </div>
         <div class="container mt-5">
             <h3 class="subtitle has-text-light">Select A Room</h3>
@@ -31,6 +19,7 @@
                 </a>
                 {% endfor %}
             </div>
+            <a href="{{ roomable.detail }}" class="button is-link">Cancel</a>
         </div>
     </div>
 </section>

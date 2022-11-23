@@ -53,6 +53,7 @@ urlpatterns = [
 
 #   # Activity
   path('vendors/', views.VendorList.as_view(), name='vendors'),
+  path('rooms/', views.RoomList.as_view(), name='rooms'),
 #   path('activitiesbypicture/', views.ActivitiesByPicture.as_view(), name='activities-by-picture'),
 #   path('activity/new/', views.activity_new, name='activity-new'),
 
@@ -67,12 +68,21 @@ urlpatterns = [
   # path('people/', views.people, name='people'),
   path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
   path('vendor/<int:pk>/', views.VendorDetail.as_view(), name='vendor'),
+  path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
   # path('person/<int:pk>/edit/', views.person_edit, name='person-edit'),
   # path('person/<int:pk>/delete/', views.person_delete, name='person-delete'),
   path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),
   path('addcontact/<str:model>/<int:pk>/<int:contact>/', views.addcontact, name='addcontact'),
   # path('people/<str:model>/<int:pk>/', views.edit_people, name='edit-people'),
 
+  path('person/<int:pk>/phone/edit/', views.person_edit_phone, name='person-edit-phone'),
+  path('person/<int:pk>/phone/', views.person_phone, name='person-phone'),
+  path('person/<int:pk>/email/edit/', views.person_edit_email, name='person-edit-email'),
+  path('person/<int:pk>/email/', views.person_email, name='person-email'),
+  path('person/<int:pk>/department/edit/', views.person_edit_department, name='person-edit-department'),
+  path('person/<int:pk>/departments', views.person_departments, name='person-departments'),
+  path('person/<int:pk>/status/edit/', views.person_edit_status, name='person-edit-status'),
+  path('person/<int:pk>/status/', views.person_status, name='person-status'),
   # Purchase
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
   # path('purchase/<int:pk>/', views.purchase_detail, name='purchase'),

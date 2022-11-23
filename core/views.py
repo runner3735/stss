@@ -18,6 +18,7 @@ from django.urls import reverse
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
+from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm
 
 def home(request):
   context = {}
@@ -55,6 +56,11 @@ class VendorList(ListView):
     model = Vendor
     template_name = 'vendors.html'
     context_object_name = 'vendors'
+
+class RoomList(ListView):
+    model = Room
+    template_name = 'rooms.html'
+    context_object_name = 'rooms'
 
 class PurchaseList(ListView):
     model = Purchase
@@ -146,6 +152,11 @@ class VendorDetail(DetailView):
   model = Vendor
   context_object_name = 'vendor'
   template_name = 'vendor.html'
+
+class RoomDetail(DetailView):
+  model = Room
+  context_object_name = 'room'
+  template_name = 'room.html'
 
 class AssetDetail(DetailView):
   model = Asset
@@ -295,6 +306,11 @@ def asset_model_options(request):
     options = []
   return render(request, 'datalist-options.html', {'options': options})
 
+def person_departments(request, pk):
+  person = get_object_or_404(Person, pk=pk)
+  departments = person.departments.all()
+  return render(request, 'person-departments.html', {'departments': departments})
+
 def asset_name_options(request):
   model = request.GET.get('model')
   if model:
@@ -339,6 +355,20 @@ def asset_edit_serial(request, pk):
     form = AssetSerialForm(instance=asset)
   return render(request, 'asset-edit-serial.html', {'form': form})
 
+@login_required
+def person_edit_department(request, pk):
+  person = get_object_or_404(Person, pk=pk)
+  form = DepartmentForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      department = form.cleaned_data['department']
+      if 'add' in request.POST:
+        person.departments.add(department)
+      elif 'remove' in request.POST:
+        person.departments.remove(department)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
+  return render(request, 'person-edit-department.html', {'form': form})
+
 def asset_department(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
   return HttpResponse('<strong>' + asset.department.name + '</strong>')
@@ -376,7 +406,26 @@ def asset_edit_status(request, pk):
       return response
   else:
     form = AssetStatusForm(instance=asset)
-  return render(request, 'asset-edit-status.html', {'form': form})
+  return render(request, 'edit-status.html', {'form': form})
+
+
+def person_status(request, pk):
+  person=get_object_or_404(Person, pk=pk)
+  return HttpResponse('<strong>' + person.get_status_display() + '</strong>')
+
+@login_required
+def person_edit_status(request, pk):
+  person = get_object_or_404(Person, pk=pk)
+  form = PersonStatusForm(request.POST or None, instance=person)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'statusChanged'
+      return response
+  return render(request, 'edit-status.html', {'form': form})
+
+
 
 def asset_inventoried(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
@@ -453,6 +502,61 @@ def asset_edit_location(request, pk):
     form = AssetLocationForm(instance=asset)
   return render(request, 'asset-edit-location.html', {'form': form})
 
+
+
+
+
+
+
+def person_phone(request, pk):
+  person=get_object_or_404(Person, pk=pk)
+  return HttpResponse('<strong>' + person.phone + '</strong>')
+  
+@login_required
+def person_edit_phone(request, pk):
+  person=get_object_or_404(Person, pk=pk)
+  form = PersonPhoneForm(request.POST or None, instance=person)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'personPhoneChanged'
+      return response
+  return render(request, 'person-edit-phone.html', {'form': form})
+
+def person_email(request, pk):
+  person=get_object_or_404(Person, pk=pk)
+  return HttpResponse('<strong>' + person.email + '</strong>')
+  
+@login_required
+def person_edit_email(request, pk):
+  person=get_object_or_404(Person, pk=pk)
+  form = TextForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      email = form.cleaned_data['text']
+      if email and not '@' in email: email += '@middlebury.edu'
+      person.email = email
+      person.save()
+      response = HttpResponse(status=204)
+      response['HX-Trigger'] = 'personEmailChanged'
+      return response
+  else:
+    form.fields['text'].initial = person.email
+  return render(request, 'person-edit-email.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
 @login_required
 def note_edit(request, pk):
   note=get_object_or_404(Note, pk=pk)
@@ -518,7 +622,10 @@ def edit_room(request, model, pk):
 def select_room(request, model, pk, room):
   roomable = get_instance(model, pk)
   room = get_object_or_404(Room, pk=room)
-  roomable.room = room
+  if model == 'asset':
+    roomable.room = room
+  else:
+    roomable.office = room
   roomable.save()
   return HttpResponseRedirect(roomable.detail())
 

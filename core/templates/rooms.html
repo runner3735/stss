@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+    <div class="hero-head">
+        <div class="container mt-6">
+            <h1 class="title has-text-light mt-6">Rooms</h1>
+        </div>
+        <div class="container mt-5">
+            <div class="tags">
+                {% for room in rooms.all %}
+                <a class="tag has-background-success-dark has-text-light is-medium" href="{% url 'room' room.id %}">
+                    {{ room }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

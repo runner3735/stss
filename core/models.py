@@ -219,11 +219,13 @@ class Video(models.Model):
 
 class Person(models.Model):
     rxphone = RegexValidator(regex=r'^(\d{4}|\d{10})$', message="Phone number must be either 4 or 10 digits")
+    status_choices=[(0, 'Inactive'), (1, 'Active'), (2, 'Student'), (3, 'Staff'), (4, 'Faculty'), (5, 'Technician')]
 
     first = models.CharField(max_length=128)
     last = models.CharField(max_length=128)
     phone = models.CharField(validators=[rxphone], max_length=10, blank=True)
     email = models.EmailField(max_length=128, blank=True)
+    status = models.SmallIntegerField(choices=status_choices, default=0)
 
     office = models.ForeignKey(Room, on_delete=models.SET_NULL, blank=True, null=True, editable=False)
     departments = models.ManyToManyField(Department, related_name='people', editable=False)
@@ -231,6 +233,12 @@ class Person(models.Model):
     class Meta:
         ordering = ["last"]
         constraints = [models.UniqueConstraint(fields=['first', 'last'], name='unique full name')]
+
+    def detail(self):
+      return reverse('person', args=[self.id])
+
+    def modeltype(self):
+      return 'person'
 
     def __str__(self):
         return self.first + ' ' + self.last

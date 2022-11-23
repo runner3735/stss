@@ -1,6 +1,6 @@
 
 from django import forms
-from .models import Asset, Document, Video, Note, Picture, Tag, Purchase
+from .models import Asset, Document, Video, Note, Picture, Tag, Purchase, Person, Department
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -29,7 +29,10 @@ class AssetCloneForm(forms.Form):
     tags = forms.BooleanField(required=False)
 
 class TextForm(forms.Form):
-    text = forms.CharField(label='Text', max_length=128)
+    text = forms.CharField(max_length=128, required=False)
+
+class DepartmentForm(forms.Form):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=None)
 
 class AssetInfoForm(forms.Form):
     manufacturer = forms.CharField(label='Manufacturer', max_length=128, required=False)
@@ -70,6 +73,21 @@ class AssetLocationForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ['location',]
+
+class PersonPhoneForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['phone',]
+
+class PersonEmailForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['email',]
+
+class PersonStatusForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['status',]
 
 class DocumentForm(forms.ModelForm):
     class Meta:

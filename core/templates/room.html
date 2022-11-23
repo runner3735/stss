@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+    <div class="hero-head">
+        <div class="container mt-6">
+            <h1 class="title has-text-light mt-6">Room: {{ room }}</h1>
+        </div>
+        <div class="container mt-5">
+            {% if room.asset_set.all %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Inventoried</th>
+                  <th>Asset Tag</th>
+                  <th>Item</th>
+                  <th>Model</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for asset in room.asset_set.all %}
+                <tr>
+                  <td>{{ asset.inventoried | date:"Y-m-d" }}</td>
+                  <td>{{ asset.identifier }}</td>
+                  <td>{{ asset }}</td>
+                  <td>{{ asset.model }}</td>
+                  <td class="has-text-centered">
+                    <a href="{% url 'asset' asset.id %}">
+                      <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

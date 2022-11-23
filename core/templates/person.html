@@ -22,35 +22,58 @@
               </tr>
               <tr>
                 <th>Phone</th>
-                <td><strong>{{ person.phone }}</strong></td>
-                <td></td>
+                <td hx-trigger="personPhoneChanged from:body" hx-get="{% url 'person-phone' person.id %}" hx-target="this">
+                  <strong>{{ person.phone }}</strong>
+                </td>
+                <td><a hx-get="{% url 'person-edit-phone' person.id %}" hx-target="#dialog">
+                  <span class="icon is-small"><i class="fas fa-edit"></i></span>
+              </a>
+          </td>
               </tr>
               <tr>
                 <th>Email</th>
-                <td><strong>{{ person.email }}</strong></td>
-                <td></td>
+                <td hx-trigger="personEmailChanged from:body" hx-get="{% url 'person-email' person.id %}" hx-target="this">
+                  <strong>{{ person.email }}</strong>
+                </td>
+                <td><a hx-get="{% url 'person-edit-email' person.id %}" hx-target="#dialog">
+                  <span class="icon is-small"><i class="fas fa-edit"></i></span>
+              </a>
+          </td>
               </tr>
               <tr>
                 <th>Office</th>
-                <td><strong>{{ person.office }}</strong></td>
-                <td></td>
+                <td>
+                  <strong>{{ person.office }}</strong>
+                </td>
+                <td><a href="{% url 'edit-room' 'person' person.id %}"><span class="icon is-small"><i
+                  class="fas fa-edit"></i></span></a></td>
               </tr>
               <tr>
                 <th>Departments</th>
-                <td>
+                <td hx-trigger="departmentsChanged from:body" hx-get="{% url 'person-departments' person.id %}" hx-target="this">
                   <div class="tags">
                     {% for dept in person.departments.all %}
                     <a href="" class="tag is-link is-medium">{{ dept }}</a>
                     {% endfor %}
                   </div>
                 </td>
-                <td></td>
+                <td>
+                  <a hx-get="{% url 'person-edit-department' person.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+                </td>
               </tr>
 
               <tr>
                 <th>Status</th>
-                <td><strong></strong></td>
-                <td></td>
+                <td hx-trigger="statusChanged from:body" hx-get="{% url 'person-status' person.id %}" hx-target="this">
+                  <strong>{{ person.get_status_display }}</strong>
+                </td>
+                <td>
+                  <a hx-get="{% url 'person-edit-status' person.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+                </td>
               </tr>
             </tbody>
           </table>
