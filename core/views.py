@@ -14,11 +14,12 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage
 
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
-from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm
+from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm
 
 def home(request):
   context = {}
@@ -29,6 +30,21 @@ def home(request):
   context['documents'] = Document.objects.all().count()
   context['videos'] = Video.objects.all().count()
   return render(request, 'home.html', context)
+
+def people(request):
+  page = request.GET.get('page', 1)
+  status = request.GET.get('status','')
+  search = request.GET.get('search', '')
+  form = PeopleSearchForm(request.GET)
+  q = Person.objects.all()
+  if status: q = q.filter(status=status)
+  if search: q = q.filter(Q(last__icontains=search) | Q(first__icontains=search))
+  paginator = Paginator(q, 5)
+  try:
+    people = paginator.page(page)
+  except EmptyPage:
+    people = paginator.page(paginator.num_pages)
+  return render(request, 'people.html', {'people': people, 'form': form, 'status': status, 'search': search})
 
 class PersonList(ListView):
     model = Person

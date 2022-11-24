@@ -13,6 +13,10 @@ class AssetForm(forms.ModelForm):
     def clean_name(self):
         return self.cleaned_data['name'].title()
 
+class PeopleSearchForm(forms.Form):
+    status = forms.ChoiceField(choices=[('','All')] + Person.status_choices, required=False)
+    search = forms.CharField(max_length=128, required=False)
+
 class AssetNumberForm(forms.Form):
     number = forms.DecimalField(label='Asset Number', max_digits=4, decimal_places=0)
     cost = forms.DecimalField(label='Cost', max_digits=10, decimal_places=2)
