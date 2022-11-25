@@ -62,10 +62,22 @@ def assets(request):
     assets = paginator.page(paginator.num_pages)
   return render(request, 'assets.html', {'assets': assets, 'form': form, 'status': status, 'search': search})
 
-class VendorList(ListView):
-    model = Vendor
-    template_name = 'vendors.html'
-    context_object_name = 'vendors'
+def vendors(request):
+  vendors = get_vendors(request)
+  return render(request, 'vendors.html', {'vendors': vendors})
+
+def vendor_list(request):
+  vendors = get_vendors(request)
+  return render(request, 'vendor-list.html', {'vendors': vendors})
+
+def get_vendors(request):
+  page = request.GET.get('page', '1')
+  q = Vendor.objects.all()
+  paginator = Paginator(q, 18)
+  try:
+    return paginator.page(page)
+  except EmptyPage:
+    return {}
 
 class RoomList(ListView):
     model = Room

@@ -1,0 +1,10 @@
+{% for vendor in vendors %}
+{% if forloop.last %}
+<div class="mb-3" hx-get="{% url 'vendor-list' %}?page={{ vendors.number|add:1 }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+{% else %}
+<div class="mb-3">
+{% endif %}
+<a href="{% url 'vendor' vendor.id %}"
+    class="tag has-background-link has-text-light is-medium">{{ vendor }}</a>
+</div>
+{% endfor %}
