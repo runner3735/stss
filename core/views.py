@@ -32,20 +32,28 @@ def home(request):
   return render(request, 'home.html', context)
 
 def people(request):
+  context = people_get_context(request)
+  context['form'] = PeopleSearchForm(request.GET or None)
+  return render(request, 'people.html', context)
+
+def people_list(request):
+  context = people_get_context(request)
+  return render(request, 'people-list.html', context)
+
+def people_get_context(request):
   page = request.GET.get('page', '1')
   status = request.GET.get('status', '')
   search = request.GET.get('search', '')
-  form = PeopleSearchForm(request.GET or None)
   q = Person.objects.all()
   if not status: q = q.exclude(status=0)
   elif status != 5: q=q.filter(status=status)
   if search: q = q.filter(Q(last__icontains=search) | Q(first__icontains=search))
-  paginator = Paginator(q, 12)
+  paginator = Paginator(q, 16)
   try:
-    people = paginator.page(page)
+    return {'people': paginator.page(page), 'status': status, 'search': search}
   except EmptyPage:
-    people = paginator.page(paginator.num_pages)
-  return render(request, 'people.html', {'people': people, 'form': form, 'status': status, 'search': search})
+    return {'people': [], 'status': status, 'search': search}
+  
 
 def assets(request):
   page = request.GET.get('page', '1')
@@ -77,7 +85,7 @@ def get_vendors(request):
   try:
     return paginator.page(page)
   except EmptyPage:
-    return {}
+    return []
 
 class RoomList(ListView):
     model = Room

@@ -1,0 +1,25 @@
+{% for person in people %}
+{% if forloop.last %}
+<tr hx-get="{% url 'people-list' %}?page={{ people.number|add:1 }}&status={{ status }}&search={{ search }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+{% else %}
+<tr>
+{% endif %}
+    <td>{{ person }}</td>
+    <td>
+        <div class="tags">
+            {% for department in person.departments.all %}
+            <a href="" class="tag is-link is-medium">{{ department }}</a>
+            {% endfor %}
+        </div>
+    </td>
+    <td>{{ person.email }}</td>
+    <td>{{ person.phone }}</td>
+    <td>{{ person.office }}</td>
+    <td>{{ person.get_status_display }}</td>
+    <td class="has-text-centered">
+        <a href="{% url 'person' person.id %}">
+            <span class="icon is-small"><i class="fas fa-eye"></i></span>
+        </a>
+    </td>
+</tr>
+{% endfor %}

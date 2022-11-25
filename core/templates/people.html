@@ -42,61 +42,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for person in people %}
-                        <tr>
-                            <td>{{ person }}</td>
-                            <td>
-                                <div class="tags">
-                                    {% for department in person.departments.all %}
-                                    <a href="" class="tag is-link is-medium">{{ department }}</a>
-                                    {% endfor %}
-                                </div>
-                            </td>
-                            <td>{{ person.email }}</td>
-                            <td>{{ person.phone }}</td>
-                            <td>{{ person.office }}</td>
-                            <td>{{ person.get_status_display }}</td>
-                            <td class="has-text-centered">
-                                <a href="{% url 'person' person.id %}">
-                                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                        {% include 'people-list.html' %}
                     </tbody>
                 </table>
                 {% else %}
                 <h1 class="title has-text-light">No people matched your search query.</h1>
                 {% endif %}
-
-                <nav class="level">
-                    <div class="level-left">
-                        <div class="level-item">
-                            {% if people.has_previous %}
-                            <a class="button is-rounded is-danger"
-                                href="{% url 'people' %}?page={{ people.previous_page_number }}&status={{ status }}&search={{ search }}">Previous</a>
-                            {% else %}
-                            <a class="button is-rounded is-danger" disabled>Previous</a>
-                            {% endif %}
-                        </div>
-                        <div class="level-item">
-                            {% if people.has_next %}
-                            <a class="button is-rounded is-danger"
-                                href="{% url 'people' %}?page={{ people.next_page_number }}&status={{ status }}&search={{ search }}">Next</a>
-                            {% else %}
-                            <a class="button is-rounded is-danger" disabled>Next</a>
-                            {% endif %}
-                        </div>
-                        <div class="level-item">
-                            <p class="subtitle has-text-light">
-                                Page {{ people.number }} of {{ people.paginator.num_pages }}
-                            </p>
-                        </div>
-                    </div>
-                </nav>
-
             </div>
         </div>
     </div>
 </section>
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}
