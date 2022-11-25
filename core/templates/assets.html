@@ -12,8 +12,6 @@
                             <div class="level-item">
                                 <h1 class="title has-text-light mr-6">Asset List</h1>
                             </div>
-                        </div>
-                        <div class="level-right">
                             <div class="level-item">
                                 <form action="{% url 'assets' %}">
                                     <div class="field has-addons has-addons-centered">
@@ -44,58 +42,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for asset in assets %}
-                            <tr>
-                                <td>{{ asset.inventoried | date:"Y-m-d" }}</td>
-                                <td>{{ asset.identifier }}</td>
-                                <td>{{ asset }}</td>
-                                <td>{{ asset.manufacturer }}</td>
-                                <td>{{ asset.model }}</td>
-                                <td>{{ asset.serial }}</td>
-                                <td>{{ asset.room }}</td>
-                                <td>{{ asset.get_status_display }}</td>
-                                <td class="has-text-centered">
-                                    <a href="{% url 'asset' asset.id %}">
-                                        <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                            {% include 'assets-list.html' %}
                         </tbody>
                     </table>
                     {% else %}
                     <h1 class="title has-text-light">No assets matched your search query.</h1>
                     {% endif %}
                     
-                    {% if assets.paginator.num_pages > 1 %}
-                    <nav class="level">
-                        <div class="level-left">
-                            <div class="level-item">
-                                {% if assets.has_previous %}
-                                <a class="button is-rounded is-danger"
-                                    href="{{ request.path }}?page={{ assets.previous_page_number }}&status={{ status }}&search={{ search }}">Previous</a>
-                                {% else %}
-                                <a class="button is-rounded is-danger" disabled>Previous</a>
-                                {% endif %}
-                            </div>
-                            <div class="level-item">
-                                {% if assets.has_next %}
-                                <a class="button is-rounded is-danger"
-                                    href="{{ request.path }}?page={{ assets.next_page_number }}&status={{ status }}&search={{ search }}">Next</a>
-                                {% else %}
-                                <a class="button is-rounded is-danger" disabled>Next</a>
-                                {% endif %}
-                            </div>
-                            <div class="level-item">
-                                <p class="subtitle has-text-light">
-                                    Page {{ assets.number }} of {{ assets.paginator.num_pages }}
-                                </p>
-                            </div>
-                        </div>
-                    </nav>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </section>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}

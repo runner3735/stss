@@ -6,6 +6,7 @@ urlpatterns = [
   # Home
   path('', views.home, name='home'),
   path('assets/', views.assets, name='assets'),
+  path('assets/list/', views.assets_list, name='assets-list'),
   #path('people', views.PersonList.as_view(), name='people'),
   path('people/', views.people, name='people'),
   path('people/list/', views.people_list, name='people-list'),

@@ -56,19 +56,26 @@ def people_get_context(request):
   
 
 def assets(request):
+  context = assets_get_context(request)
+  context['form'] = AssetSearchForm(request.GET or None)
+  return render(request, 'assets.html', context)
+
+def assets_list(request):
+  context = assets_get_context(request)
+  return render(request, 'assets-list.html', context)
+
+def assets_get_context(request):
   page = request.GET.get('page', '1')
   status = request.GET.get('status','1')
   search = request.GET.get('search', '')
-  form = AssetSearchForm(request.GET or None)
   q = Asset.objects.all()
   if status: q = q.filter(status=status)
   if search: q = q.filter(Q(nickname__icontains=search) | Q(identifier__icontains=search) | Q(name__icontains=search))
-  paginator = Paginator(q, 12)
+  paginator = Paginator(q, 16)
   try:
-    assets = paginator.page(page)
+    return {'assets': paginator.page(page), 'status': status, 'search': search}
   except EmptyPage:
-    assets = paginator.page(paginator.num_pages)
-  return render(request, 'assets.html', {'assets': assets, 'form': form, 'status': status, 'search': search})
+    return {'assets': [], 'status': status, 'search': search}
 
 def vendors(request):
   vendors = get_vendors(request)
