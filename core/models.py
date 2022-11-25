@@ -219,7 +219,7 @@ class Video(models.Model):
 
 class Person(models.Model):
     rxphone = RegexValidator(regex=r'^(\d{4}|\d{10})$', message="Phone number must be either 4 or 10 digits")
-    status_choices=[(0, 'Inactive'), (1, 'Active'), (2, 'Student'), (3, 'Staff'), (4, 'Faculty'), (5, 'Technician')]
+    status_choices=[(0, 'Inactive'), (1, 'Technician'), (2, 'Faculty'), (3, 'Staff'), (4, 'Student')]
 
     first = models.CharField(max_length=128)
     last = models.CharField(max_length=128)

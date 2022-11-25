@@ -19,7 +19,7 @@ from django.core.paginator import Paginator, EmptyPage
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
-from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm
+from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm
 
 def home(request):
   context = {}
@@ -32,41 +32,35 @@ def home(request):
   return render(request, 'home.html', context)
 
 def people(request):
-  page = request.GET.get('page', 1)
-  status = request.GET.get('status','')
+  page = request.GET.get('page', '1')
+  status = request.GET.get('status', '')
   search = request.GET.get('search', '')
-  form = PeopleSearchForm(request.GET)
+  form = PeopleSearchForm(request.GET or None)
   q = Person.objects.all()
-  if status: q = q.filter(status=status)
+  if not status: q = q.exclude(status=0)
+  elif status != 5: q=q.filter(status=status)
   if search: q = q.filter(Q(last__icontains=search) | Q(first__icontains=search))
-  paginator = Paginator(q, 5)
+  paginator = Paginator(q, 12)
   try:
     people = paginator.page(page)
   except EmptyPage:
     people = paginator.page(paginator.num_pages)
   return render(request, 'people.html', {'people': people, 'form': form, 'status': status, 'search': search})
 
-class PersonList(ListView):
-    model = Person
-    paginate_by = 15
-    template_name = 'people.html'
-
-    def get_queryset(self):
-        status = self.request.GET.get('status', 'ALL')
-        search = self.request.GET.get('search', '')
-        q = Person.objects.all()
-        # if status != 'ALL':
-        #     q = q.filter(status=status)
-        if search:
-            q = q.filter(Q(last__icontains=search) | Q(first__icontains=search))
-        return q
-
-    def get_context_data(self, **kwargs):
-        context = super(PersonList, self).get_context_data(**kwargs)
-        context['status'] = self.request.GET.get('status', 'ALL')
-        context['search'] = self.request.GET.get('search', '')
-        context['statuses'] = {'Active': '1', 'Inactive': '2' }
-        return context
+def assets(request):
+  page = request.GET.get('page', '1')
+  status = request.GET.get('status','1')
+  search = request.GET.get('search', '')
+  form = AssetSearchForm(request.GET or None)
+  q = Asset.objects.all()
+  if status: q = q.filter(status=status)
+  if search: q = q.filter(Q(nickname__icontains=search) | Q(identifier__icontains=search) | Q(name__icontains=search))
+  paginator = Paginator(q, 12)
+  try:
+    assets = paginator.page(page)
+  except EmptyPage:
+    assets = paginator.page(paginator.num_pages)
+  return render(request, 'assets.html', {'assets': assets, 'form': form, 'status': status, 'search': search})
 
 class VendorList(ListView):
     model = Vendor
@@ -98,28 +92,6 @@ class PurchaseList(ListView):
         context['method'] = self.request.GET.get('method', 'ALL')
         context['search'] = self.request.GET.get('search', '')
         context['methods'] = {'Credit Card': '1', 'Purchase Order': '2'}
-        return context
-
-class AssetList(ListView):
-    model = Asset
-    paginate_by = 15
-    template_name = 'assets.html'
-
-    def get_queryset(self):
-        status = self.request.GET.get('status', 'ALL')
-        search = self.request.GET.get('search', '')
-        q = Asset.objects.all()
-        if status != 'ALL':
-            q = q.filter(status=status)
-        if search:
-            q = q.filter(Q(nickname__icontains=search) | Q(identifier__icontains=search) | Q(name__icontains=search))
-        return q
-
-    def get_context_data(self, **kwargs):
-        context = super(AssetList, self).get_context_data(**kwargs)
-        context['status'] = self.request.GET.get('status', 'ALL')
-        context['search'] = self.request.GET.get('search', '')
-        context['statuses'] = {'In Service': '1', 'Discarded': '2', 'Gifted': '3', 'Parts Only': '4', 'Faculty Left': '5', 'Returned': '6', 'Lost': '7', 'Missing': '8', 'Unknown': '9' }
         return context
 
 class PersonDetail(DetailView):

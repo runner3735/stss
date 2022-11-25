@@ -14,7 +14,11 @@ class AssetForm(forms.ModelForm):
         return self.cleaned_data['name'].title()
 
 class PeopleSearchForm(forms.Form):
-    status = forms.ChoiceField(choices=[('','All')] + Person.status_choices, required=False)
+    status = forms.ChoiceField(choices=[('', 'Active')] + Person.status_choices + [(5, 'All')], required=False)
+    search = forms.CharField(max_length=128, required=False)
+
+class AssetSearchForm(forms.Form):
+    status = forms.ChoiceField(choices= Asset.status_choices + [('','All')], required=False, initial=1)
     search = forms.CharField(max_length=128, required=False)
 
 class AssetNumberForm(forms.Form):
