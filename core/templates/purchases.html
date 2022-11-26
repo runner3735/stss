@@ -1,46 +1,32 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block content %}
     <section class="section has-background-info-dark">
         <div class="container">
             <div class="columns">
-                <div class="column is-3">
-                    <form method="get" action="">
-                        <div class="field">
-                            <label class="label has-text-light">Method</label>
-                            <div class="control">
-                                <div class="select">
-                                    <select name="method">
-                                        <option value="ALL">ALL</option>
-                                        {% for k, v in methods.items %}
-                                        {% if v == method %}
-                                        <option value={{ v }} selected>{{ k }}</option>
-                                        {% else %}
-                                        <option value={{ v }}>{{ k }}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label has-text-light">Search Text</label>
-                            <div class="control is-expanded">
-                                <input class="input" type="text" value="{{ search }}" name="search"
-                                    placeholder="Enter text to search for..." />
-                            </div>
-                        </div>
-                        <div class="field mt-5">
-                            <div class="control">
-                                <button class="button is-danger">Filter</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
                 <div class="column is-narrow">
-                    <h1 class="title has-text-light">Purchase List</h1>
+
+                    <div class="level mb-4">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <h1 class="title has-text-light mr-6">Purchase List</h1>
+                            </div>
+                            <div class="level-item">
+                                <form action="{% url 'purchases' %}">
+                                    <div class="field has-addons has-addons-centered">
+                                        <div class="control">
+                                            <div class="select">{% render_field form.method %}</div>
+                                        </div>
+                                        <div class="control">{% render_field form.search class="input" size="45" placeholder="Enter text to search in vendor and reference..." %}</div>
+                                        <div class="control"><button class="button is-danger">Filter</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     
-                    {% if purchase_list %}
+                    {% if purchases %}
                     <table class="table">
                         <thead>
                             <tr>
@@ -53,56 +39,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for purchase in purchase_list %}
-                            <tr>
-                                <td>{{ purchase.date | date:"Y-m-d" }}</td>
-                                <td>{{ purchase.vendor }}</td>
-                                <td>{{ purchase.get_method_display }}</td>
-                                <td>{{ purchase.reference }}</td>
-                                <td>{{ purchase.total }}</td>
-                                <td class="has-text-centered">
-                                    <a href="{% url 'purchase' purchase.id %}">
-                                        <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                            {% include 'purchases-list.html' %}
                         </tbody>
                     </table>
                     {% else %}
                     <h1 class="title has-text-light">No purchases matched your search query.</h1>
                     {% endif %}
                     
-                    {% if page_obj.paginator.num_pages > 1 %}
-                    <nav class="level">
-                        <div class="level-left">
-                            <div class="level-item">
-                                {% if page_obj.has_previous %}
-                                <a class="button is-rounded is-danger"
-                                    href="{{ request.path }}?page={{ page_obj.previous_page_number }}&status={{ status }}&search={{ search }}">Previous</a>
-                                {% else %}
-                                <a class="button is-rounded is-danger" disabled>Previous</a>
-                                {% endif %}
-                            </div>
-                            <div class="level-item">
-                                {% if page_obj.has_next %}
-                                <a class="button is-rounded is-danger"
-                                    href="{{ request.path }}?page={{ page_obj.next_page_number }}&status={{ status }}&search={{ search }}">Next</a>
-                                {% else %}
-                                <a class="button is-rounded is-danger" disabled>Next</a>
-                                {% endif %}
-                            </div>
-                            <div class="level-item">
-                                <p class="subtitle has-text-light">
-                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                                </p>
-                            </div>
-                        </div>
-                    </nav>
-                    {% endif %}
                 </div>
-                <div class="column"></div>
             </div>
         </div>
     </section>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}

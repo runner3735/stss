@@ -18,7 +18,11 @@ class PeopleSearchForm(forms.Form):
     search = forms.CharField(max_length=128, required=False)
 
 class AssetSearchForm(forms.Form):
-    status = forms.ChoiceField(choices= Asset.status_choices + [('','All')], required=False, initial=1)
+    status = forms.ChoiceField(choices=Asset.status_choices + [('','All')], required=False, initial=1)
+    search = forms.CharField(max_length=128, required=False)
+
+class PurchaseSearchForm(forms.Form):
+    method = forms.ChoiceField(choices=[('', 'All')] + Purchase.method_choices, required=False)
     search = forms.CharField(max_length=128, required=False)
 
 class AssetNumberForm(forms.Form):

@@ -50,8 +50,6 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
 
-
-
 class Tag(models.Model):
   text = models.CharField(max_length=128, unique=True)
 
@@ -244,9 +242,11 @@ class Person(models.Model):
         return self.first + ' ' + self.last
 
 class Purchase(models.Model):
+    method_choices = [(1, 'Credit Card'), (2, 'Purchase Order')]
+    
     date = models.DateField(blank=True, null=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, blank=True, null=True)
-    method = models.SmallIntegerField(choices=[(1, 'Credit Card'), (2, 'Purchase Order')], blank=True, null=True)
+    method = models.SmallIntegerField(choices=method_choices, blank=True, null=True)
     reference = models.CharField(max_length=128, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     shipping = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)

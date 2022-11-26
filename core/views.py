@@ -19,7 +19,7 @@ from django.core.paginator import Paginator, EmptyPage
 from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
-from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm
+from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm, PurchaseSearchForm
 
 def home(request):
   context = {}
@@ -98,6 +98,28 @@ class RoomList(ListView):
     model = Room
     template_name = 'rooms.html'
     context_object_name = 'rooms'
+
+def purchases(request):
+  context = purchases_get_context(request)
+  context['form'] = PurchaseSearchForm(request.GET or None)
+  return render(request, 'purchases.html', context)
+
+def purchases_list(request):
+  context = purchases_get_context(request)
+  return render(request, 'purchases-list.html', context)
+
+def purchases_get_context(request):
+  page = request.GET.get('page', '1')
+  method = request.GET.get('method','')
+  search = request.GET.get('search', '')
+  q = Purchase.objects.all()
+  if method: q =  q = q.filter(method=method)
+  if search: q = q.filter(Q(vendor__name__icontains=search) | Q(reference__icontains=search))
+  paginator = Paginator(q, 16)
+  try:
+    return {'purchases': paginator.page(page), 'method': method, 'search': search}
+  except EmptyPage:
+    return {'purchases': [], 'method': method, 'search': search}
 
 class PurchaseList(ListView):
     model = Purchase

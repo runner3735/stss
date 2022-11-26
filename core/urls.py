@@ -10,7 +10,8 @@ urlpatterns = [
   #path('people', views.PersonList.as_view(), name='people'),
   path('people/', views.people, name='people'),
   path('people/list/', views.people_list, name='people-list'),
-  path('purchases/', views.PurchaseList.as_view(), name='purchases'),
+  path('purchases/', views.purchases, name='purchases'),
+  path('purchases/list/', views.purchases_list, name='purchases-list'),
   path('purchase/new/', views.purchase_new, name='purchase-new'),
 
 #   # Course
