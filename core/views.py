@@ -595,30 +595,15 @@ def person_email(request, pk):
 @login_required
 def person_edit_email(request, pk):
   person=get_object_or_404(Person, pk=pk)
-  form = TextForm(request.POST or None)
+  form = PersonEmailForm(request.POST or None, instance=person)
   if request.method == 'POST':
+    username = request.POST.get('username')
+    if username:
+      form = PersonEmailForm({'email': username + '@middlebury.edu'}, instance=person)
     if form.is_valid():
-      email = form.cleaned_data['text']
-      if email and not '@' in email: email += '@middlebury.edu'
-      person.email = email
-      person.save()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'personEmailChanged'
-      return response
-  else:
-    form.fields['text'].initial = person.email
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'emailChanged'})
   return render(request, 'person-edit-email.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_required

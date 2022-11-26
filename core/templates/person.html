@@ -32,7 +32,7 @@
               </tr>
               <tr>
                 <th>Email</th>
-                <td hx-trigger="personEmailChanged from:body" hx-get="{% url 'person-email' person.id %}" hx-target="this">
+                <td hx-trigger="emailChanged from:body" hx-get="{% url 'person-email' person.id %}" hx-target="this">
                   <strong>{{ person.email }}</strong>
                 </td>
                 <td><a hx-get="{% url 'person-edit-email' person.id %}" hx-target="#dialog">
