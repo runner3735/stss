@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% load static %}
 
@@ -22,13 +21,14 @@
               </tr>
               <tr>
                 <th>Phone</th>
-                <td hx-trigger="personPhoneChanged from:body" hx-get="{% url 'person-phone' person.id %}" hx-target="this">
+                <td hx-trigger="personPhoneChanged from:body" hx-get="{% url 'person-phone' person.id %}"
+                  hx-target="this">
                   <strong>{{ person.phone }}</strong>
                 </td>
                 <td><a hx-get="{% url 'person-edit-phone' person.id %}" hx-target="#dialog">
-                  <span class="icon is-small"><i class="fas fa-edit"></i></span>
-              </a>
-          </td>
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                  </a>
+                </td>
               </tr>
               <tr>
                 <th>Email</th>
@@ -36,9 +36,9 @@
                   <strong>{{ person.email }}</strong>
                 </td>
                 <td><a hx-get="{% url 'person-edit-email' person.id %}" hx-target="#dialog">
-                  <span class="icon is-small"><i class="fas fa-edit"></i></span>
-              </a>
-          </td>
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                  </a>
+                </td>
               </tr>
               <tr>
                 <th>Office</th>
@@ -46,11 +46,12 @@
                   <strong>{{ person.office }}</strong>
                 </td>
                 <td><a href="{% url 'edit-room' 'person' person.id %}"><span class="icon is-small"><i
-                  class="fas fa-edit"></i></span></a></td>
+                        class="fas fa-edit"></i></span></a></td>
               </tr>
               <tr>
                 <th>Departments</th>
-                <td hx-trigger="departmentsChanged from:body" hx-get="{% url 'person-departments' person.id %}" hx-target="this">
+                <td hx-trigger="departmentsChanged from:body" hx-get="{% url 'person-departments' person.id %}"
+                  hx-target="this">
                   <div class="tags">
                     {% for dept in person.departments.all %}
                     <a href="" class="tag is-link is-medium">{{ dept }}</a>
@@ -60,7 +61,7 @@
                 <td>
                   <a hx-get="{% url 'person-edit-department' person.id %}" hx-target="#dialog">
                     <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                </a>
+                  </a>
                 </td>
               </tr>
 
@@ -72,7 +73,7 @@
                 <td>
                   <a hx-get="{% url 'person-edit-status' person.id %}" hx-target="#dialog">
                     <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                </a>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -80,79 +81,47 @@
         </div>
       </div>
     </div>
-    <div class="container my-4" x-data="{ tab: '{{ request.GET.tab }}' }" x-cloak>
-      <div class="tabs is-toggle is-fullwidth">
+
+    
+    <div class="container my-4">
+      <div class="tabs is-toggle is-fullwidth" id="tabs" hx-target="#tab-contents" 
+      _="on click remove .is-active from <li/> then add .has-background-light to <li/> 
+      on htmx:afterOnLoad add .is-active to closest <li/> to event.target then remove .has-background-light from closest <li/> to event.target">
         <ul>
-          <li :class="tab === 'assets' ? 'is-active' : 'has-background-light'">
-            <a @click="tab = 'assets'">
+          <li class="has-background-light">
+            <a hx-get="{% url 'person-tab' person.id 'assets' %}">
               <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
               <span>Assets</span>
             </a>
           </li>
-          <li :class="tab === 'jobs' ? 'is-active' : 'has-background-light'">
-            <a @click="tab = 'jobs'">
+          <li class="has-background-light">
+            <a hx-get="{% url 'person-tab' person.id 'jobs' %}">
               <span class="icon is-small"><i class="fas fa-image"></i></span>
               <span>Jobs as Customer</span>
             </a>
           </li>
-          <li :class="tab === 'tasks' ? 'is-active' : 'has-background-light'">
-            <a @click="tab = 'tasks'">
+          <li class="has-background-light">
+            <a hx-get="{% url 'person-tab' person.id 'tasks' %}">
               <span class="icon is-small"><i class="far fa-file-alt"></i></span>
               <span>Jobs as Technician</span>
             </a>
           </li>
         </ul>
       </div>
-      <div class="content">
-        <div x-show="tab === 'assets'">
-          {% if person.assets.all %}
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Inventoried</th>
-                <th>Asset Tag</th>
-                <th>Item</th>
-                <th>Model</th>
-                <th>Room</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for asset in person.assets.all %}
-              <tr>
-                <td>{{ asset.inventoried | date:"Y-m-d" }}</td>
-                <td>{{ asset.identifier }}</td>
-                <td>{{ asset }}</td>
-                <td>{{ asset.model }}</td>
-                <td>{{ asset.room }}</td>
-                <td class="has-text-centered">
-                  <a href="{% url 'asset' asset.id %}">
-                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                  </a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% endif %}
-        </div>
-        <div x-show="tab === 'jobs'">
-        </div>
-        <div x-show="tab === 'tasks'">
-        </div>
-      </div>
+      <div id="tab-contents" class="content"></div>
     </div>
+
   </div>
 </section>
-<div id="modal" class="modal">
-  <div class="modal-background"></div>
-  <div class="modal-content">
-    <div class="box has-background-link-dark">
-      <div id="dialog" hx-target="this"></div>
-    </div>
+<div class="modal" _="on htmx:afterSwap add .is-active to me">
+  <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
+  <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">
+      <div class="box has-background-link-dark">
+          <div id="dialog" hx-target="this"></div>
+      </div>
   </div>
-  <button class="modal-close is-large" aria-label="close"></button>
+  <button class="modal-close is-large" _="on click remove .is-active from closest .modal"></button>
 </div>
 <script src="https://unpkg.com/htmx.org@1.7.0"></script>
-<script src="{% static 'dialog.js' %}"></script>
+<script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
 {% endblock %}

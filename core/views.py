@@ -1,5 +1,5 @@
 
-import os, datetime
+import os, datetime, time
 # import subprocess
 # import physics.ytdlp as yt
 import core.ffutil as ff
@@ -54,7 +54,6 @@ def people_get_context(request):
   except EmptyPage:
     return {'people': [], 'status': status, 'search': search}
   
-
 def assets(request):
   context = assets_get_context(request)
   context['form'] = AssetSearchForm(request.GET or None)
@@ -148,6 +147,41 @@ class PersonDetail(DetailView):
   context_object_name = 'person'
   template_name = 'person.html'
 
+def person_tab(request, pk, tab):
+  person = get_object_or_404(Person, pk=pk)
+  #time.sleep(2)
+  if tab == 'assets':
+    return render(request, 'person-assets.html', {'person': person})
+  if tab == 'jobs':
+    return render(request, 'person-jobs.html', {'person': person})
+  if tab == 'tasks':
+    return render(request, 'person-tasks.html', {'person': person})
+
+def asset_notes(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  #notes = Note.objects.get(asset=pk)
+  notes = asset.notes.all()
+  return render(request, 'note-list.html', {'notes': notes})
+
+def asset_pictures(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  pictures = asset.pictures.all()
+  return render(request, 'picture-list.html', {'pictures': pictures})
+
+def asset_documents(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  documents = asset.documents.all()
+  return render(request, 'document-list.html', {'documents': documents})
+
+def asset_videos(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  videos = asset.videos.all()
+  return render(request, 'video-list.html', {'videos': videos})
+
+def asset_purchases(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  return render(request, 'purchase-list.html', {'asset': asset})
+  
 def purchase_detail(request, pk): # this is an alternative to PurchaseDetail that adds items to the context
   purchase = get_object_or_404(Purchase, pk=pk)
   items = LineItem.objects.filter(purchase=purchase)
@@ -272,10 +306,6 @@ def asset_edit_nickname(request, pk):
   else:
     form = AssetNicknameForm(instance=asset)
   return render(request, 'asset-edit-nickname.html', {'form': form})
-
-def asset_notes(request, pk):
-  asset = get_object_or_404(Asset, pk=pk)
-  return render(request, 'notes.html', {'notable': asset})
 
 def asset_name(request, pk):
   asset=get_object_or_404(Asset, pk=pk)
@@ -630,6 +660,10 @@ def note_edit(request, pk):
 def picture_detail(request, pk):
   picture = get_object_or_404(Picture, pk=pk)
   return render(request, 'picture.html', {'picture': picture})
+
+def picture_modal(request, pk):
+  picture = get_object_or_404(Picture, pk=pk)
+  return render(request, 'picture-modal.html', {'picture': picture})
 
 @login_required
 def picture_edit(request, pk):

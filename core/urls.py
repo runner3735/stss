@@ -36,9 +36,14 @@ urlpatterns = [
   path('asset/<int:pk>/location/', views.asset_location, name='asset-location'),
   path('asset/<int:pk>/nickname/edit', views.asset_edit_nickname, name='asset-edit-nickname'),
   path('asset/<int:pk>/nickname/', views.asset_nickname, name='asset-nickname'),
-  path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
   path('asset/<int:pk>/info/edit/', views.asset_edit_info, name='asset-edit-info'),
   path('asset/<int:pk>/clone/', views.asset_clone, name='asset-clone'),
+
+  path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
+  path('asset/<int:pk>/pictures/', views.asset_pictures, name='asset-pictures'),
+  path('asset/<int:pk>/documents/', views.asset_documents, name='asset-documents'),
+  path('asset/<int:pk>/videos/', views.asset_videos, name='asset-videos'),
+  path('asset/<int:pk>/purchases/', views.asset_purchases, name='asset-purchases'),
 
   path('asset/<int:pk>/manufacturer/edit/', views.asset_edit_manufacturer, name='asset-edit-manufacturer'),
   path('asset/<int:pk>/manufacturer/', views.asset_manufacturer, name='asset-manufacturer'),
@@ -73,6 +78,7 @@ urlpatterns = [
   # Person
   # path('people/', views.people, name='people'),
   path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
+  path('person/<int:pk>/tab/<str:tab>/', views.person_tab, name='person-tab'),
   path('vendor/<int:pk>/', views.VendorDetail.as_view(), name='vendor'),
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
   # path('person/<int:pk>/edit/', views.person_edit, name='person-edit'),
@@ -122,6 +128,7 @@ urlpatterns = [
 #   path('pictures/', views.Pictures.as_view(), name='pictures'),
 #   path('mypictures/', views.MyPictures.as_view(), name='my-pictures'),
   path('picture/<int:pk>/', views.picture_detail, name='picture'),
+  path('picture/<int:pk>/modal/', views.picture_modal, name='picture-modal'),
   path('picture/<int:pk>/edit/', views.picture_edit, name='picture-edit'),
 #   path('picture/<int:pk>/rotate/<int:degrees>/', views.picture_rotate, name='picture-rotate'),
   path('picture/<int:pk>/delete/', views.picture_delete, name='picture-delete'),

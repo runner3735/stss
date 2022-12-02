@@ -10,99 +10,105 @@
                     <table class="table is-striped is-fullwidth">
                         <tbody>
                             <div>
-                            <tr>
-                                <th>Asset Tag</th>
-                                <td><strong>{{ asset.identifier }}</strong></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Manufacturer</th>
-                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.manufacturer }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Model</th>
-                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.model }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Name</th>
-                                <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-name' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.name }}</strong>
-                                </td>
-                                <td><a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Nickname</th>
-                                <td hx-trigger="assetNicknameChanged from:body" hx-get="{% url 'asset-nickname' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.nickname }}</strong>
-                                </td>
-                                <td><a hx-get="{% url 'asset-edit-nickname' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Serial Number</th>
-                                <td hx-trigger="assetSerialChanged from:body" hx-get="{% url 'asset-serial' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.serial }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-serial' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Room</th>
-                                <td><strong>{{ asset.room }}</strong></td>
-                                <td><a href="{% url 'edit-room' 'asset' asset.id %}"><span class="icon is-small"><i
-                                                class="fas fa-edit"></i></span></a></td>
-                            </tr>
-                            <tr>
-                                <th>Location</th>
-                                <td hx-trigger="assetLocationChanged from:body" hx-get="{% url 'asset-location' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.location }}</strong>
-                                </td>
-                                <td><a hx-get="{% url 'asset-edit-location' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Department</th>
-                                <td hx-trigger="assetDepartmentChanged from:body" hx-get="{% url 'asset-department' asset.id %}" hx-target="this">
-                                    <strong>{{ asset.department }}</strong>
-                                </td>
-                                <td>
-                                    <a hx-get="{% url 'asset-edit-department' asset.id %}" hx-target="#dialog">
-                                        <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <th>Asset Tag</th>
+                                    <td><strong>{{ asset.identifier }}</strong></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Manufacturer</th>
+                                    <td hx-trigger="assetInfoChanged from:body"
+                                        hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.manufacturer }}</strong>
+                                    </td>
+                                    <td>
+                                        <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Model</th>
+                                    <td hx-trigger="assetInfoChanged from:body"
+                                        hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.model }}</strong>
+                                    </td>
+                                    <td>
+                                        <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-name' asset.id %}"
+                                        hx-target="this">
+                                        <strong>{{ asset.name }}</strong>
+                                    </td>
+                                    <td><a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Nickname</th>
+                                    <td hx-trigger="assetNicknameChanged from:body"
+                                        hx-get="{% url 'asset-nickname' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.nickname }}</strong>
+                                    </td>
+                                    <td><a hx-get="{% url 'asset-edit-nickname' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Serial Number</th>
+                                    <td hx-trigger="assetSerialChanged from:body"
+                                        hx-get="{% url 'asset-serial' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.serial }}</strong>
+                                    </td>
+                                    <td>
+                                        <a hx-get="{% url 'asset-edit-serial' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Room</th>
+                                    <td><strong>{{ asset.room }}</strong></td>
+                                    <td><a href="{% url 'edit-room' 'asset' asset.id %}"><span class="icon is-small"><i
+                                                    class="fas fa-edit"></i></span></a></td>
+                                </tr>
+                                <tr>
+                                    <th>Location</th>
+                                    <td hx-trigger="assetLocationChanged from:body"
+                                        hx-get="{% url 'asset-location' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.location }}</strong>
+                                    </td>
+                                    <td><a hx-get="{% url 'asset-edit-location' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Department</th>
+                                    <td hx-trigger="assetDepartmentChanged from:body"
+                                        hx-get="{% url 'asset-department' asset.id %}" hx-target="this">
+                                        <strong>{{ asset.department }}</strong>
+                                    </td>
+                                    <td>
+                                        <a hx-get="{% url 'asset-edit-department' asset.id %}" hx-target="#dialog">
+                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
                             </div>
                             <tr>
                                 <th>Contacts</th>
                                 <td>
                                     <div class="tags">
                                         {% for contact in asset.contacts.all %}
-                                        <a href="{% url 'person' contact.id %}"
-                                            class="tag is-danger is-medium">{{ contact }}</a>
+                                        <a href="{% url 'person' contact.id %}" class="tag is-danger is-medium">{{ contact }}</a>
                                         {% endfor %}
                                     </div>
                                 </td>
@@ -114,8 +120,7 @@
                                 <td>
                                     <div class="tags">
                                         {% for tag in asset.tags.all %}
-                                        <a class="tag has-background-success-dark has-text-light is-medium"
-                                            href="">
+                                        <a class="tag has-background-success-dark has-text-light is-medium" href="">
                                             {{ tag }}
                                         </a>
                                         {% endfor %}
@@ -126,7 +131,8 @@
                             </tr>
                             <tr>
                                 <th>Status</th>
-                                <td hx-trigger="assetStatusChanged from:body" hx-get="{% url 'asset-status' asset.id %}" hx-target="this">
+                                <td hx-trigger="assetStatusChanged from:body" hx-get="{% url 'asset-status' asset.id %}"
+                                    hx-target="this">
                                     <strong>{{ asset.get_status_display }}</strong>
                                 </td>
                                 <td>
@@ -137,7 +143,8 @@
                             </tr>
                             <tr>
                                 <th>Inventoried</th>
-                                <td hx-trigger="assetInventoriedChanged from:body" hx-get="{% url 'asset-inventoried' asset.id %}" hx-target="this">
+                                <td hx-trigger="assetInventoriedChanged from:body"
+                                    hx-get="{% url 'asset-inventoried' asset.id %}" hx-target="this">
                                     <strong>{{ asset.inventoried | date:"F j, Y" }}</strong>
                                 </td>
                                 <td>
@@ -157,183 +164,57 @@
                 </div>
             </div>
         </div>
-        <div class="container my-4" x-data="{ tab: '{{ request.GET.tab }}' }" x-cloak>
-            <div class="tabs is-toggle is-fullwidth">
+
+        <div class="container my-4">
+            <div class="tabs is-toggle is-fullwidth" id="tabs" hx-target="#tab-contents"
+                _="on click remove .is-active from <li/> then add .has-background-light to <li/>
+                on htmx:afterOnLoad add .is-active to closest <li/> to event.target then remove .has-background-light from closest <li/> to event.target">
                 <ul>
-                    <li :class="tab === 'notes' ? 'is-active' : 'has-background-light'">
-                        <a @click="tab = 'notes'">
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-notes' asset.id %}">
                             <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
                             <span>Notes</span>
                         </a>
                     </li>
-                    <li :class="tab === 'pictures' ? 'is-active' : 'has-background-light'">
-                        <a @click="tab = 'pictures'">
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-pictures' asset.id %}">
                             <span class="icon is-small"><i class="fas fa-image"></i></span>
                             <span>Pictures</span>
                         </a>
                     </li>
-                    <li :class="tab === 'documents' ? 'is-active' : 'has-background-light'">
-                        <a @click="tab = 'documents'">
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-documents' asset.id %}">
                             <span class="icon is-small"><i class="far fa-file-alt"></i></span>
                             <span>Documents</span>
                         </a>
                     </li>
-                    <li :class="tab === 'videos' ? 'is-active' : 'has-background-light'">
-                        <a @click="tab = 'videos'">
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-videos' asset.id %}">
                             <span class="icon is-small"><i class="fas fa-film"></i></span>
                             <span>Videos</span>
                         </a>
                     </li>
-                    <li :class="tab === 'purchases' ? 'is-active' : 'has-background-light'">
-                        <a @click="tab = 'purchases'">
-                            <span class="icon is-small"><i class="fas fa-film"></i></span>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-purchases' asset.id %}">
+                            <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
                             <span>Purchasing Info</span>
                         </a>
                     </li>
                 </ul>
             </div>
-            <div class="content">
-                <div x-show="tab === 'notes'" hx-trigger="load, noteChanged from:body" hx-get="{% url 'asset-notes' asset.id %}" hx-target="this"></div>
-                <div x-show="tab === 'pictures'" x-data="{ open: false, picture: '', detail: '' }">
-                    {% if asset.pictures.all %}
-                    <div class="columns is-multiline">
-                        {% for p in asset.pictures.all %}
-                        <div class="column is-narrow">
-                            <div class="card has-background-black has-text-white has-text-centered">
-                                <div class="card-image px-2 pt-2" @click="picture = '{{ p.file.url }}';detail = '{{ p.detail }}';open = true">
-                                    <img src="{{ p.thumb300h.url }}" alt="">
-                                </div>
-                                <div class="content mx-4 pb-2">{{ p.name }}</div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    <div class="modal" :class="open && 'is-active'">
-                        <div class="modal-background"></div>
-                        <div @click="open = false" class="columns is-overlay is-vcentered">
-                            <div class="column has-text-centered">
-                                <div><a class="has-text-light" :href="picture">Fullscreen</a></div>
-                                <div><a class="has-text-light" :href="detail">Details</a></div>
-                            </div>
-                            <div class="column is-narrow has-text-centered">
-                                <img :src="picture" alt="" style="max-height:95vh;">
-                            </div>
-                            <div class="column"></div>
-                        </div>
-                    </div>
-                </div>
-                <div x-show="tab === 'documents'">
-                    {% if asset.documents.all %}
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Contributor</th>
-                                <th>File</th>
-                                <th class="has-text-centered">Edit</th>
-                                <th class="has-text-centered">Unlink</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for document in asset.documents.all %}
-                            <tr>
-                                <td>{{ document.name }}</td>
-                                <td>{{ document.contributor.first_name }}
-                                    {{ document.contributor.last_name }}</td>
-                                <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
-                                {% if user == document.contributor %}
-                                <td class="has-text-centered">
-                                    <a
-                                        href=""><span
-                                            class="icon is-small"><i class="fas fa-edit"></i></span></a>
-                                </td>
-                                <td class="has-text-centered">
-                                    <a href=""><span
-                                            class="icon is-small"><i class="fas fa-unlink"></i></span></a>
-                                </td>
-                                {% else %}
-                                <td></td>
-                                <td></td>
-                                {% endif %}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% endif %}
-                </div>
-                <div x-show="tab === 'videos'">
-                    <div class="columns is-multiline">
-                        {% for video in asset.videos.all %}
-                        <div class="column is-one-quarter">
-                            <div class="card">
-                                <div class="card-image">
-                                    <figure class="image">
-                                        {% if video.thumbnail %}
-                                        <img src="{{ video.thumbnail.url }}" alt="picture">
-                                        {% endif %}
-                                    </figure>
-                                </div>
-                                <div class="card-content">
-                                    <div class="content">
-                                        {{ video.name }}
-                                    </div>
-                                </div>
-                                <footer class="card-footer">
-                                    <a href="{{ video.file.url }}" class="card-footer-item">View</a>
-                                    <a href="" class="card-footer-item">Details</a>
-                                </footer>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div x-show="tab === 'purchases'">
-                    {% if asset.lineitem_set.all %}
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Vendor</th>
-                                <th>Reference</th>
-                                <th>Method</th>
-                                <th>Cost</th>
-                                <th class="has-text-centered">View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in asset.lineitem_set.all %}
-                            <tr>
-                                <td>{{ item.purchase.date }}</td>
-                                <td>{{ item.purchase.vendor }}</td>
-                                <td>{{ item.purchase.reference }}</td>
-                                <td>{{ item.purchase.get_method_display }}</td>
-                                <td>{{ item.cost }}</td>
-                                <td class="has-text-centered">
-                                    <a href="{% url 'purchase' item.purchase.id %}">
-                                        <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% endif %}
-                    
-                </div>
-            </div>
+            <div id="tab-contents" class="content"></div>
         </div>
     </div>
 </section>
-<div id="modal" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-content">
+<div id="modal" class="modal" _="on htmx:afterSwap add .is-active to me">
+    <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
+    <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">
         <div class="box has-background-link-dark">
             <div id="dialog" hx-target="this"></div>
         </div>
     </div>
-    <button class="modal-close is-large" aria-label="close"></button>
+    <button class="modal-close is-large" _="on click remove .is-active from closest .modal"></button>
 </div>
 <script src="https://unpkg.com/htmx.org@1.7.0"></script>
-<script src="{% static 'dialog.js' %}"></script>
+<script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
 {% endblock %}

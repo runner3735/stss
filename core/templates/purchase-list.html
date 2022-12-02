@@ -1,0 +1,30 @@
+{% if asset.lineitem_set.all %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Vendor</th>
+            <th>Reference</th>
+            <th>Method</th>
+            <th>Cost</th>
+            <th class="has-text-centered">View</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in asset.lineitem_set.all %}
+        <tr>
+            <td>{{ item.purchase.date }}</td>
+            <td>{{ item.purchase.vendor }}</td>
+            <td>{{ item.purchase.reference }}</td>
+            <td>{{ item.purchase.get_method_display }}</td>
+            <td>{{ item.cost }}</td>
+            <td class="has-text-centered">
+                <a href="{% url 'purchase' item.purchase.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
