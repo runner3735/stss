@@ -6,7 +6,26 @@
 <div class="hero-head py-5">
     <div class="container">
         <h1 class="title has-text-light">Vendors</h1>
-        <div>
+        <div class="level mb-4">
+            <div class="level-left">
+                <div class="level-item">
+                        <div class="field has-addons has-addons-centered" hx-target="#vendor-list" hx-include="this">
+                            <div class="control">
+                                <div class="select">
+                                    <select name="method" id="id_method" hx-get="{% url 'vendor-list' %}">
+                                        <option value="1" selected>Starts With</option>                                     
+                                        <option value="2">Contains</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <input hx-get="{% url 'vendor-list' %}" hx-trigger="keyup changed delay:500ms" type="text" name="search" maxlength="128" placeholder="Search vendor name..." size="45" class="input" id="id_search">
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div id="vendor-list">
             {% include 'vendor-list.html' %}
         </div>
     </div>

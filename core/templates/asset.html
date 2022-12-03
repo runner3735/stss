@@ -21,7 +21,7 @@
                                         hx-get="{% url 'asset-manufacturer' asset.id %}" hx-target="this">
                                         <strong>{{ asset.manufacturer }}</strong>
                                     </td>
-                                    <td>
+                                    <td rowspan="3" class="is-vcentered">
                                         <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
                                             <span class="icon is-small"><i class="fas fa-edit"></i></span>
                                         </a>
@@ -33,21 +33,12 @@
                                         hx-get="{% url 'asset-model' asset.id %}" hx-target="this">
                                         <strong>{{ asset.model }}</strong>
                                     </td>
-                                    <td>
-                                        <a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
-                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                        </a>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Name</th>
                                     <td hx-trigger="assetInfoChanged from:body" hx-get="{% url 'asset-name' asset.id %}"
                                         hx-target="this">
                                         <strong>{{ asset.name }}</strong>
-                                    </td>
-                                    <td><a hx-get="{% url 'asset-edit-info' asset.id %}" hx-target="#dialog">
-                                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                                        </a>
                                     </td>
                                 </tr>
                                 <tr>

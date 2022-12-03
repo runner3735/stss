@@ -1,6 +1,6 @@
 {% for vendor in vendors %}
 {% if forloop.last %}
-<div class="mb-3" hx-get="{% url 'vendor-list' %}?page={{ vendors.number|add:1 }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+<div class="mb-3" hx-get="{% url 'vendor-list' %}?page={{ vendors.number|add:1 }}&method={{ method }}&search={{ search }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
 {% else %}
 <div class="mb-3">
 {% endif %}
