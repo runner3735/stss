@@ -43,17 +43,17 @@ def GetAsset(text):
 
 def AddPurchase(asset, instrument):
     if not HasPurchase(instrument): return
-    p = Purchase()
-    p.date = instrument['PurchaseDate']
+    date = instrument['PurchaseDate']
     if instrument['Vendor']:
         text = instrument['Vendor'].strip()
         text = vendors[text]
-        v, created = Vendor.objects.get_or_create(name=text)
-        p.vendor = v
-    if instrument['PurchaseOrder']: p.reference = instrument['PurchaseOrder']
-    p.total = instrument['Cost']
-    p.save()
-    asset.purchases.add(p, through_defaults={'cost': p.total})
+        vendor, created = Vendor.objects.get_or_create(name=text)
+    else:
+        vendor = None
+    if instrument['PurchaseOrder']: reference = instrument['PurchaseOrder']
+    else: reference = ''
+    purchase, created = Purchase.objects.get_or_create(date=date, vendor=vendor, reference=reference)
+    asset.purchases.add(purchase, through_defaults={'cost': instrument['Cost']})
 
 def HasPurchase(instrument):
     if instrument['PurchaseDate']: return True

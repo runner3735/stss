@@ -53,6 +53,7 @@ def AddDepartments(person, text):
 
 def AddOffice(person, text):
     if text in ['Left', 'Retired']: return
+    person.status = 2
     if not text: return
     room = rooms[text]
     if room:
