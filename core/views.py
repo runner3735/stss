@@ -77,28 +77,24 @@ def assets_get_context(request):
     return {'assets': [], 'status': status, 'search': search}
 
 def vendors(request):
-  print("vendors view")
-  context = vendors_get_context(request)
+  q = Vendor.objects.all()
+  paginator = Paginator(q, 18)
+  context = {'vendors': paginator.page(1)}
   return render(request, 'vendors.html', context)
 
-def vendor_list(request):
-  print("vendor_list view")
-  context = vendors_get_context(request)
-  return render(request, 'vendor-list.html', context)
-
-def vendors_get_context(request):
-  print(request.GET)
-  page = request.GET.get('page', '1')
-  method = request.GET.get('method','')
-  search = request.GET.get('search', '')
+def vendor_list(request, page):
   q = Vendor.objects.all()
+  method = request.POST.get('method','')
+  search = request.POST.get('search', '')
   if search and method == '1': q = q.filter(name__istartswith=search)
   elif search: q = q.filter(name__icontains=search)
   paginator = Paginator(q, 18)
   try:
-    return {'vendors': paginator.page(page), 'method': method, 'search': search}
+    vendors = paginator.page(page)
   except EmptyPage:
-    return {'vendors': [], 'method': method, 'search': search}
+    vendors = []
+  context = {'vendors': vendors}
+  return render(request, 'vendor-list.html', context)
 
 class RoomList(ListView):
     model = Room

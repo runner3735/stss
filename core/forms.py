@@ -22,7 +22,7 @@ class AssetSearchForm(forms.Form):
     search = forms.CharField(max_length=128, required=False)
 
 class PurchaseSearchForm(forms.Form):
-    method = forms.ChoiceField(choices=[('', 'All')] + Purchase.method_choices, required=False)
+    method = forms.ChoiceField(choices=[('', 'Any Method')] + Purchase.method_choices, required=False)
     search = forms.CharField(max_length=128, required=False)
 
 class AssetNumberForm(forms.Form):

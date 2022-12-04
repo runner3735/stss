@@ -63,7 +63,7 @@ urlpatterns = [
 #   # Activity
 #  path('vendors/', views.VendorList.as_view(), name='vendors'),
   path('vendors/', views.vendors, name='vendors'),
-  path('vendor/list/', views.vendor_list, name='vendor-list'),
+  path('vendors/<int:page>/', views.vendor_list, name='vendor-list'),
   path('rooms/', views.RoomList.as_view(), name='rooms'),
 #   path('activitiesbypicture/', views.ActivitiesByPicture.as_view(), name='activities-by-picture'),
 #   path('activity/new/', views.activity_new, name='activity-new'),
