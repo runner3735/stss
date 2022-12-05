@@ -54,6 +54,12 @@ def AddPurchase(asset, instrument):
     else: reference = ''
     purchase, created = Purchase.objects.get_or_create(date=date, vendor=vendor, reference=reference)
     asset.purchases.add(purchase, through_defaults={'cost': instrument['Cost']})
+    if not instrument['Cost']: return
+    if purchase.total:
+        purchase.total += instrument['Cost']
+    else:
+        purchase.total = instrument['Cost']
+    purchase.save()
 
 def HasPurchase(instrument):
     if instrument['PurchaseDate']: return True
@@ -65,5 +71,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         LoadPickles()
-        #DeletePurchases()
+        DeletePurchases()
         ImportPurchases()
