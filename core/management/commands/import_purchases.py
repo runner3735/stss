@@ -71,5 +71,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         LoadPickles()
-        DeletePurchases()
+        #DeletePurchases()
         ImportPurchases()
