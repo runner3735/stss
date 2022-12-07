@@ -3,11 +3,11 @@
 {% load widget_tweaks %}
 
 {% block title %}
-<title>New Purchase</title>
+<title>Edit Purchase</title>
 {% endblock %}
 
 {% block heading %}
-<h1 class="title">New Purchase</h1>
+<h1 class="title">Edit Purchase</h1>
 {% endblock %}
 
 {% block content %}
@@ -18,12 +18,7 @@
 <div class="field">
     <label class="label">Vendor</label>
     <div class="control">
-        <input type="text" name="vendor" maxlength="128" class="input" id="id_vendor" list="vendor_list">
-        <datalist id="vendor_list">
-        {% for v in vendors %}
-        <option value="{{ v }}">
-        {% endfor %}
-        </datalist>
+        <div class="select">{% render_field form.vendor class="select" %}</div>
     </div>
 </div>
 <div class="field">
@@ -59,7 +54,7 @@
     <div class="control">{% render_field form.total class="input" %}</div>
 </div>
 <div class="control">
-    <button class="button is-danger">Create</button>
-    <a href="{% url 'purchases' %}" class="button is-link">Cancel</a>
+    <button class="button is-danger">Update</button>
+    <a href="{% url 'purchase' purchase.id %}" class="button is-link">Cancel</a>
 </div>
 {% endblock %}

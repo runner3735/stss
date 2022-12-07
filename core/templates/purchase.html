@@ -25,8 +25,23 @@
                 <td></td>
               </tr>
               <tr>
-                <th>Reference</th>
+                <th>Internal Reference</th>
                 <td><strong>{{ purchase.reference }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Vendor Reference</th>
+                <td><strong>{{ purchase.vreference }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Funding Source</th>
+                <td><strong>{{ purchase.get_funding_display }}</strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Edorda</th>
+                <td><strong>{{ purchase.edorda }}</strong></td>
                 <td></td>
               </tr>
               <tr>
@@ -45,9 +60,10 @@
       </div>
 
       <div>
-        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link">Add Asset</a>
-        <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mx-4">Add Attachments</a>
-        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link">Update Total</a>
+        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link mr-4">Add Asset</a>
+        <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mr-4">Add Attachments</a>
+        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mr-4">Update Total</a>
+        <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
       </div>
       <div class="mt-4 mb-10">
 

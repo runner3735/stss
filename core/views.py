@@ -6,7 +6,7 @@ import core.ffutil as ff
 
 # from django.conf import settings
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -20,6 +20,7 @@ from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Perso
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
 from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm, PurchaseSearchForm
+from .forms import PurchaseEditForm
 
 def home(request):
   context = {}
@@ -328,6 +329,15 @@ def asset_edit_name(request, pk):
     form = AssetNameForm(instance=asset)
   return render(request, 'asset-edit-name.html', {'form': form})
 
+@login_required
+def purchase_edit(request, pk):
+  purchase = get_object_or_404(Purchase, pk=pk)
+  form = PurchaseEditForm(request.POST or None, instance=purchase)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return redirect('purchase', pk)
+  return render(request, 'purchase-edit.html', {'purchase': purchase, 'form': form})
 
 
 

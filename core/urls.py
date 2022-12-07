@@ -98,6 +98,7 @@ urlpatterns = [
   path('person/<int:pk>/status/', views.person_status, name='person-status'),
   # Purchase
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
+  path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   # path('purchase/<int:pk>/', views.purchase_detail, name='purchase'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),

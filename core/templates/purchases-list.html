@@ -8,6 +8,9 @@
     <td>{{ purchase.vendor }}</td>
     <td>{{ purchase.get_method_display }}</td>
     <td>{{ purchase.reference }}</td>
+    <td>{{ purchase.vreference }}</td>
+    <td>{{ purchase.get_funding_display }}</td>
+    <td>{{ purchase.edorda }}</td>
     <td>{{ purchase.total }}</td>
     <td class="has-text-centered">
         <a href="{% url 'purchase' purchase.id %}">
