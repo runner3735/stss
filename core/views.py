@@ -118,6 +118,7 @@ def purchases_get_context(request):
   q = Purchase.objects.all()
   if method: q =  q = q.filter(method=method)
   if search: q = q.filter(Q(vendor__name__icontains=search) | Q(reference__icontains=search))
+  q = q.order_by('-date')
   paginator = Paginator(q, 16)
   try:
     return {'purchases': paginator.page(page), 'method': method, 'search': search}
