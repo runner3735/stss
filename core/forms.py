@@ -155,18 +155,6 @@ class PurchaseEditForm(forms.ModelForm):
         fields = ['date', 'method', 'reference', 'vendor', 'vreference', 'funding', 'edorda', 'total', 'shipping']
         widgets = {'date': DateInput()}
 
-# class ComponentForm(forms.ModelForm):
-#     class Meta:
-#         model = Component
-#         fields = ['name',]
-    
-#     def clean_name(self):
-#         data = self.cleaned_data['name']
-#         if self.instance.pk:
-#             if data.lower() != self.instance.name.lower():
-#                 raise forms.ValidationError("You can only edit the casing of a Component object.  You cannot change its content.")
-#         return data
-
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
@@ -187,3 +175,14 @@ class VideoThumbnailForm(forms.ModelForm):
         model = Video
         fields = ['thumbnail',]
 
+# class ComponentForm(forms.ModelForm):
+#     class Meta:
+#         model = Component
+#         fields = ['name',]
+    
+#     def clean_name(self):
+#         data = self.cleaned_data['name']
+#         if self.instance.pk:
+#             if data.lower() != self.instance.name.lower():
+#                 raise forms.ValidationError("You can only edit the casing of a Component object.  You cannot change its content.")
+#         return data

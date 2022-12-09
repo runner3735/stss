@@ -8,7 +8,7 @@ rx_po = re.compile(r"^P[O\.# ]*(\d{4,7})$")
 rx_po2 = re.compile(r"^MD-PO-\d+$")
 rx_po3 = re.compile(r"^\d+$")
 rx_cc = re.compile(r"^(CC|cc|credit card|Credit Card|Card)[-# ]*(.*)$")
-rx_cc2 = re.compile(r"^(CD|JM|JS|CE|MM)[-# ]*(\d+)$")
+rx_cc2 = re.compile(r"^(CD|JM|JS|CE|CC|MM)[-# ]*(\d+)$")
 
 def SplitReferences():
     count = 0
@@ -64,20 +64,20 @@ def CleanPurchases():
                 else:
                     pos.append(m[0])
                 continue
-        m = rx_cc.match(purchase.reference)
+        m = rx_cc2.match(purchase.reference)
         if m:
             purchase.method = 1
-            purchase.reference = m[2]
+            purchase.reference = m[1] + m[2]
             purchase.save()
             if purchase.reference != m[0]:
                 ccs.append(m[0] + ' --> ' + purchase.reference)
             else:
                 ccs.append(m[0])
             continue
-        m = rx_cc2.match(purchase.reference)
+        m = rx_cc.match(purchase.reference)
         if m:
             purchase.method = 1
-            purchase.reference = m[1] + m[2]
+            purchase.reference = m[2]
             purchase.save()
             if purchase.reference != m[0]:
                 ccs.append(m[0] + ' --> ' + purchase.reference)
