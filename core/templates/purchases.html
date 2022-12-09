@@ -7,21 +7,29 @@
             <div class="columns">
                 <div class="column is-narrow">
                     <h1 class="title has-text-light mr-6">Purchase List</h1>
-                    <div class="level mb-4">
-                        <div class="level-left">
+
+                      <form id="search-form"  action="{% url 'purchases' %}">
+                      <div class="level mb-4">
+                        <div class="level-left" hx-target="#purchase-list" hx-include="this">
+                            <div class="level-item"><label class="label has-text-light">Sort By</label></div>
                             <div class="level-item">
-                                <form action="{% url 'purchases' %}">
+                                <div class="field"><div class="control"><div class="select" hx-get="{% url 'purchases-list' %}" hx-trigger="change">{% render_field form.sortby %}</div></div></div>
+                            </div>
+                            <div class="level-item"><label class="label has-text-light">Method</label></div>
+                            <div class="level-item">
+                                <div class="field"><div class="control"><div class="select" hx-get="{% url 'purchases-list' %}" hx-trigger="change">{% render_field form.method %}</div></div></div>
+                            </div>
+                            <div class="level-item"><label class="label has-text-light">Search</label></div>
+                            <div class="level-item">
                                     <div class="field has-addons has-addons-centered">
-                                        <div class="control">
-                                            <div class="select">{% render_field form.method %}</div>
-                                        </div>
-                                        <div class="control">{% render_field form.search class="input" size="45" placeholder="Enter text to search in vendor and reference..." %}</div>
-                                        <div class="control"><button class="button is-danger">Filter</button></div>
+                                        <div class="control"><div class="select">{% render_field form.searchin %}</div></div>
+                                        <div class="control">{% render_field form.search class="input" size="45" placeholder="Enter search text..." %}</div>
+                                        <div class="control"><button class="button is-danger">Search</button></div>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>
+                    </form>
                     
                     {% if purchases %}
                     <table class="table">
@@ -38,7 +46,7 @@
                                 <th>View</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="purchase-list">
                             {% include 'purchases-list.html' %}
                         </tbody>
                     </table>

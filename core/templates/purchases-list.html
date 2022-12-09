@@ -1,6 +1,6 @@
 {% for purchase in purchases %}
 {% if forloop.last %}
-<tr hx-get="{% url 'purchases-list' %}?page={{ purchases.number|add:1 }}&method={{ method }}&search={{ search }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+<tr hx-get="{% url 'purchases-list' %}?page={{ purchases.number|add:1 }}" hx-include="#search-form" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
 {% else %}
 <tr>
 {% endif %}

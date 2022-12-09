@@ -611,17 +611,25 @@ def purchases_list(request):
 
 def purchases_get_context(request):
   page = request.GET.get('page', '1')
-  method = request.GET.get('method','')
+  method = request.GET.get('method', '')
   search = request.GET.get('search', '')
+  sortby = request.GET.get('sortby', '-id')
+  searchin = request.GET.get('searchin', 'R')
   q = Purchase.objects.all()
-  if method: q =  q = q.filter(method=method)
-  if search: q = q.filter(Q(vendor__name__icontains=search) | Q(reference__icontains=search))
-  q = q.order_by('-date')
+  if method: q = q.filter(method=method)
+  if search:
+    if searchin == 'V': #vendor
+      q = q.filter(vendor__name__icontains=search)
+    elif searchin == 'R': #reference
+      q = q.filter(Q(reference__icontains=search) | Q(vreference__icontains=search))
+    elif searchin == 'D': #date
+      q = q.filter(date__contains=search)
+  q = q.order_by(sortby)
   paginator = Paginator(q, 16)
   try:
-    return {'purchases': paginator.page(page), 'method': method, 'search': search}
+    return {'purchases': paginator.page(page)}
   except EmptyPage:
-    return {'purchases': [], 'method': method, 'search': search}
+    return {'purchases': []}
  
 def purchase_detail(request, pk): # this is an alternative to PurchaseDetail that adds items to the context
   purchase = get_object_or_404(Purchase, pk=pk)

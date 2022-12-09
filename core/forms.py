@@ -22,7 +22,9 @@ class AssetSearchForm(forms.Form):
     search = forms.CharField(max_length=128, required=False)
 
 class PurchaseSearchForm(forms.Form):
-    method = forms.ChoiceField(choices=[('', 'Any Method')] + Purchase.method_choices, required=False)
+    sortby = forms.ChoiceField(choices=[('-id', 'Created'),('-date', 'Date'),('vendor', 'Vendor'),('reference', 'Reference'),('-total', 'Total')], required=False, initial='-id')
+    method = forms.ChoiceField(choices=[('', 'Any')] + Purchase.method_choices, required=False)
+    searchin = forms.ChoiceField(choices=[('V', 'Vendor'),('R', 'Reference'),('D', 'Date')], required=False, initial='R')
     search = forms.CharField(max_length=128, required=False)
 
 class AssetNumberForm(forms.Form):
