@@ -8,23 +8,33 @@
             <div class="columns">
                 <div class="column is-narrow">
                     <h1 class="title has-text-light mr-6">Asset List</h1>
-                    <table id="asset-table" class="table" hx-get="{% url 'asset-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
+                    <button class="button is-danger" hx-get="{% url 'test-list' %}" hx-select="#new-rows" hx-include="#search-form" hx-target="#asset-list" hx-swap="outerHTML">Get</button>
+                    <div id="blah" class="content has-text-light">Blah</div>
+                    <div id="meow" class="content has-text-light">Meow</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="asset-list"></tbody>
+                        </table>
                 </div>
             </div>
         </div>
     </section>
     <nav class="navbar is-fixed-bottom has-background-info-dark">
-        <div id="search-form" class="navbar-menu" hx-target="#asset-table" hx-include="this" hx-swap="outerHTML">
+        <div id="search-form" class="navbar-menu" hx-target="#asset-list" hx-include="this">
             <div class="navbar-start">
                 <div class="navbar-item"><label class="label has-text-light">Sort By</label></div>
                 <div class="navbar-item">
-                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'asset-table' %}" hx-trigger="change">{% render_field form.sortby %}</div></div></div>
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'assets-list' %}" hx-trigger="change">{% render_field form.sortby %}</div></div></div>
                 </div>
                 <div class="navbar-item">
                     <label class="label has-text-light">Status</label>
                 </div>
                 <div class="navbar-item">
-                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'asset-table' %}" hx-trigger="change">{% render_field form.status %}</div></div></div>
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'assets-list' %}" hx-trigger="change">{% render_field form.status %}</div></div></div>
                 </div>
                 <div class="navbar-item">
                     <label class="label has-text-light">Search</label>
@@ -32,8 +42,8 @@
                 <div class="navbar-item">
                     <div class="field has-addons has-addons-centered">
                         <div class="control"><div class="select">{% render_field form.searchin %}</div></div>
-                        <div class="control" hx-get="{% url 'asset-table' %}" hx-trigger="keyup[keyCode==13]">{% render_field form.search class="input" size="45" placeholder="Enter search text..." %}</div>
-                        <div class="control" hx-get="{% url 'asset-table' %}"><button class="button is-danger">Search</button></div>
+                        <div class="control">{% render_field form.search class="input" size="45" placeholder="Enter search text..." %}</div>
+                        <div class="control"><button class="button is-danger" hx-get="{% url 'assets-list' %}">Search</button></div>
                     </div>
                 </div>
                 <div class="navbar-item">
@@ -42,5 +52,5 @@
             </div>
         </div>
     </nav>
-    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
 {% endblock %}

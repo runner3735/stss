@@ -1,6 +1,6 @@
 {% for asset in assets %}
-{% if forloop.last %}
-<tr hx-get="{% url 'assets-list' %}?page={{ assets.number|add:1 }}&status={{ status }}&search={{ search }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+{% if forloop.last and assets.has_next %}
+<tr hx-get="{% url 'asset-page' %}?page={{ assets.number|add:1 }}" hx-include="#search-form" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
 {% else %}
 <tr>
 {% endif %}

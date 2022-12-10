@@ -8,7 +8,8 @@ urlpatterns = [
 
 # List Views
   path('assets/', views.assets, name='assets'),
-  path('assets/list/', views.assets_list, name='assets-list'),
+  path('asset/table/', views.asset_table, name='asset-table'),
+  path('asset/page/', views.asset_page, name='asset-page'),
   path('people/', views.people, name='people'),
   path('people/list/', views.people_list, name='people-list'),
   path('purchases/', views.purchases, name='purchases'),
@@ -137,7 +138,7 @@ urlpatterns = [
 #   path('delete/<str:model>/<int:pk>/', views.delete, name='delete'),
 
 # Test
-#   path('test/', views.test, name='test'),
-#   path('modaltest/', views.modal_test, name='modal-test'),
+  path('test/', views.test, name='test'),
+  path('test/list/', views.test_list, name='test-list'),
 ]
 

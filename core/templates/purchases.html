@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 
+{% block html %}<html lang="en" class="has-navbar-fixed-bottom">{% endblock %}
 {% block content %}
     <section class="section has-background-info-dark">
         <div class="container">
@@ -8,7 +9,7 @@
                 <div class="column is-narrow">
                     <h1 class="title has-text-light mr-6">Purchase List</h1>
 
-                      <form id="search-form"  action="{% url 'purchases' %}">
+                      <form id="search-form" action="{% url 'purchases' %}">
                       <div class="level mb-4">
                         <div class="level-left" hx-target="#purchase-list" hx-include="this">
                             <div class="level-item"><label class="label has-text-light">Sort By</label></div>
@@ -58,5 +59,34 @@
             </div>
         </div>
     </section>
+    <nav class="navbar is-fixed-bottom has-background-info-dark">
+        <div class="navbar-menu" hx-target="#purchase-list" hx-include="this">
+            <div class="navbar-start">
+                <div class="navbar-item"><label class="label has-text-light">Sort By</label></div>
+                <div class="navbar-item">
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'purchases-list' %}" hx-trigger="change">{% render_field form.sortby %}</div></div></div>
+                </div>
+                <div class="navbar-item">
+                    <label class="label has-text-light">Method</label>
+                </div>
+                <div class="navbar-item">
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'purchases-list' %}" hx-trigger="change">{% render_field form.method %}</div></div></div>
+                </div>
+                <div class="navbar-item">
+                    <label class="label has-text-light">Search</label>
+                </div>
+                <div class="navbar-item">
+                    <div class="field has-addons has-addons-centered">
+                        <div class="control"><div class="select">{% render_field form.searchin %}</div></div>
+                        <div class="control">{% render_field form.search class="input" size="45" placeholder="Enter search text..." %}</div>
+                        <div class="control"><button class="button is-danger">Search</button></div>
+                    </div>
+                </div>
+                <div class="navbar-item">
+                    <div id="blah">Not Updated</div>
+                </div>
+            </div>
+        </div>
+    </nav>
     <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}

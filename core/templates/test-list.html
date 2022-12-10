@@ -1,0 +1,18 @@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody id="new-rows">
+        {% for record in records %}
+        <tr>
+            <td>Item</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div id="meow" class="content has-text-light" hx-swap-oob="true">Meow was here!</div>
+<label id="result-status" class="label has-text-light" hx-swap-oob="true">Results are updated</label>

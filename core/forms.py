@@ -18,7 +18,9 @@ class PeopleSearchForm(forms.Form):
     search = forms.CharField(max_length=128, required=False)
 
 class AssetSearchForm(forms.Form):
+    sortby = forms.ChoiceField(choices=[('-id', 'Created'),('name', 'Name'),('model', 'Model'),('inventoried', 'Inventory Date'),('-identifier', 'Asset Tag'),('department', 'Department')], required=False, initial='-id')
     status = forms.ChoiceField(choices=Asset.status_choices + [('','All')], required=False, initial=1)
+    searchin = forms.ChoiceField(choices=[('N', 'Name/Nickname'),('M', 'Manufacturer'),('L', 'Model'),('S', 'Serial Number'),('I', 'Asset Tag'),('D', 'Inventory Date')], required=False, initial='N')
     search = forms.CharField(max_length=128, required=False)
 
 class PurchaseSearchForm(forms.Form):

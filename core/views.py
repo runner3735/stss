@@ -236,26 +236,45 @@ def edit_contacts(request, model, pk):
 # Asset
 
 def assets(request):
-  context = assets_get_context(request)
-  context['form'] = AssetSearchForm(request.GET or None)
-  return render(request, 'assets.html', context)
+  form = AssetSearchForm()
+  return render(request, 'assets.html', {'form': form})
 
-def assets_list(request):
+def asset_page(request):
   context = assets_get_context(request)
-  return render(request, 'assets-list.html', context)
+  return render(request, 'asset-page.html', context)
+
+def asset_table(request):
+  context = assets_get_context(request)
+  return render(request, 'asset-table.html', context)
 
 def assets_get_context(request):
+  print(request.GET)
   page = request.GET.get('page', '1')
   status = request.GET.get('status','1')
   search = request.GET.get('search', '')
+  sortby = request.GET.get('sortby', '-id')
+  searchin = request.GET.get('searchin', 'N')
   q = Asset.objects.all()
   if status: q = q.filter(status=status)
-  if search: q = q.filter(Q(nickname__icontains=search) | Q(identifier__icontains=search) | Q(name__icontains=search))
-  paginator = Paginator(q, 16)
+  if search:
+    if searchin == 'N': #name or nickname
+      q = q.filter(Q(name__icontains=search) | Q(nickname__icontains=search))
+    elif searchin == 'M': #manufacturer
+      q = q.filter(manufacturer__name__icontains=search)
+    elif searchin == 'L': #model
+      q = q.filter(model__icontains=search)
+    elif searchin == 'S': #serial
+      q = q.filter(serial__icontains=search)
+    elif searchin == 'I': #asset tag
+      q = q.filter(identifier__icontains=search)
+    elif searchin == 'D': #inventory date
+      q = q.filter(inventoried__contains=search)
+  q = q.order_by(sortby)
+  paginator = Paginator(q, 20)
   try:
-    return {'assets': paginator.page(page), 'status': status, 'search': search}
+    return {'assets': paginator.page(page)}
   except EmptyPage:
-    return {'assets': [], 'status': status, 'search': search}
+    return {'assets': []}
 
 def asset_notes(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
@@ -875,3 +894,12 @@ def create_video(request, file, videoable):
   ff.generate_thumb(v)
   if videoable: videoable.videos.add(v)
 
+# Test
+
+def test(request):
+  form = AssetSearchForm()
+  return render(request, 'test.html', {'form': form})
+
+def test_list(request):
+  context = assets_get_context(request)
+  return render(request, 'test-list.html', context)

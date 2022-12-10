@@ -1,0 +1,17 @@
+<table id="asset-table" class="table">
+    <thead>
+        <tr>
+            <th>Inventoried</th>
+            <th>Asset Tag</th>
+            <th>Item</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th>Serial Number</th>
+            <th>Room</th>
+            <th>Status</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>{% include 'asset-page.html' %}</tbody>
+</table>
+<label id="result-status" class="label has-text-light" hx-swap-oob="true">Matches: {{ assets.paginator.count }}</label>
