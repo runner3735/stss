@@ -70,6 +70,7 @@ urlpatterns = [
   path('person/<int:pk>/status/edit/', views.person_edit_status, name='person-edit-status'),
   path('person/<int:pk>/status/', views.person_status, name='person-status'),
   path('contacts/<str:model>/<int:pk>/', views.edit_contacts, name='edit-contacts'),
+  path('contact/list/<str:model>/<int:pk>/', views.contact_list, name='contact-list'),
   path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),
   path('addcontact/<str:model>/<int:pk>/<int:contact>/', views.addcontact, name='addcontact'),
   path('first/names', views.first_names, name='first-names'),

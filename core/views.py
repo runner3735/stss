@@ -229,9 +229,29 @@ def uncontact(request, model, pk, contact):
 @login_required
 def edit_contacts(request, model, pk):
   contactable = get_instance(model, pk)
-  contacts = Person.objects.all()
+  return render(request, 'edit-contacts.html', {'contactable': contactable})
+
+def contact_list(request, model, pk):
+  print(request.GET)
+  contactable = get_instance(model, pk)
   selected = contactable.contacts.all()
-  return render(request, 'edit-contacts.html', {'contactable': contactable, 'contacts': contacts, 'selected': selected})
+  choices = person_page(request)
+  if not choices: choices = selected
+  return render(request, 'contact-list.html', {'contactable': contactable, 'contacts': choices, 'selected': selected})
+
+def person_page(request):
+  q = Person.objects.exclude(status=0)
+  page = request.GET.get('page','1')
+  method = request.GET.get('method','')
+  search = request.GET.get('search', '')
+  if search and method == '1': q = q.filter(last__istartswith=search)
+  elif search: q = q.filter(first__icontains=search)
+  else: return
+  paginator = Paginator(q, 20)
+  try:
+    return paginator.page(page)
+  except EmptyPage:
+    return
 
 # Asset
 
@@ -248,7 +268,6 @@ def asset_table(request):
   return render(request, 'asset-table.html', context)
 
 def assets_get_context(request):
-  print(request.GET)
   page = request.GET.get('page', '1')
   status = request.GET.get('status','1')
   search = request.GET.get('search', '')

@@ -6,23 +6,37 @@
 <section class="hero is-fullheight has-background-dark">
 <div class="hero-head py-5">
     <div class="container">
-        <h1 class="title has-text-light">{{ contactable }}</h1>
+        <h1 class="title has-text-light">{{ contactable.identifier }} {{ contactable }}</h1>
         <h3 class="subtitle has-text-light">Select Contacts</h3>
-        <div class="tags">
-            {% for contact in contacts %}
-            {% if contact in selected %}
-            <span class="tag is-danger is-medium">
-                {{ contact }}<a href="{% url 'uncontact' contactable.modeltype contactable.id contact.id %}"
-                    class="delete is-small has-background-black"></a>
-            </span>
-            {% else %}
-            <a href="{% url 'addcontact' contactable.modeltype contactable.id contact.id %}"
-                class="tag has-background-danger-dark has-text-light is-medium">{{ contact }}</a>
-            {% endif %}
-            {% endfor %}
+
+        <div class="level mb-4">
+            <div class="level-left">
+                <div class="level-item">
+                    <div id="search-form" class="field has-addons has-addons-centered" hx-target="#contact-list" hx-include="this" hx-vals='{"model": "{{ contactable.identifier }}" }'>
+                        <div class="control">
+                            <div class="select">
+                                <select name="method" hx-get="{% url 'contact-list' contactable.modeltype contactable.id %}">
+                                    <option value="1" selected>Last Name Starts With</option>
+                                    <option value="2">First Name Starts With</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <input hx-get="{% url 'contact-list' contactable.modeltype contactable.id %}" hx-trigger="keyup changed delay:500ms"
+                                type="text" name="search" maxlength="128" placeholder="Search name..."
+                                size="45" class="input" id="id_search">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div id="contact-list" class="tags" hx-get="{% url 'contact-list' contactable.modeltype contactable.id %}" hx-trigger="load">
+        </div>
+
         <a href="{{ contactable.detail }}" class="button is-link">Done</a>
     </div>
 </div>
 </section>
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}
