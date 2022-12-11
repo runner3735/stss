@@ -50,6 +50,11 @@ class RoomDetail(DetailView):
   context_object_name = 'room'
   template_name = 'room.html'
 
+class TagDetail(DetailView):
+  model = Tag
+  context_object_name = 'tag'
+  template_name = 'tag.html'
+
 class AssetDetail(DetailView):
   model = Asset
   context_object_name = 'asset'
@@ -61,6 +66,11 @@ class RoomList(ListView):
     model = Room
     template_name = 'rooms.html'
     context_object_name = 'rooms'
+
+class TagList(ListView):
+    model = Tag
+    template_name = 'tags.html'
+    context_object_name = 'tags'
 
 class PurchaseList(ListView):
     model = Purchase
@@ -811,7 +821,7 @@ def picture_delete(request, pk):
 # Tag
 
 @login_required
-def edit_tags(request, model, pk):
+def tags_edit(request, model, pk):
   taggable = get_instance(model, pk)
   if request.method == 'POST':
     tag = Tag()
@@ -823,16 +833,16 @@ def edit_tags(request, model, pk):
   else:
     form = TagForm()
   tags = Tag.objects.all()
-  return render(request, 'edit-tags.html', {'form': form, 'taggable': taggable, 'tags': tags})
+  return render(request, 'tags-edit.html', {'form': form, 'taggable': taggable, 'tags': tags})
 
 @login_required
-def addtag(request, model, pk, tag):
+def tag_add(request, model, pk, tag):
   taggable = get_instance(model, pk)
   taggable.tags.add(tag)
   return HttpResponseRedirect(reverse('edit-tags', args=[model, pk]))
 
 @login_required
-def untag(request, model, pk, tag):
+def tag_remove(request, model, pk, tag):
   taggable = get_instance(model, pk)
   taggable.tags.remove(tag)
   return HttpResponseRedirect(reverse('edit-tags', args=[model, pk]))

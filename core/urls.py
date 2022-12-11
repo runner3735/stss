@@ -17,6 +17,7 @@ urlpatterns = [
   path('vendors/', views.vendors, name='vendors'),
   path('vendors/<int:page>/', views.vendor_list, name='vendor-list'),
   path('rooms/', views.RoomList.as_view(), name='rooms'),
+  path('tags/', views.TagList.as_view(), name='tags'),
 
 # Asset
   path('asset/new/', views.asset_new, name='asset-new'),
@@ -84,9 +85,10 @@ urlpatterns = [
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
 
 # Tag
-  path('tag/<int:tag>/remove/<str:model>/<int:pk>/', views.untag, name='untag'),
-  path('tag/<int:tag>/add/<str:model>/<int:pk>/', views.addtag, name='addtag'),
-  path('tags/edit/<str:model>/<int:pk>/', views.edit_tags, name='edit-tags'),
+  path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
+  path('tag/<int:tag>/remove/<str:model>/<int:pk>/', views.tag_remove, name='tag-remove'),
+  path('tag/<int:tag>/add/<str:model>/<int:pk>/', views.tag_add, name='tag-add'),
+  path('tags/edit/<str:model>/<int:pk>/', views.tags_edit, name='tags-edit'),
 
 # Picture
   path('picture/<int:pk>/', views.picture_detail, name='picture'),
