@@ -14,7 +14,7 @@ from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Perso
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
 from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm, PurchaseSearchForm
-from .forms import PurchaseEditForm
+from .forms import PurchaseEditForm, DocumentNameForm
 
 # Home
 
@@ -648,6 +648,7 @@ def select_room(request, model, pk, room):
 
 # Purchase
 
+
 def purchases(request):
   context = purchases_get_context(request)
   context['form'] = PurchaseSearchForm(request.GET or None)
@@ -684,6 +685,10 @@ def purchase_detail(request, pk): # this is an alternative to PurchaseDetail tha
   items = LineItem.objects.filter(purchase=purchase)
   return render(request, 'purchase.html', {'purchase': purchase, 'items': items})
 
+def purchase_documents(request, pk):
+  purchase = get_object_or_404(Purchase, pk=pk)
+  return render(request, 'purchase-documents.html', {'purchase': purchase})
+
 def purchase_add_asset(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
   if request.method == 'POST':
@@ -696,7 +701,7 @@ def purchase_add_asset(request, pk):
       return HttpResponseRedirect(reverse('purchase', args=[pk]))
   else:
     form = AssetNumberForm()
-  return render(request, 'purchase-add-asset.html', {'form': form})
+  return render(request, 'purchase-add-asset.html', {'form': form, 'purchase': purchase})
 
 def purchase_update_total(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
@@ -738,6 +743,12 @@ def purchase_edit(request, pk):
       form.save()
       return redirect('purchase', pk)
   return render(request, 'purchase-edit.html', {'purchase': purchase, 'form': form})
+
+def purchase_remove_document(request, pk, document):
+  document = get_object_or_404(Document, pk=document)
+  if request.user == document.contributor:
+    document.purchases.remove(pk)
+  return HttpResponseRedirect(reverse('purchase', args=[pk]))
 
 # Note
 
@@ -860,6 +871,17 @@ def get_instance(model, pk):
     instance = None
   return instance
 
+def get_attachment(model, pk):
+  if model == 'document':
+    instance = get_object_or_404(Document, pk=pk)
+  elif model == 'picture':
+    instance = get_object_or_404(Picture, pk=pk)
+  elif model == 'video':
+    instance = get_object_or_404(Video, pk=pk)
+  else:
+    instance = None
+  return instance
+
 # Upload
 
 @login_required
@@ -932,3 +954,15 @@ def test(request):
 def test_list(request):
   context = assets_get_context(request)
   return render(request, 'test-list.html', context)
+
+# Document
+
+@login_required
+def document_edit_name(request, pk):
+  document = get_object_or_404(Document, pk=pk)
+  form = DocumentNameForm(request.POST or None, instance=document)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'documentChanged'})
+  return render(request, 'document-edit-name.html', {'form': form})

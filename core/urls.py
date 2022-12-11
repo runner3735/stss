@@ -79,10 +79,12 @@ urlpatterns = [
 
 # Purchase
   path('purchase/new/', views.purchase_new, name='purchase-new'),
+  path('purchase/<int:pk>/documents/', views.purchase_documents, name='purchase-documents'),
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
+  path('purchase/<int:pk>/remove/document/<int:document>/', views.purchase_remove_document, name='purchase-remove-document'),
 
 # Tag
   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
@@ -106,6 +108,8 @@ urlpatterns = [
   path('upload/to/<str:model>/<int:pk>/', views.upload, name='upload-to'),
   path('file/upload/', views.file_upload, name='file-upload'),
 
+# Document
+  path('document/<int:pk>/name/edit/', views.document_edit_name, name='document-edit-name'),
 # Tag
 #   path('tags/', views.tags, name='tags'),
 #   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),

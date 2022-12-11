@@ -90,6 +90,11 @@ class AssetLocationForm(forms.ModelForm):
         model = Asset
         fields = ['location',]
 
+class DocumentNameForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['name',]
+
 class PersonPhoneForm(forms.ModelForm):
     class Meta:
         model = Person

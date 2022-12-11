@@ -66,43 +66,24 @@
         <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
       </div>
       <div class="mt-4 mb-10">
-
-      {% if purchase.documents.all %}
-      <h3 class="subtitle has-text-light">Attachments</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Contributor</th>
-            <th>File</th>
-            <th class="has-text-centered">Edit</th>
-            <th class="has-text-centered">Unlink</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for document in purchase.documents.all %}
-          <tr>
-            <td>{{ document.name }}</td>
-            <td>{{ document.contributor.first_name }}
-              {{ document.contributor.last_name }}</td>
-            <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
-            {% if user == document.contributor %}
-            <td class="has-text-centered">
-              <a href=""><span class="icon is-small"><i class="fas fa-edit"></i></span></a>
-            </td>
-            <td class="has-text-centered">
-              <a href=""><span class="icon is-small"><i class="fas fa-unlink"></i></span></a>
-            </td>
-            {% else %}
-            <td></td>
-            <td></td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% endif %}
-
+        {% if purchase.documents.all %}
+        <h3 class="subtitle has-text-light">Attachments</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Contributor</th>
+              <th>File</th>
+              <th class="has-text-centered">Edit</th>
+              <th class="has-text-centered">Unlink</th>
+            </tr>
+          </thead>
+          <tbody hx-trigger="documentChanged from:body" hx-get="{% url 'purchase-documents' purchase.id %}">
+            {% include 'purchase-documents.html' %}
+          </tbody>
+        </table>
+        {% endif %}
+      
       {% if purchase.lineitem_set.all %}
       <h3 class="subtitle has-text-light">Assets</h3>
       <table class="table">
@@ -138,15 +119,15 @@
     </div>
   </div>
 </section>
-<div id="modal" class="modal">
-  <div class="modal-background"></div>
-  <div class="modal-content">
-    <div class="box has-background-link-dark">
-      <div id="dialog" hx-target="this"></div>
-    </div>
+<div id="modal" class="modal" _="on htmx:afterSwap add .is-active to me">
+  <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
+  <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">
+      <div class="box has-background-link-dark">
+          <div id="dialog" hx-target="this"></div>
+      </div>
   </div>
-  <button class="modal-close is-large" aria-label="close"></button>
+  <button class="modal-close is-large" _="on click remove .is-active from closest .modal"></button>
 </div>
 <script src="https://unpkg.com/htmx.org@1.7.0"></script>
-<script src="{% static 'dialog.js' %}"></script>
+<script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
 {% endblock %}
