@@ -744,11 +744,13 @@ def purchase_edit(request, pk):
       return redirect('purchase', pk)
   return render(request, 'purchase-edit.html', {'purchase': purchase, 'form': form})
 
-def purchase_remove_document(request, pk, document):
+def document_remove(request, document, model, pk):
   document = get_object_or_404(Document, pk=document)
   if request.user == document.contributor:
-    document.purchases.remove(pk)
-  return HttpResponseRedirect(reverse('purchase', args=[pk]))
+    linkable = get_instance(model, pk)
+    linkable.documents.remove(document)
+    return HttpResponse(status=204, headers={'HX-Trigger': 'documentChanged'})
+  return HttpResponse(status=204)
 
 # Note
 

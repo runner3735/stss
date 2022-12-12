@@ -9,7 +9,7 @@
     <a hx-get="{% url 'document-edit-name' document.id %}" hx-target="#dialog"><span class="icon is-small"><i class="fas fa-edit"></i></span></a>
   </td>
   <td class="has-text-centered">
-    <a href="{% url 'purchase-remove-document' purchase.id document.id %}"><span class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+    <a hx-get="{% url 'document-remove' document.id 'purchase' purchase.id %}"><span class="icon is-small"><i class="fas fa-unlink"></i></span></a>
   </td>
   {% else %}
   <td></td>

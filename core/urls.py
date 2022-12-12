@@ -84,7 +84,7 @@ urlpatterns = [
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
-  path('purchase/<int:pk>/remove/document/<int:document>/', views.purchase_remove_document, name='purchase-remove-document'),
+  
 
 # Tag
   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
@@ -110,6 +110,8 @@ urlpatterns = [
 
 # Document
   path('document/<int:pk>/name/edit/', views.document_edit_name, name='document-edit-name'),
+  path('document/<int:document>/remove/<str:model>/<int:pk>/', views.document_remove, name='document-remove'),
+
 # Tag
 #   path('tags/', views.tags, name='tags'),
 #   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
