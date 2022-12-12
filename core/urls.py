@@ -49,6 +49,7 @@ urlpatterns = [
   path('asset/<int:pk>/department/', views.asset_department, name='asset-department'),
   path('asset/<int:pk>/inventoried/edit/', views.asset_edit_inventoried, name='asset-edit-inventoried'),
   path('asset/<int:pk>/inventoried/', views.asset_inventoried, name='asset-inventoried'),
+  path('asset/<int:asset>/remove/<str:model>/<int:pk>/', views.asset_remove, name='asset-remove'),
 
 # Room
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
@@ -79,7 +80,6 @@ urlpatterns = [
 
 # Purchase
   path('purchase/new/', views.purchase_new, name='purchase-new'),
-  path('purchase/<int:pk>/documents/', views.purchase_documents, name='purchase-documents'),
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),

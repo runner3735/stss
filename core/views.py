@@ -605,6 +605,12 @@ def asset_edit_location(request, pk):
     form = AssetLocationForm(instance=asset)
   return render(request, 'asset-edit-location.html', {'form': form})
 
+def asset_remove(request, asset, model, pk):
+  linkable = get_instance(model, pk)
+  linkable.assets.remove(asset)
+  if linkable.assets.count(): return HttpResponse('')
+  return HttpResponse('', headers={'HX-Retarget': '#assets'})
+  
 # Vendor
 
 def vendors(request):
@@ -685,10 +691,6 @@ def purchase_detail(request, pk): # this is an alternative to PurchaseDetail tha
   items = LineItem.objects.filter(purchase=purchase)
   return render(request, 'purchase.html', {'purchase': purchase, 'items': items})
 
-def purchase_documents(request, pk):
-  purchase = get_object_or_404(Purchase, pk=pk)
-  return render(request, 'purchase-documents.html', {'purchase': purchase})
-
 def purchase_add_asset(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
   if request.method == 'POST':
@@ -746,11 +748,11 @@ def purchase_edit(request, pk):
 
 def document_remove(request, document, model, pk):
   document = get_object_or_404(Document, pk=document)
-  if request.user == document.contributor:
-    linkable = get_instance(model, pk)
-    linkable.documents.remove(document)
-    return HttpResponse(status=204, headers={'HX-Trigger': 'documentChanged'})
-  return HttpResponse(status=204)
+  if request.user != document.contributor: return HttpResponse(status=204)
+  linkable = get_instance(model, pk)
+  linkable.documents.remove(document)
+  if linkable.documents.count(): return HttpResponse('')
+  return HttpResponse('', headers={'HX-Retarget': '#documents'})
 
 # Note
 

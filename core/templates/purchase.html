@@ -3,130 +3,161 @@
 
 {% block content %}
 <section class="hero is-fullheight-with-navbar has-background-info">
-  <div class="hero-head">
-    <div class="container mt-6">
-      <div class="columns is-vcentered">
-        <div class="column is-6">
-          <table class="table is-striped is-fullwidth">
-            <tbody>
-              <tr>
-                <th>Date</th>
-                <td><strong>{{ purchase.date }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Vendor</th>
-                <td><strong>{{ purchase.vendor }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Method</th>
-                <td><strong>{{ purchase.get_method_display }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Internal Reference</th>
-                <td><strong>{{ purchase.reference }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Vendor Reference</th>
-                <td><strong>{{ purchase.vreference }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Funding Source</th>
-                <td><strong>{{ purchase.get_funding_display }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Edorda</th>
-                <td><strong>{{ purchase.edorda }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Shipping</th>
-                <td><strong>{{ purchase.shipping }}</strong></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Total</th>
-                <td><strong>{{ purchase.total }}</strong></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="hero-head">
+        <div class="container mt-6 pb-6">
 
-      <div>
-        <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link mr-4">Add Asset</a>
-        <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mr-4">Add Attachments</a>
-        <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mr-4">Update Total</a>
-        <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
-      </div>
-      <div class="mt-4 mb-10">
-        {% if purchase.documents.all %}
-        <h3 class="subtitle has-text-light">Attachments</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th>Contributor</th>
-              <th>File</th>
-              <th class="has-text-centered">Edit</th>
-              <th class="has-text-centered">Unlink</th>
-            </tr>
-          </thead>
-          <tbody hx-trigger="documentChanged from:body" hx-get="{% url 'purchase-documents' purchase.id %}">
-            {% include 'purchase-documents.html' %}
-          </tbody>
-        </table>
-        {% endif %}
-      
-      {% if purchase.lineitem_set.all %}
-      <h3 class="subtitle has-text-light">Assets</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Cost</th>
-            <th>Asset Tag</th>
-            <th>Item</th>
-            <th>Model</th>
-            <th>Room</th>
-            <th>View</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in purchase.lineitem_set.all %}
-          <tr>
-            <td>{{ item.cost }}</td>
-            <td>{{ item.asset.identifier }}</td>
-            <td>{{ item.asset }}</td>
-            <td>{{ item.asset.model }}</td>
-            <td>{{ item.asset.room }}</td>
-            <td class="has-text-centered">
-              <a href="{% url 'asset' item.asset.id %}">
-                <span class="icon is-small"><i class="fas fa-eye"></i></span>
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% endif %}
+            <div class="columns is-vcentered">
+                <div class="column is-6">
+                    <table class="table is-striped is-fullwidth">
+                        <tbody>
+                            <tr>
+                                <th>Date</th>
+                                <td><strong>{{ purchase.date }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Vendor</th>
+                                <td><strong>{{ purchase.vendor }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Method</th>
+                                <td><strong>{{ purchase.get_method_display }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Internal Reference</th>
+                                <td><strong>{{ purchase.reference }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Vendor Reference</th>
+                                <td><strong>{{ purchase.vreference }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Funding Source</th>
+                                <td><strong>{{ purchase.get_funding_display }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Edorda</th>
+                                <td><strong>{{ purchase.edorda }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Shipping</th>
+                                <td><strong>{{ purchase.shipping }}</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Total</th>
+                                <td><strong>{{ purchase.total }}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link mr-4">Add Asset</a>
+                <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mr-4">Add Attachments</a>
+                <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mr-4">Update Total</a>
+                <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
+            </div>
+
+            <div id="documents" class="mt-4">
+                {% if purchase.documents.all %}
+                <h3 class="subtitle has-text-light">Attachments</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Contributor</th>
+                            <th>File</th>
+                            <th class="has-text-centered">Edit</th>
+                            <th class="has-text-centered">Unlink</th>
+                        </tr>
+                    </thead>
+                    <tbody hx-target="closest tr" hx-swap="outerHTML">
+                        {% for document in purchase.documents.all %}
+                        <tr>
+                            <td>{{ document.name }}</td>
+                            <td>{{ document.contributor.first_name }}
+                                {{ document.contributor.last_name }}</td>
+                            <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
+                            {% if user == document.contributor %}
+                            <td class="has-text-centered">
+                                <a hx-get="{% url 'document-edit-name' document.id %}" hx-target="#dialog"><span
+                                        class="icon is-small"><i class="fas fa-edit"></i></span></a>
+                            </td>
+                            <td class="has-text-centered">
+                                <a hx-get="{% url 'document-remove' document.id 'purchase' purchase.id %}"><span
+                                        class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+                            </td>
+                            {% else %}
+                            <td></td>
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+
+            <div id="assets" class="mt-4">
+                {% if purchase.lineitem_set.all %}
+                <h3 class="subtitle has-text-light">Assets</h3>
+                <table id="asset-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Cost</th>
+                            <th>Asset Tag</th>
+                            <th>Item</th>
+                            <th>Model</th>
+                            <th>Room</th>
+                            <th>View</th>
+                            <th>Unlink</th>
+                        </tr>
+                    </thead>
+                    <tbody hx-target="closest tr" hx-swap="outerHTML">
+                        {% for item in purchase.lineitem_set.all %}
+                        <tr>
+                            <td>{{ item.cost }}</td>
+                            <td>{{ item.asset.identifier }}</td>
+                            <td>{{ item.asset }}</td>
+                            <td>{{ item.asset.model }}</td>
+                            <td>{{ item.asset.room }}</td>
+                            <td class="has-text-centered">
+                                <a href="{% url 'asset' item.asset.id %}">
+                                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                                </a>
+                            </td>
+                            <td class="has-text-centered">
+                                <a hx-get="{% url 'asset-remove' item.asset.id 'purchase' purchase.id %}"><span
+                                        class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+
+        </div>
     </div>
-    </div>
-  </div>
 </section>
+
 <div id="modal" class="modal" _="on htmx:afterSwap add .is-active to me">
-  <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
-  <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">
-      <div class="box has-background-link-dark">
-          <div id="dialog" hx-target="this"></div>
-      </div>
-  </div>
-  <button class="modal-close is-large" _="on click remove .is-active from closest .modal"></button>
+    <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
+    <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">
+        <div class="box has-background-link-dark">
+            <div id="dialog" hx-target="this"></div>
+        </div>
+    </div>
+    <button class="modal-close is-large" _="on click remove .is-active from closest .modal"></button>
 </div>
 <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 <script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
