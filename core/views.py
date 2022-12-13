@@ -319,7 +319,7 @@ def asset_pictures(request, pk):
 def asset_documents(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
   documents = asset.documents.all()
-  return render(request, 'document-list.html', {'documents': documents})
+  return render(request, 'document-list.html', {'documents': documents, 'linkable': asset})
 
 def asset_videos(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
@@ -654,6 +654,11 @@ def select_room(request, model, pk, room):
 
 # Purchase
 
+def purchase_documents(request, pk):
+  purchase = get_object_or_404(Purchase, pk=pk)
+  documents = purchase.documents.all()
+  return render(request, 'document-list.html', {'documents': documents, 'linkable': purchase})
+
 
 def purchases(request):
   context = purchases_get_context(request)
@@ -752,7 +757,8 @@ def document_remove(request, document, model, pk):
   linkable = get_instance(model, pk)
   linkable.documents.remove(document)
   if linkable.documents.count(): return HttpResponse('')
-  return HttpResponse('', headers={'HX-Retarget': '#documents'})
+  if model == 'purchase': return HttpResponse('', headers={'HX-Retarget': '#documents'})
+  return HttpResponse('', headers={'HX-Retarget': '#document-table'})
 
 # Note
 

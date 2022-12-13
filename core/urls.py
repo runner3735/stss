@@ -81,6 +81,7 @@ urlpatterns = [
 # Purchase
   path('purchase/new/', views.purchase_new, name='purchase-new'),
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
+  path('purchase/<int:pk>/documents/', views.purchase_documents, name='purchase-documents'),
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),

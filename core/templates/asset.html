@@ -174,7 +174,7 @@
                         </a>
                     </li>
                     <li class="has-background-light">
-                        <a hx-get="{% url 'asset-documents' asset.id %}">
+                        <a hx-get="{% url 'asset-documents' asset.id %}" hx-trigger="click, documentChanged from:body">
                             <span class="icon is-small"><i class="far fa-file-alt"></i></span>
                             <span>Documents</span>
                         </a>

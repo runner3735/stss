@@ -1,5 +1,5 @@
 {% if documents %}
-<table class="table">
+<table id="document-table" class="table">
     <thead>
         <tr>
             <th>Description</th>
@@ -18,10 +18,14 @@
             <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
             {% if user == document.contributor %}
             <td class="has-text-centered">
-                <a href=""><span class="icon is-small"><i class="fas fa-edit"></i></span></a>
+                <a hx-get="{% url 'document-edit-name' document.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
             </td>
             <td class="has-text-centered">
-                <a href=""><span class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+                <a hx-get="{% url 'document-remove' document.id linkable.modeltype linkable.id %}" hx-target="closest tr" hx-swap="outerHTML">
+                    <span class="icon is-small"><i class="fas fa-unlink"></i></span>
+                </a>
             </td>
             {% else %}
             <td></td>

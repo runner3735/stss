@@ -259,6 +259,9 @@ class Purchase(models.Model):
     class Meta:
         ordering = ["-id"]
 
+    def modeltype(self):
+      return 'purchase'
+
     def __str__(self):
         return str(self.date)
 

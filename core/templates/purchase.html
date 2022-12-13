@@ -67,45 +67,12 @@
                 <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
             </div>
 
+            {% if purchase.documents.count %}
             <div id="documents" class="mt-4">
-                {% if purchase.documents.all %}
                 <h3 class="subtitle has-text-light">Attachments</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Contributor</th>
-                            <th>File</th>
-                            <th class="has-text-centered">Edit</th>
-                            <th class="has-text-centered">Unlink</th>
-                        </tr>
-                    </thead>
-                    <tbody hx-target="closest tr" hx-swap="outerHTML">
-                        {% for document in purchase.documents.all %}
-                        <tr>
-                            <td>{{ document.name }}</td>
-                            <td>{{ document.contributor.first_name }}
-                                {{ document.contributor.last_name }}</td>
-                            <td><a href="{{ document.file.url }}">{{ document.filename }}</a></td>
-                            {% if user == document.contributor %}
-                            <td class="has-text-centered">
-                                <a hx-get="{% url 'document-edit-name' document.id %}" hx-target="#dialog"><span
-                                        class="icon is-small"><i class="fas fa-edit"></i></span></a>
-                            </td>
-                            <td class="has-text-centered">
-                                <a hx-get="{% url 'document-remove' document.id 'purchase' purchase.id %}"><span
-                                        class="icon is-small"><i class="fas fa-unlink"></i></span></a>
-                            </td>
-                            {% else %}
-                            <td></td>
-                            <td></td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% endif %}
+                <div hx-get="{% url 'purchase-documents' purchase.id %}" hx-trigger="load, documentChanged from:body"></div>
             </div>
+            {% endif %}
 
             <div id="assets" class="mt-4">
                 {% if purchase.lineitem_set.all %}
@@ -136,8 +103,9 @@
                                 </a>
                             </td>
                             <td class="has-text-centered">
-                                <a hx-get="{% url 'asset-remove' item.asset.id 'purchase' purchase.id %}"><span
-                                        class="icon is-small"><i class="fas fa-unlink"></i></span></a>
+                                <a hx-get="{% url 'asset-remove' item.asset.id 'purchase' purchase.id %}">
+                                    <span class="icon is-small"><i class="fas fa-unlink"></i></span>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
