@@ -314,7 +314,7 @@ def asset_notes(request, pk):
 def asset_pictures(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
   pictures = asset.pictures.all()
-  return render(request, 'picture-list.html', {'pictures': pictures})
+  return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': asset})
 
 def asset_documents(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
@@ -805,9 +805,10 @@ def picture_detail(request, pk):
   picture = get_object_or_404(Picture, pk=pk)
   return render(request, 'picture.html', {'picture': picture})
 
-def picture_modal(request, pk):
-  picture = get_object_or_404(Picture, pk=pk)
-  return render(request, 'picture-modal.html', {'picture': picture})
+def picture_modal(request, picture, model, pk):
+  picture = get_object_or_404(Picture, pk=picture)
+  linkable = get_instance(model, pk)
+  return render(request, 'picture-modal.html', {'picture': picture, 'linkable': linkable})
 
 @login_required
 def picture_edit(request, pk):
@@ -838,6 +839,13 @@ def picture_delete(request, pk):
   if picture.contributor == request.user:
     picture.delete()
   return HttpResponseRedirect(request.GET.get('next'))
+
+def picture_remove(request, picture, model, pk):
+  picture = get_object_or_404(Picture, pk=picture)
+  if request.user != picture.contributor: return HttpResponse(status=204)
+  linkable = get_instance(model, pk)
+  linkable.pictures.remove(picture)
+  return HttpResponse(status=204, headers={'HX-Trigger': 'pictureChanged'})
 
 # Tag
 

@@ -95,7 +95,8 @@ urlpatterns = [
 
 # Picture
   path('picture/<int:pk>/', views.picture_detail, name='picture'),
-  path('picture/<int:pk>/modal/', views.picture_modal, name='picture-modal'),
+  path('picture/<int:picture>/modal/<str:model>/<int:pk>/', views.picture_modal, name='picture-modal'),
+  path('picture/<int:picture>/remove/<str:model>/<int:pk>/', views.picture_remove, name='picture-remove'),
   path('picture/<int:pk>/edit/', views.picture_edit, name='picture-edit'),
 #   path('picture/<int:pk>/rotate/<int:degrees>/', views.picture_rotate, name='picture-rotate'),
   path('picture/<int:pk>/delete/', views.picture_delete, name='picture-delete'),

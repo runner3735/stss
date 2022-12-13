@@ -168,7 +168,7 @@
                         </a>
                     </li>
                     <li class="has-background-light">
-                        <a hx-get="{% url 'asset-pictures' asset.id %}">
+                        <a hx-get="{% url 'asset-pictures' asset.id %}" hx-trigger="click, pictureChanged from:body">
                             <span class="icon is-small"><i class="fas fa-image"></i></span>
                             <span>Pictures</span>
                         </a>
