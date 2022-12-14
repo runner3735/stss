@@ -3,17 +3,13 @@
 
 {% block html %}<html lang="en" class="has-navbar-fixed-bottom">{% endblock %}
 {% block content %}
+
     <section class="section has-background-info-dark">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <h1 class="title has-text-light mr-6">Asset List</h1>
-                    <table id="asset-table" class="table" hx-get="{% url 'asset-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
-                </div>
-            </div>
-        </div>
+        <h1 class="title has-text-light has-text-centered">Asset List</h1>
+        <table id="asset-table" class="table" hx-get="{% url 'asset-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
     </section>
-    <nav class="navbar is-fixed-bottom has-background-info-dark">
+
+    <nav class="navbar is-fixed-bottom has-background-info-dark mx-6 py-3">
         <div id="search-form" class="navbar-menu" hx-target="#asset-table" hx-include="this" hx-swap="outerHTML">
             <div class="navbar-start">
                 <div class="navbar-item"><label class="label has-text-light">Sort By</label></div>
@@ -42,5 +38,6 @@
             </div>
         </div>
     </nav>
+
     <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}

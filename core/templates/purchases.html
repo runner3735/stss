@@ -5,17 +5,11 @@
 {% block content %}
 
     <section class="section has-background-info-dark">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <h1 class="title has-text-light mr-6">Purchase List</h1>
-                    <table id="purchase-table" class="table" hx-get="{% url 'purchase-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
-                </div>
-            </div>
-        </div>
+        <h1 class="title has-text-light has-text-centered mr-6">Purchase List</h1>
+        <table id="purchase-table" class="table" hx-get="{% url 'purchase-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
     </section>
 
-    <nav class="navbar is-fixed-bottom has-background-info-dark">
+    <nav class="navbar is-fixed-bottom has-background-info-dark mx-6 py-3">
         <div id="search-form" class="navbar-menu" hx-target="#purchase-table" hx-include="this" hx-swap="outerHTML">
             <div class="navbar-start">
                 <div class="navbar-item"><label class="label has-text-light">Sort By</label></div>
