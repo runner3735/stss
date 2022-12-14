@@ -217,7 +217,7 @@ class Video(models.Model):
 
 class Person(models.Model):
     rxphone = RegexValidator(regex=r'^(\d{4}|\d{10})$', message="Phone number must be either 4 or 10 digits")
-    status_choices=[(0, 'Inactive'), (1, 'Technician'), (2, 'Faculty'), (3, 'Staff'), (4, 'Student'), (5, 'Other')]
+    status_choices=[(0, 'Inactive'), (1, 'Technician'), (2, 'Faculty'), (3, 'Staff'), (4, 'Student'), (5, 'Other'), (6, 'Purchaser')]
 
     first = models.CharField(max_length=128)
     last = models.CharField(max_length=128)
@@ -247,6 +247,7 @@ class Purchase(models.Model):
     
     date = models.DateField(blank=True, null=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, blank=True, null=True)
+    purchaser = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
     method = models.SmallIntegerField(choices=method_choices, blank=True, null=True)
     reference = models.CharField(max_length=128, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

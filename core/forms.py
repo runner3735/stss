@@ -161,7 +161,7 @@ class PurchaseForm(forms.ModelForm):
 class PurchaseEditForm(forms.ModelForm):
     class Meta:
         model = Purchase
-        fields = ['date', 'method', 'reference', 'vendor', 'vreference', 'funding', 'edorda', 'total', 'shipping']
+        fields = ['date', 'purchaser', 'method', 'reference', 'vendor', 'vreference', 'funding', 'edorda', 'total', 'shipping']
         widgets = {'date': DateInput()}
 
 class VideoForm(forms.ModelForm):

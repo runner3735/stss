@@ -659,15 +659,17 @@ def purchase_documents(request, pk):
   documents = purchase.documents.all()
   return render(request, 'document-list.html', {'documents': documents, 'linkable': purchase})
 
-
 def purchases(request):
-  context = purchases_get_context(request)
-  context['form'] = PurchaseSearchForm(request.GET or None)
-  return render(request, 'purchases.html', context)
+  form = PurchaseSearchForm()
+  return render(request, 'purchases.html', {'form': form})
 
-def purchases_list(request):
+def purchase_table(request):
   context = purchases_get_context(request)
-  return render(request, 'purchases-list.html', context)
+  return render(request, 'purchase-table.html', context)
+
+def purchase_page(request):
+  context = purchases_get_context(request)
+  return render(request, 'purchase-page.html', context)
 
 def purchases_get_context(request):
   page = request.GET.get('page', '1')
@@ -725,8 +727,8 @@ def purchase_update_total(request, pk):
 
 @login_required
 def purchase_new(request):
+  form = PurchaseForm(request.POST or None)
   if request.method == 'POST':
-    form = PurchaseForm(request.POST)
     if form.is_valid():
       p = form.save()
       vendor = request.POST.get('vendor').strip()
@@ -734,10 +736,11 @@ def purchase_new(request):
         v, created = Vendor.objects.get_or_create(name=vendor)
         if created: print("Created Vendor:", vendor)
         p.vendor = v
+        purchaser, created = Person.objects.get_or_create(first=request.user.first_name, last=request.user.last_name)
+        if created: print("Created Person:", purchaser)
+        p.purchaser = purchaser
         p.save()
       return HttpResponseRedirect(reverse('purchases'))
-  else:
-    form = PurchaseForm()
   vendors = Vendor.objects.values_list('name', flat=True)
   return render(request, 'purchase-new.html', {'form': form, 'vendors': vendors})
 
@@ -745,6 +748,7 @@ def purchase_new(request):
 def purchase_edit(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
   form = PurchaseEditForm(request.POST or None, instance=purchase)
+  form.fields["purchaser"].queryset = Person.objects.filter(status=6)
   if request.method == 'POST':
     if form.is_valid():
       form.save()

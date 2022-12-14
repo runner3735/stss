@@ -1,0 +1,17 @@
+<table id="purchase-table" class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Vendor</th>
+            <th>Method</th>
+            <th>Internal Reference</th>
+            <th>Vendor Reference</th>
+            <th>Funding Source</th>
+            <th>Edorda</th>
+            <th>Total</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>{% include 'purchase-page.html' %}</tbody>
+</table>
+<label id="result-status" class="label has-text-light" hx-swap-oob="true">Matches: {{ purchases.paginator.count }}</label>
