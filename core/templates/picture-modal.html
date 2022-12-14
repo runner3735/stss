@@ -1,6 +1,8 @@
-<div class="column has-text-centered">
-    <div><a class="has-text-light" href="{{ picture.file.url }}">Fullscreen</a></div>
-    <div><a class="has-text-light" href="{{ picture.detail }}">Details</a></div>
+<div class="column has-text-centered has-text-light">
+    <p class="has-text-light">contributed by<br>{{ picture.contributor.get_full_name}}</p>
+    <p class="has-text-light">contributed on<br>{{ picture.created|date:"m-d-Y" }}</p>
+    <div><a class="has-text-light" href="{{ picture.file.url }}">View Fullscreen</a></div>
+    <div><a class="has-text-light" href="{{ picture.file.url }}" download>Download</a></div>
     <div><a class="has-text-light" hx-get="{% url 'picture-remove' picture.id linkable.modeltype linkable.id %}">Unlink</a></div>
 </div>
 <div class="column is-narrow has-text-centered">
