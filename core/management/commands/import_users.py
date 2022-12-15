@@ -7,9 +7,6 @@ def CreateUser(username, first, last):
     email = username + '@middlebury.edu'
     user = User.objects.create_user(username=username, email=email, password='mystss77', first_name=first, last_name=last)
     print('first:', first, '\tlast:', last, '\tusername:', username, '\temail:', email, '\tpassword: mystss77')
-    
-
-
 
 class Command(BaseCommand):
 

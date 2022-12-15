@@ -1,8 +1,8 @@
-# this script imports the instruments table, and creates Person, Department, Room, Manufacturer, Purchase, Tag, Note and Asset objects
+# this script sets the method and cleans up the reference fields for Purchase objects
 
 import re
 from django.core.management.base import BaseCommand
-from ...models import Purchase
+from ...models import Purchase, Person
 
 rx_po = re.compile(r"^P[O\.# ]*(\d{4,7})$")
 rx_po2 = re.compile(r"^MD-PO-\d+$")
@@ -24,7 +24,21 @@ def SplitReferences():
             count += 1
     print('Split References:', count)
 
+def GetPurchasers():
+    purchasers = {}
+    purchasers['CD'] = Person.objects.get_or_create(first='Carrie', last='Donohue')[0]
+    purchasers['JM'] = Person.objects.get_or_create(first='Judy', last='Mayer')[0]
+    purchasers['JS'] = Person.objects.get_or_create(first='Joanna', last='Shipley')[0]
+    purchasers['CE'] = Person.objects.get_or_create(first='Cathy', last='Ekstrom')[0]
+    purchasers['CC'] = Person.objects.get_or_create(first='Catherine', last='Combelles')[0]
+    purchasers['MM'] = Person.objects.get_or_create(first='Michelle', last='Matot')[0]
+    for purchaser in purchasers.values():
+        purchaser.status = 6
+        purchaser.save()
+    return purchasers
+
 def CleanPurchases():
+    purchasers = GetPurchasers()
     noreference = 0
     nomatch = 0
     pos = []
@@ -68,6 +82,7 @@ def CleanPurchases():
         if m:
             purchase.method = 1
             purchase.reference = m[1] + m[2]
+            purchase.purchaser = purchasers[m[1]]
             purchase.save()
             if purchase.reference != m[0]:
                 ccs.append(m[0] + ' --> ' + purchase.reference)
