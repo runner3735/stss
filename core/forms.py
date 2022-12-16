@@ -20,13 +20,13 @@ class PeopleSearchForm(forms.Form):
 class AssetSearchForm(forms.Form):
     sortby = forms.ChoiceField(choices=[('-id', 'Created'),('name', 'Name'),('model', 'Model'),('inventoried', 'Inventory Date'),('-identifier', 'Asset Tag'),('department', 'Department')], required=False, initial='-id')
     status = forms.ChoiceField(choices=Asset.status_choices + [('','All')], required=False, initial=1)
-    searchin = forms.ChoiceField(choices=[('N', 'Name/Nickname'),('M', 'Manufacturer'),('L', 'Model'),('S', 'Serial Number'),('I', 'Asset Tag'),('D', 'Inventory Date')], required=False, initial='N')
+    searchin = forms.ChoiceField(choices=[('N', 'Name/Nickname'),('M', 'Manufacturer'),('L', 'Model'),('S', 'Serial Number'),('I', 'Asset Tag'),('D', 'Inventory Date'),('T', 'Department')], required=False, initial='N')
     search = forms.CharField(max_length=128, required=False)
 
 class PurchaseSearchForm(forms.Form):
-    sortby = forms.ChoiceField(choices=[('-id', 'Created'),('-date', 'Date'),('vendor', 'Vendor'),('reference', 'Reference'),('-total', 'Total')], required=False, initial='-id')
+    sortby = forms.ChoiceField(choices=[('-id', 'Created'),('-date', 'Date'),('vendor', 'Vendor'),('reference', 'Reference'),('-total', 'Total'),('purchaser', 'Purchaser')], required=False, initial='-id')
     method = forms.ChoiceField(choices=[('', 'Any')] + Purchase.method_choices, required=False)
-    searchin = forms.ChoiceField(choices=[('V', 'Vendor'),('R', 'Reference'),('D', 'Date')], required=False, initial='R')
+    searchin = forms.ChoiceField(choices=[('V', 'Vendor'),('R', 'Reference'),('D', 'Date'),('P', 'Purchaser')], required=False, initial='R')
     search = forms.CharField(max_length=128, required=False)
 
 class AssetNumberForm(forms.Form):

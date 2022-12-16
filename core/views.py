@@ -298,6 +298,8 @@ def assets_get_context(request):
       q = q.filter(identifier__icontains=search)
     elif searchin == 'D': #inventory date
       q = q.filter(inventoried__contains=search)
+    elif searchin == 'T': #department
+      q = q.filter(department__name__icontains=search)
   q = q.order_by(sortby)
   paginator = Paginator(q, 20)
   try:
@@ -686,6 +688,8 @@ def purchases_get_context(request):
       q = q.filter(Q(reference__icontains=search) | Q(vreference__icontains=search))
     elif searchin == 'D': #date
       q = q.filter(date__contains=search)
+    elif searchin == 'P': #purchaser
+      q = q.filter(purchaser__last__istartswith=search)
   q = q.order_by(sortby)
   paginator = Paginator(q, 16)
   try:

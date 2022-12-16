@@ -13,6 +13,7 @@ from django.core.validators import RegexValidator
 
 class Department(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    acronym = models.CharField(max_length=4, blank=True)
 
     class Meta:
         ordering = ["name"]

@@ -6,7 +6,7 @@
 <tr>
 {% endif %}
     <td>{{ purchase.date | date:"Y-m-d" }}</td>
-    <td>{{ purchase.purchaser }}</td>
+    <td>{{ purchase.purchaser.last }}</td>
     <td>{{ purchase.vendor }}</td>
     <td>{{ purchase.get_method_display }}</td>
     <td>{{ purchase.reference }}</td>
