@@ -6,7 +6,8 @@ people = ['Name', 'Department', 'Phone', 'Office', 'Email', 'DBStatus']
 instruments = ['AssetTag', 'InventoryDate', 'InstrumentName', 'Nickname', 'Manufacturer', 'Model', 'SerialNumber', 'PurchaseDate', 'Vendor', 'PurchaseOrder', 'Cost', 
 'Department', 'Contact', 'Room', 'OldRoom', 'DecommissionDate', 'OperatorManual', 'ServiceManual', 'Notes', 'RemovalReason', 'DBStatus']
 
-jobs =
+jobs = ['ID', 'Opened', 'Customer', 'Tag', 'Details', 'Type', 'Category', 'Deadline', 'Status', 'Technician',
+'Course', 'Budget', 'Instrument', 'Closed', 'Hours', 'Comments', 'Location', 'Department', 'DBStatus']
 
 maintenance = 
 
@@ -18,3 +19,6 @@ names = maps strings to (first, last) name pairs
 oldnames = maps incomplete or misspelled name pair strings to properly spelled or complete name pair strings
 dualnames = maps strings found in name fields to a "fixed" string that can be properly parsed later in the import (e.g., Sharon, McMahon  -->  Sharon/McMahon)
 lastnames = maps last names to first names
+rooms = maps strings to slash delineated MBH room numbers
+locations = maps strings to locations
+locwords = maps words found in location fields to corrected versions

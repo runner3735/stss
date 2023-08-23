@@ -79,8 +79,11 @@ def AddRoom(asset, text):
     if not text: return
     if text.strip() in rooms:
         room = rooms[text.strip()]
-        R, created = Room.objects.get_or_create(text=room)
-        asset.room = R
+        if room:
+            R, created = Room.objects.get_or_create(text=room)
+            asset.room = R
+        else:
+            asset.location = text.strip()
     else:
         asset.location = ' --> '.join(text.splitlines())
 

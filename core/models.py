@@ -312,3 +312,50 @@ class LineItem(models.Model):
     def __str__(self):
         return self.cost
 
+class Job(models.Model):
+    kind_choices=[(1, 'None'), (2, 'Class'), (3, 'High Priority'), (4, 'Research'), (5, 'Low Priority'), (6, 'Other')]
+    category_choices=[(1, 'None'), (2, 'Activity Support'), (3, 'Machining/Welding/Cutting'), (4, 'Instrument Maintenance/Repair'), (5, 'Preventative Maintenance Schedule'), (6, 'MBH Building Support'), (7, 'Custom Fabrication'), (8, 'Apparatus Maintenance/Repair')]
+    status_choices=[(1, 'Pending'), (2, 'In Progress'), (3, 'Complete'), (4, 'Cancelled')]
+
+    identifier = models.CharField(max_length=8, unique=True, null=True)
+    name = models.CharField(max_length=128, blank=True)
+    details = models.TextField(max_length=4096, blank=True)
+    budget = models.CharField(max_length=128, blank=True)
+    course = models.CharField(max_length=128, blank=True)
+    location = models.CharField(max_length=128, blank=True)
+    kind = models.SmallIntegerField(choices=kind_choices, blank=True, null=True)
+    category = models.SmallIntegerField(choices=category_choices, blank=True, null=True)
+    status = models.SmallIntegerField(choices=status_choices, blank=True, null=True)
+    year = models.DecimalField(max_digits=4, decimal_places=0, blank=True, null=True)
+    opened = models.DateField(blank=True, null=True)
+    deadline = models.DateField(blank=True, null=True)
+    closed = models.DateField(blank=True, null=True)
+
+    customers = models.ManyToManyField(Person, related_name='jobs_as_customer', editable=False)
+    technicians = models.ManyToManyField(Person, related_name='jobs_as_technician', editable=False)
+    rooms = models.ManyToManyField(Room, related_name='jobs', editable=False)
+    departments = models.ManyToManyField(Department, related_name='jobs', editable=False)
+    assets = models.ManyToManyField(Asset, related_name='jobs', editable=False)
+    notes = models.ManyToManyField(Note, related_name='jobs', editable=False)
+    documents = models.ManyToManyField(Document, related_name='jobs', editable=False)
+    pictures = models.ManyToManyField(Picture, related_name='jobs', editable=False)
+    videos = models.ManyToManyField(Video, related_name='jobs', editable=False)
+    
+    class Meta: 
+        ordering = ["-id"]
+
+    def detail(self):
+        return reverse('job', args=[self.id])
+
+    def modeltype(self):
+        return 'job'
+
+    def __str__(self):
+        return self.name
+
+class Work(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, blank=True, null=True)
+    technician = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
+    summary = models.CharField(max_length=1024, blank=True)
+    hours = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+
