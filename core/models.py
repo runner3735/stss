@@ -354,6 +354,7 @@ class Job(models.Model):
         return self.name
 
 class Work(models.Model):
+    date = models.DateField(blank=True, null=True)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, blank=True, null=True)
     technician = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
     summary = models.CharField(max_length=1024, blank=True)
