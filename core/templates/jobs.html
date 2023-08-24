@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block html %}<html lang="en" class="has-navbar-fixed-bottom">{% endblock %}
+{% block content %}
+
+    <section class="section has-background-info-dark">
+        <h1 class="title has-text-light has-text-centered">Job List</h1>
+        <table id="job-table" class="table" hx-get="{% url 'job-table' %}" hx-trigger="load" hx-include="#search-form" hx-swap="outerHTML"></table>
+    </section>
+
+    <nav class="navbar is-fixed-bottom has-background-info-dark mx-6 py-3">
+        <div id="search-form" class="navbar-menu" hx-target="#job-table" hx-include="this" hx-swap="outerHTML">
+            <div class="navbar-start">
+                <div class="navbar-item"><label class="label has-text-light">Sort By</label></div>
+                <div class="navbar-item">
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'job-table' %}" hx-trigger="change">{% render_field form.sortby %}</div></div></div>
+                </div>
+                <div class="navbar-item">
+                    <label class="label has-text-light">Status</label>
+                </div>
+                <div class="navbar-item">
+                    <div class="field"><div class="control"><div class="select" hx-get="{% url 'job-table' %}" hx-trigger="change">{% render_field form.status %}</div></div></div>
+                </div>
+                <div class="navbar-item">
+                    <label class="label has-text-light">Search</label>
+                </div>
+                <div class="navbar-item">
+                    <div class="field has-addons has-addons-centered">
+                        <div class="control"><div class="select">{% render_field form.searchin %}</div></div>
+                        <div class="control" hx-get="{% url 'job-table' %}" hx-trigger="keyup[keyCode==13]">{% render_field form.search class="input" size="45" placeholder="Enter search text..." %}</div>
+                        <div class="control" hx-get="{% url 'job-table' %}"><button class="button is-danger">Search</button></div>
+                    </div>
+                </div>
+                <div class="navbar-item">
+                    <label id="result-status" class="label has-text-light">Result Status</label>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+{% endblock %}

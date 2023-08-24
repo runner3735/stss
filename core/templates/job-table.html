@@ -1,0 +1,17 @@
+<table id="job-table" class="table is-fullwidth is-narrow is-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Opened</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Deadline</th>
+            <th>Closed</th>
+            <th>Status</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>{% include 'job-page.html' %}</tbody>
+</table>
+<label id="result-status" class="label has-text-light" hx-swap-oob="true">Matches: {{ jobs.paginator.count }}</label>

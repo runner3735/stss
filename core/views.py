@@ -10,18 +10,18 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage
 
-from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor
+from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor, Job, Work
 from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
 from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
 from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm, PurchaseSearchForm
-from .forms import PurchaseEditForm, DocumentNameForm
+from .forms import PurchaseEditForm, DocumentNameForm, JobSearchForm
 
 # Home
 
 def home(request):
   context = {}
   context['assets'] = Asset.objects.all().count()
-  context['jobs'] = 0
+  context['jobs'] = Job.objects.all().count()
   context['people'] = Person.objects.all().count()
   context['pictures'] = Picture.objects.all().count()
   context['documents'] = Document.objects.all().count()
@@ -262,7 +262,47 @@ def person_page(request):
     return paginator.page(page)
   except EmptyPage:
     return
+# Job
+def jobs(request):
+  form = JobSearchForm()
+  return render(request, 'jobs.html', {'form': form})
 
+def job_page(request):
+  context = jobs_get_context(request)
+  return render(request, 'job-page.html', context)
+
+def job_table(request):
+  context = jobs_get_context(request)
+  return render(request, 'job-table.html', context)
+
+def jobs_get_context(request):
+  page = request.GET.get('page', '1')
+  status = request.GET.get('status','1')
+  search = request.GET.get('search', '')
+  sortby = request.GET.get('sortby', '-id')
+  searchin = request.GET.get('searchin', 'N')
+  q = Job.objects.all()
+  if status: q = q.filter(status=status)
+  if search:
+    if searchin == 'N': #name
+      q = q.filter(name__icontains=search)
+    elif searchin == 'D': #details
+      q = q.filter(details__icontains=search)
+    elif searchin == 'B': #budget
+      q = q.filter(budget__icontains=search)
+    elif searchin == 'C': #course
+      q = q.filter(course__icontains=search)
+    elif searchin == 'L': #location
+      q = q.filter(location__icontains=search)
+    elif searchin == 'Y': #year
+      q = q.filter(year=search)
+  q = q.order_by(sortby)
+  paginator = Paginator(q, 20)
+  try:
+    return {'jobs': paginator.page(page)}
+  except EmptyPage:
+    return {'jobs': []}
+  
 # Asset
 
 def assets(request):

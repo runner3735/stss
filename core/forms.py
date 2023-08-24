@@ -1,6 +1,6 @@
 
 from django import forms
-from .models import Asset, Document, Video, Note, Picture, Tag, Purchase, Person, Department
+from .models import Asset, Document, Video, Note, Picture, Tag, Purchase, Person, Department, Job, Work
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -21,6 +21,12 @@ class AssetSearchForm(forms.Form):
     sortby = forms.ChoiceField(choices=[('-id', 'Created'),('name', 'Name'),('model', 'Model'),('inventoried', 'Inventory Date'),('-identifier', 'Asset Tag'),('department', 'Department')], required=False, initial='-id')
     status = forms.ChoiceField(choices=Asset.status_choices + [('','All')], required=False, initial=1)
     searchin = forms.ChoiceField(choices=[('N', 'Name/Nickname'),('M', 'Manufacturer'),('L', 'Model'),('S', 'Serial Number'),('I', 'Asset Tag'),('D', 'Inventory Date'),('T', 'Department')], required=False, initial='N')
+    search = forms.CharField(max_length=128, required=False)
+
+class JobSearchForm(forms.Form):
+    sortby = forms.ChoiceField(choices=[('-id', 'Created'),('status', 'Status'),('kind', 'Type'),('category', 'Category'),('deadline', 'Deadline')], required=False, initial='-id')
+    status = forms.ChoiceField(choices=Job.status_choices + [('','All')], required=False, initial=1)
+    searchin = forms.ChoiceField(choices=[('N', 'Name'),('D', 'Details'),('B', 'Budget'),('C', 'Course'),('L', 'Location'),('Y', 'Year')], required=False, initial='N')
     search = forms.CharField(max_length=128, required=False)
 
 class PurchaseSearchForm(forms.Form):
