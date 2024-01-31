@@ -1,4 +1,6 @@
 
+# this is a copy of the views.py file before it was split
+
 import os, datetime, time
 import core.ffutil as ff
 
@@ -10,11 +12,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage
 
-from .models import Department, Manufacturer, Purchase, Asset, Room, Note, Person, Tag, Video, Document, Picture, LineItem, Vendor, Job, Work
-from .forms import AssetNameForm, AssetNicknameForm, AssetLocationForm, TagForm, NoteForm, PictureNameForm, PurchaseForm, AssetNumberForm, AssetIdentifierForm
-from .forms import TextForm, AssetModelForm, AssetSerialForm, AssetStatusForm, AssetInventoriedForm, AssetInfoForm, AssetCloneForm
-from .forms import PersonPhoneForm, PersonEmailForm, DepartmentForm, PersonStatusForm, PersonNewForm, PeopleSearchForm, AssetSearchForm, PurchaseSearchForm
-from .forms import PurchaseEditForm, DocumentNameForm, JobSearchForm
+from .models import *
+from .forms import *
 
 # Home
 
@@ -59,6 +58,11 @@ class AssetDetail(DetailView):
   model = Asset
   context_object_name = 'asset'
   template_name = 'asset.html'
+
+class JobDetail(DetailView):
+  model = Job
+  context_object_name = 'job'
+  template_name = 'job.html'
 
 # List
 
@@ -208,7 +212,17 @@ def person_edit_status(request, pk):
 def person_departments(request, pk):
   person = get_object_or_404(Person, pk=pk)
   departments = person.departments.all()
-  return render(request, 'person-departments.html', {'departments': departments})
+  return render(request, 'department-tags.html', {'departments': departments})
+
+def job_departments(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  departments = job.departments.all()
+  return render(request, 'department-tags.html', {'departments': departments})
+
+def job_rooms(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  rooms = job.rooms.all()
+  return render(request, 'room-tags.html', {'rooms': rooms})
 
 @login_required
 def person_edit_department(request, pk):
@@ -222,18 +236,60 @@ def person_edit_department(request, pk):
       elif 'remove' in request.POST:
         person.departments.remove(department)
       return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
-  return render(request, 'person-edit-department.html', {'form': form})
+  return render(request, 'departments-edit.html', {'form': form})
+
+@login_required
+def job_rooms_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = RoomForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      room = form.cleaned_data['room']
+      if 'add' in request.POST:
+        job.rooms.add(room)
+      elif 'remove' in request.POST:
+        job.rooms.remove(room)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'roomsChanged'})
+  return render(request, 'rooms-edit.html', {'form': form})
+
+@login_required
+def job_departments_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = DepartmentForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      department = form.cleaned_data['department']
+      if 'add' in request.POST:
+        job.departments.add(department)
+      elif 'remove' in request.POST:
+        job.departments.remove(department)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
+  return render(request, 'departments-edit.html', {'form': form})
+
+@login_required
+def add_technician(request, pk, technician):
+  job = get_object_or_404(Job, pk=pk)
+  job.technicians.add(technician)
+  return HttpResponseRedirect(reverse('edit-technicians', args=[pk]))
+
+@login_required
+def remove_technician(request, pk, technician):
+  job = get_object_or_404(Job, pk=pk)
+  job.technicians.remove(technician)
+  return HttpResponseRedirect(reverse('edit-technicians', args=[pk]))
 
 @login_required
 def addcontact(request, model, pk, contact):
   contactable = get_instance(model, pk)
-  contactable.contacts.add(contact)
+  if model == 'job': contactable.customers.add(contact)
+  else: contactable.contacts.add(contact)
   return HttpResponseRedirect(reverse('edit-contacts', args=[model, pk]))
 
 @login_required
 def uncontact(request, model, pk, contact):
   contactable = get_instance(model, pk)
-  contactable.contacts.remove(contact)
+  if model == 'job': contactable.customers.remove(contact)
+  else: contactable.contacts.remove(contact)
   return HttpResponseRedirect(reverse('edit-contacts', args=[model, pk]))
 
 @login_required
@@ -241,10 +297,22 @@ def edit_contacts(request, model, pk):
   contactable = get_instance(model, pk)
   return render(request, 'edit-contacts.html', {'contactable': contactable})
 
+@login_required
+def edit_technicians(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  return render(request, 'edit-technicians.html', {'job': job})
+
+def technician_list(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  selected = job.technicians.all()
+  choices = Person.objects.filter(status=1)
+  return render(request, 'technician-list.html', {'contactable': job, 'contacts': choices, 'selected': selected})
+
 def contact_list(request, model, pk):
   print(request.GET)
   contactable = get_instance(model, pk)
-  selected = contactable.contacts.all()
+  if model == 'job': selected = contactable.customers.all()
+  else: selected = contactable.contacts.all()
   choices = person_page(request)
   if not choices: choices = selected
   return render(request, 'contact-list.html', {'contactable': contactable, 'contacts': choices, 'selected': selected})
@@ -262,7 +330,9 @@ def person_page(request):
     return paginator.page(page)
   except EmptyPage:
     return
-# Job
+
+# Jobs
+  
 def jobs(request):
   form = JobSearchForm()
   return render(request, 'jobs.html', {'form': form})
@@ -349,7 +419,6 @@ def assets_get_context(request):
 
 def asset_notes(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
-  #notes = Note.objects.get(asset=pk)
   notes = asset.notes.all()
   return render(request, 'note-list.html', {'notes': notes})
 
@@ -366,6 +435,26 @@ def asset_documents(request, pk):
 def asset_videos(request, pk):
   asset = get_object_or_404(Asset, pk=pk)
   videos = asset.videos.all()
+  return render(request, 'video-list.html', {'videos': videos})
+
+def job_notes(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  notes = job.notes.all()
+  return render(request, 'note-list.html', {'notes': notes})
+
+def job_pictures(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  pictures = job.pictures.all()
+  return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': job})
+
+def job_documents(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  documents = job.documents.all()
+  return render(request, 'document-list.html', {'documents': documents, 'linkable': job})
+
+def job_videos(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  videos = job.videos.all()
   return render(request, 'video-list.html', {'videos': videos})
 
 def asset_purchases(request, pk):
@@ -640,9 +729,7 @@ def asset_edit_location(request, pk):
     form = AssetLocationForm(request.POST, instance=asset)
     if form.is_valid():
       form.save()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'assetLocationChanged'
-      return response
+      return HttpResponse(status=204, headers={'HX-Trigger': 'assetLocationChanged'})
   else:
     form = AssetLocationForm(instance=asset)
   return render(request, 'asset-edit-location.html', {'form': form})
@@ -652,7 +739,190 @@ def asset_remove(request, asset, model, pk):
   linkable.assets.remove(asset)
   if linkable.assets.count(): return HttpResponse('')
   return HttpResponse('', headers={'HX-Retarget': '#assets'})
-  
+
+# Job 
+def job_name(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  return HttpResponse('<strong>' + j.name + '</strong>')
+
+def job_budget(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  return HttpResponse('<strong>' + j.budget + '</strong>')
+
+def job_course(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  return HttpResponse('<strong>' + j.course + '</strong>')
+
+def job_location(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  return HttpResponse('<strong>' + j.location + '</strong>')
+
+def job_status(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if j.status: return HttpResponse('<strong>' + j.get_status_display() + '</strong>')
+  return HttpResponse('')
+
+def job_category(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if j.category: return HttpResponse('<strong>' + j.get_category_display() + '</strong>')
+  return HttpResponse('')
+
+def job_kind(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if j.kind: return HttpResponse('<strong>' + j.get_kind_display() + '</strong>')
+  return HttpResponse('')
+
+def job_opened(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  if j.opened: return HttpResponse('<strong>' + j.opened.strftime('%B %-d, %Y') + '</strong>')
+  return HttpResponse('')
+
+def job_deadline(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  if j.deadline: return HttpResponse('<strong>' + j.deadline.strftime('%B %-d, %Y') + '</strong>')
+  return HttpResponse('')
+
+def job_closed(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  if j.closed: return HttpResponse('<strong>' + j.closed.strftime('%B %-d, %Y') + '</strong>')
+  return HttpResponse('')
+
+def job_assets(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  return render(request, 'job-assets.html', {'job': job})
+
+@login_required
+def job_name_edit(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if request.method == 'POST':
+    form = JobNameForm(request.POST, instance=j)
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobNameChanged'})
+  else:
+    form = JobNameForm(instance=j)
+  return render(request, 'job-name-edit.html', {'form': form})
+
+@login_required
+def job_budget_edit(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if request.method == 'POST':
+    form = JobBudgetForm(request.POST, instance=j)
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobBudgetChanged'})
+  else:
+    form = JobBudgetForm(instance=j)
+  return render(request, 'job-budget-edit.html', {'form': form})
+
+@login_required
+def job_course_edit(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if request.method == 'POST':
+    form = JobCourseForm(request.POST, instance=j)
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobCourseChanged'})
+  else:
+    form = JobCourseForm(instance=j)
+  return render(request, 'job-course-edit.html', {'form': form})
+
+@login_required
+def job_location_edit(request, pk):
+  j = get_object_or_404(Job, pk=pk)
+  if request.method == 'POST':
+    form = JobLocationForm(request.POST, instance=j)
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobLocationChanged'})
+  else:
+    form = JobLocationForm(instance=j)
+  return render(request, 'job-location-edit.html', {'form': form})
+
+@login_required
+def job_opened_edit(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  form = JobOpenedForm(request.POST or None, instance=j)
+  if request.method == 'POST':
+    if 'today' in request.POST:
+      j.opened = datetime.date.today()
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobOpenedChanged'})
+    if 'clear' in request.POST:
+      j.opened = None
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobOpenedChanged'})
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobOpenedChanged'})
+  return render(request, 'job-opened-edit.html', {'form': form})
+
+@login_required
+def job_deadline_edit(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  form = JobDeadlineForm(request.POST or None, instance=j)
+  if request.method == 'POST':
+    if 'today' in request.POST:
+      j.deadline = datetime.date.today()
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobDeadlineChanged'})
+    if 'clear' in request.POST:
+      j.deadline = None
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobDeadlineChanged'})
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobDeadlineChanged'})
+  return render(request, 'job-deadline-edit.html', {'form': form})
+
+@login_required
+def job_closed_edit(request, pk):
+  j=get_object_or_404(Job, pk=pk)
+  form = JobClosedForm(request.POST or None, instance=j)
+  if request.method == 'POST':
+    if 'today' in request.POST:
+      j.closed = datetime.date.today()
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
+    if 'clear' in request.POST:
+      j.closed = None
+      j.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
+  return render(request, 'job-closed-edit.html', {'form': form})
+
+@login_required
+def job_status_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = JobStatusForm(request.POST or None, instance=job)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobStatusChanged'})
+  return render(request, 'job-status-edit.html', {'form': form})
+
+@login_required
+def job_category_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = JobCategoryForm(request.POST or None, instance=job)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobCategoryChanged'})
+  return render(request, 'job-category-edit.html', {'form': form})
+
+@login_required
+def job_kind_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = JobKindForm(request.POST or None, instance=job)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'jobKindChanged'})
+  return render(request, 'job-kind-edit.html', {'form': form})
+
 # Vendor
 
 def vendors(request):

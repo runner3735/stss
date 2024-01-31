@@ -1,0 +1,28 @@
+{% if job.assets.all %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Asset Tag</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th>Name</th>
+            <th class="has-text-centered">View</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in job.assets.all %}
+        <tr>
+            <td>{{ a.identifier }}</td>
+            <td>{{ a.manufacturer }}</td>
+            <td>{{ a.model }}</td>
+            <td>{{ a.name }}</td>
+            <td class="has-text-centered">
+                <a href="{% url 'asset' a.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

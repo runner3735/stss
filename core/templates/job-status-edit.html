@@ -1,0 +1,15 @@
+
+{% load widget_tweaks %}
+
+<form hx-post="{{ request.path }}">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label has-text-link-light">Job Status</label>
+        <div class="control">
+            <div class="select">{% render_field form.status class="select" %}</div>
+        </div>
+    </div>
+    <div class="control">
+        <button class="button is-danger">Update</button>
+    </div>
+</form>

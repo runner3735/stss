@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight has-background-dark">
+<div class="hero-head py-5">
+    <div class="container">
+        <h1 class="title has-text-light">{{ job.identifier }} {{ job }}</h1>
+        <h3 class="subtitle has-text-light">Select Assets</h3>
+
+        <div class="level mb-4">
+            <div class="level-left">
+                <div class="level-item">
+                    <div id="search-form" class="field" hx-target="#asset-list" hx-include="this">
+                        <div class="control">
+                            <input hx-get="{% url 'job-assets-list' job.id %}" hx-trigger="keyup changed delay:500ms"
+                                type="text" name="search" maxlength="16" placeholder="Search asset tag number..."
+                                size="35" class="input" id="id_search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="asset-list" class="tags" hx-get="{% url 'job-assets-list' job.id %}" hx-trigger="load">
+        </div>
+
+        <a href="{{ job.detail }}" class="button is-link">Done</a>
+    </div>
+</div>
+</section>
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
+{% endblock %}

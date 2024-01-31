@@ -1,0 +1,19 @@
+{% for contact in contacts %}
+{% if contact in selected %}
+<span class="tag is-danger is-medium">
+    {{ contact }}<a href="{% url 'remove-technician' contactable.id contact.id %}"
+        class="delete is-small has-background-black"></a>
+</span>
+{% else %}
+<a href="{% url 'add-technician' contactable.id contact.id %}"
+    class="tag has-background-danger-dark has-text-light is-medium">{{ contact }}</a>
+{% endif %}
+{% endfor %}
+{% for contact in selected %}
+{% if contact not in contacts %}
+<span class="tag is-danger is-medium">
+    {{ contact }}<a href="{% url 'remove-technician' contactable.id contact.id %}"
+        class="delete is-small has-background-black"></a>
+</span>
+{% endif %}
+{% endfor %}

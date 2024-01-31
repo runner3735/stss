@@ -1,0 +1,12 @@
+
+{% for asset in choices %}
+{% if asset in selected %}
+<span class="tag is-danger is-medium">
+    {{ asset.identifier }} {{ asset }}<a href="{% url 'job-asset-remove' job.id asset.id %}"
+        class="delete is-small has-background-black"></a>
+</span>
+{% else %}
+<a href="{% url 'job-asset-add' job.id asset.id %}"
+    class="tag has-background-danger-dark has-text-light is-medium">{{ asset.identifier }} {{ asset }}</a>
+{% endif %}
+{% endfor %}

@@ -1,0 +1,14 @@
+
+{% load widget_tweaks %}
+
+<form hx-post="{{ request.path }}">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label has-text-link-light">Room</label>
+        <div class="control">{% render_field form.room class="select" %}</div>
+    </div>
+    <div class="control">
+        <button class="button is-danger mr-4" name="add">Add</button>
+        <button class="button is-danger mr-4" name="remove">Remove</button>
+    </div>
+</form>

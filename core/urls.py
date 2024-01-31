@@ -55,6 +55,47 @@ urlpatterns = [
   path('asset/<int:pk>/inventoried/', views.asset_inventoried, name='asset-inventoried'),
   path('asset/<int:asset>/remove/<str:model>/<int:pk>/', views.asset_remove, name='asset-remove'),
 
+# Job
+  path('job/new/', views.job_new, name='job-new'),
+  path('job/<int:pk>/', views.JobDetail.as_view(), name='job'),
+  path('job/<int:pk>/details/', views.job_details, name='job-details'),
+  path('job/<int:pk>/assets/', views.job_assets, name='job-assets'),
+  path('job/<int:pk>/notes/', views.job_notes, name='job-notes'),
+  path('job/<int:pk>/pictures/', views.job_pictures, name='job-pictures'),
+  path('job/<int:pk>/documents/', views.job_documents, name='job-documents'),
+  path('job/<int:pk>/videos/', views.job_videos, name='job-videos'),
+
+  path('job/<int:pk>/name/', views.job_name, name='job-name'),
+  path('job/<int:pk>/budget/', views.job_budget, name='job-budget'),
+  path('job/<int:pk>/course/', views.job_course, name='job-course'),
+  path('job/<int:pk>/location/', views.job_location, name='job-location'),
+  path('job/<int:pk>/opened/', views.job_opened, name='job-opened'),
+  path('job/<int:pk>/deadline/', views.job_deadline, name='job-deadline'),
+  path('job/<int:pk>/closed/', views.job_closed, name='job-closed'),
+  path('job/<int:pk>/status/', views.job_status, name='job-status'),
+  path('job/<int:pk>/kind/', views.job_kind, name='job-kind'),
+  path('job/<int:pk>/category/', views.job_category, name='job-category'),
+  path('job/<int:pk>/departments/', views.job_departments, name='job-departments'),
+  path('job/<int:pk>/rooms/', views.job_rooms, name='job-rooms'),
+
+  path('job/<int:pk>/name/edit/', views.job_name_edit, name='job-name-edit'),
+  path('job/<int:pk>/budget/edit/', views.job_budget_edit, name='job-budget-edit'),
+  path('job/<int:pk>/course/edit/', views.job_course_edit, name='job-course-edit'),
+  path('job/<int:pk>/location/edit/', views.job_location_edit, name='job-location-edit'),
+  path('job/<int:pk>/opened/edit/', views.job_opened_edit, name='job-opened-edit'),
+  path('job/<int:pk>/deadline/edit/', views.job_deadline_edit, name='job-deadline-edit'),
+  path('job/<int:pk>/closed/edit/', views.job_closed_edit, name='job-closed-edit'),
+  path('job/<int:pk>/status/edit/', views.job_status_edit, name='job-status-edit'),
+  path('job/<int:pk>/kind/edit/', views.job_kind_edit, name='job-kind-edit'),
+  path('job/<int:pk>/category/edit/', views.job_category_edit, name='job-category-edit'),
+  path('job/<int:pk>/departments/edit/', views.job_departments_edit, name='job-departments-edit'),
+  path('job/<int:pk>/rooms/edit/', views.job_rooms_edit, name='job-rooms-edit'),
+  path('job/<int:pk>/details/edit/', views.job_details_edit, name='job-details-edit'),
+  path('job/<int:pk>/assets/edit/', views.job_assets_edit, name='job-assets-edit'),
+  path('job/<int:pk>/assets/list/', views.job_assets_list, name='job-assets-list'),
+  path('job/<int:pk>/asset/<int:asset>/add/', views.job_asset_add, name='job-asset-add'),
+  path('job/<int:pk>/asset/<int:asset>/remove/', views.job_asset_remove, name='job-asset-remove'),
+
 # Room
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
   path('room/<str:model>/<int:pk>/', views.edit_room, name='edit-room'),
@@ -71,14 +112,18 @@ urlpatterns = [
   path('person/<int:pk>/phone/', views.person_phone, name='person-phone'),
   path('person/<int:pk>/email/edit/', views.person_edit_email, name='person-edit-email'),
   path('person/<int:pk>/email/', views.person_email, name='person-email'),
+  path('person/<int:pk>/departments/', views.person_departments, name='person-departments'),
   path('person/<int:pk>/department/edit/', views.person_edit_department, name='person-edit-department'),
-  path('person/<int:pk>/departments', views.person_departments, name='person-departments'),
   path('person/<int:pk>/status/edit/', views.person_edit_status, name='person-edit-status'),
   path('person/<int:pk>/status/', views.person_status, name='person-status'),
   path('contacts/<str:model>/<int:pk>/', views.edit_contacts, name='edit-contacts'),
   path('contact/list/<str:model>/<int:pk>/', views.contact_list, name='contact-list'),
   path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),
   path('addcontact/<str:model>/<int:pk>/<int:contact>/', views.addcontact, name='addcontact'),
+  path('technicians/edit/<int:pk>/', views.edit_technicians, name='edit-technicians'),
+  path('technician/list/<int:pk>/', views.technician_list, name='technician-list'),
+  path('add/technician/<int:pk>/<int:technician>/', views.add_technician, name='add-technician'),
+  path('remove/technician/<int:pk>/<int:technician>/', views.remove_technician, name='remove-technician'),
   path('first/names', views.first_names, name='first-names'),
   path('last/names', views.last_names, name='last-names'),
 
@@ -89,7 +134,6 @@ urlpatterns = [
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
-  
 
 # Tag
   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
@@ -152,8 +196,5 @@ urlpatterns = [
 # Delete
 #   path('delete/<str:model>/<int:pk>/', views.delete, name='delete'),
 
-# Test
-  path('test/', views.test, name='test'),
-  path('test/list/', views.test_list, name='test-list'),
 ]
 

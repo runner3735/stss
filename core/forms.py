@@ -1,17 +1,9 @@
 
 from django import forms
-from .models import Asset, Document, Video, Note, Picture, Tag, Purchase, Person, Department, Job, Work
+from .models import *
 
 class DateInput(forms.DateInput):
     input_type = 'date'
-
-class AssetForm(forms.ModelForm):
-    class Meta:
-        model = Asset
-        fields = ['name', 'nickname', 'location']
-    
-    def clean_name(self):
-        return self.cleaned_data['name'].title()
 
 class PeopleSearchForm(forms.Form):
     status = forms.ChoiceField(choices=[('', 'Active')] + Person.status_choices + [(5, 'All')], required=False)
@@ -56,6 +48,19 @@ class TextForm(forms.Form):
 class DepartmentForm(forms.Form):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=None)
 
+class RoomForm(forms.Form):
+    room = forms.ModelChoiceField(queryset=Room.objects.all(), empty_label=None)
+
+# Asset
+
+class AssetForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['name', 'nickname', 'location']
+    
+    def clean_name(self):
+        return self.cleaned_data['name'].title()
+    
 class AssetInfoForm(forms.Form):
     manufacturer = forms.CharField(label='Manufacturer', max_length=128, required=False)
     model = forms.CharField(label='Model', max_length=128, required=False)
@@ -96,20 +101,74 @@ class AssetLocationForm(forms.ModelForm):
         model = Asset
         fields = ['location',]
 
-class DocumentNameForm(forms.ModelForm):
+# Job
+        
+class JobNameForm(forms.ModelForm):
     class Meta:
-        model = Document
+        model = Job
         fields = ['name',]
 
+class JobBudgetForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['budget',]
+
+class JobCourseForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['course',]
+
+class JobLocationForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['location',]
+
+class JobOpenedForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['opened',]
+
+class JobDeadlineForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['deadline',]
+
+class JobClosedForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['closed',]
+
+class JobStatusForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['status',]
+
+class JobCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['category',]
+
+class JobKindForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['kind',]
+
+class JobDetailsForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['details',]
+
+# Person
+        
+class PersonNewForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['first', 'last',]        
+        
 class PersonPhoneForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ['phone',]
-
-class PersonNewForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields = ['first', 'last',]
 
 class PersonEmailForm(forms.ModelForm):
     class Meta:
@@ -121,6 +180,13 @@ class PersonStatusForm(forms.ModelForm):
         model = Person
         fields = ['status',]
 
+# Document
+        
+class DocumentNameForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['name',]
+
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
@@ -131,11 +197,15 @@ class DocumentNameForm(forms.ModelForm):
         model = Document
         fields = ['name',]
 
+# Note
+        
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['text',]
 
+# Picture
+        
 class PictureForm(forms.ModelForm):
     class Meta:
         model = Picture
@@ -146,6 +216,8 @@ class PictureNameForm(forms.ModelForm):
         model = Picture
         fields = ['name',]
 
+# Tag
+        
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
@@ -158,6 +230,8 @@ class TagForm(forms.ModelForm):
                 raise forms.ValidationError("You can only edit the casing of a Tag object.  You cannot change its content.")
         return data
 
+# Purchase
+    
 class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Purchase
@@ -170,6 +244,8 @@ class PurchaseEditForm(forms.ModelForm):
         fields = ['date', 'purchaser', 'method', 'reference', 'vendor', 'vreference', 'funding', 'edorda', 'total', 'shipping']
         widgets = {'date': DateInput()}
 
+# Video
+        
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
