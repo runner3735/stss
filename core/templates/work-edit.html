@@ -1,0 +1,32 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Edit Hours</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Edit Hours</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">Date</label>
+    <div class="control">{% render_field form.date class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Hours</label>
+    <div class="control">
+        <div class="select">{% render_field form.hours class="input" %}</div>
+    </div>
+</div>
+<div class="field">
+    <label class="label">Summary</label>
+    <div class="control">{% render_field form.summary class="textarea" rows="10" placeholder="Enter work summary here..." %}</div>
+</div>
+<div class="control">
+    <button class="button is-danger">Update</button>
+    <a href="{% url 'job' job.id %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

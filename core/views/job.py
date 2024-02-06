@@ -270,6 +270,11 @@ def job_assets(request, pk):
   job = get_object_or_404(Job, pk=pk)
   return render(request, 'job-assets.html', {'job': job})
 
+def job_works(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  technician = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  return render(request, 'job-works.html', {'job': job, 'technician': technician})
+
 def job_notes(request, pk):
   job = get_object_or_404(Job, pk=pk)
   notes = job.notes.all()

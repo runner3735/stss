@@ -94,10 +94,8 @@ def purchase_new(request):
       vendor = request.POST.get('vendor').strip()
       if vendor:
         v, created = Vendor.objects.get_or_create(name=vendor)
-        if created: print("Created Vendor:", vendor)
         p.vendor = v
         purchaser, created = Person.objects.get_or_create(first=request.user.first_name, last=request.user.last_name)
-        if created: print("Created Person:", purchaser)
         p.purchaser = purchaser
         p.save()
       return HttpResponseRedirect(reverse('purchases'))

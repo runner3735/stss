@@ -129,6 +129,36 @@ def tag_remove(request, model, pk, tag):
   taggable.tags.remove(tag)
   return HttpResponseRedirect(reverse('edit-tags', args=[model, pk]))
 
+# Work
+
+@login_required
+def work_new(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  technician = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  form = WorkForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      work = form.save()
+      work.job = job
+      work.technician = technician
+      work.save()
+      return HttpResponseRedirect(job.detail())
+  return render(request, 'work-new.html', {'form': form, 'job': job})
+
+@login_required
+def work_edit(request, pk):
+  work = get_object_or_404(Work, pk=pk)
+  technician = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if work.technician != technician: return HttpResponseRedirect(work.job.detail())
+  if request.method == 'POST':
+    form = WorkForm(request.POST, instance=work)
+    if form.is_valid():
+      form.save()
+      return HttpResponseRedirect(work.job.detail())
+  else:
+    form = WorkForm(instance=work)
+  return render(request, 'work-edit.html', {'form': form, 'job': work.job})
+
 # Helper
 
 def get_instance(model, pk):

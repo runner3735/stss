@@ -1,0 +1,30 @@
+{% if job.work_set.all %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Technician</th>
+            <th>Hours</th>
+            <th>Summary</th>
+            <th class="has-text-centered">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for work in job.work_set.all %}
+        <tr>
+            <td>{{ work.date }}</td>
+            <td>{{ work.technician }}</td>
+            <td>{{ work.hours }}</td>
+            <td>{{ work.summary }}</td>
+            {% if work.technician == technician %}
+            <td class="has-text-centered">
+                <a href="{% url 'work-edit' work.id %}">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

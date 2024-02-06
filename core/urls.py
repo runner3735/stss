@@ -60,6 +60,7 @@ urlpatterns = [
   path('job/<int:pk>/', views.JobDetail.as_view(), name='job'),
   path('job/<int:pk>/details/', views.job_details, name='job-details'),
   path('job/<int:pk>/assets/', views.job_assets, name='job-assets'),
+  path('job/<int:pk>/works/', views.job_works, name='job-works'),
   path('job/<int:pk>/notes/', views.job_notes, name='job-notes'),
   path('job/<int:pk>/pictures/', views.job_pictures, name='job-pictures'),
   path('job/<int:pk>/documents/', views.job_documents, name='job-documents'),
@@ -95,6 +96,7 @@ urlpatterns = [
   path('job/<int:pk>/assets/list/', views.job_assets_list, name='job-assets-list'),
   path('job/<int:pk>/asset/<int:asset>/add/', views.job_asset_add, name='job-asset-add'),
   path('job/<int:pk>/asset/<int:asset>/remove/', views.job_asset_remove, name='job-asset-remove'),
+  path('job/<int:pk>/work/new/', views.work_new, name='work-new'),
 
 # Room
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
@@ -161,6 +163,9 @@ urlpatterns = [
 # Document
   path('document/<int:pk>/name/edit/', views.document_edit_name, name='document-edit-name'),
   path('document/<int:document>/remove/<str:model>/<int:pk>/', views.document_remove, name='document-remove'),
+
+# Work
+  path('work/<int:pk>/edit/', views.work_edit, name='work-edit'),
 
 # Tag
 #   path('tags/', views.tags, name='tags'),

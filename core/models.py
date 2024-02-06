@@ -357,6 +357,31 @@ class Work(models.Model):
     date = models.DateField(blank=True, null=True)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, blank=True, null=True)
     technician = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
-    summary = models.CharField(max_length=1024, blank=True)
+    summary = models.TextField(max_length=4096, blank=True)
     hours = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
 
+    class Meta: 
+        ordering = ["-date"]
+
+class PMI(models.Model):
+    last = models.DateField(blank=True, null=True)
+    creator = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
+    frequency = models.IntegerField()
+    next = models.DateField(blank=True, null=True)
+    
+    name = models.CharField(max_length=128, blank=True)
+    details = models.TextField(max_length=4096, blank=True)
+    location = models.CharField(max_length=128, blank=True)
+    customers = models.ManyToManyField(Person, related_name='+', editable=False)
+    rooms = models.ManyToManyField(Room, related_name='+', editable=False)
+    departments = models.ManyToManyField(Department, related_name='+', editable=False)
+    assets = models.ManyToManyField(Asset, related_name='+', editable=False)
+
+    class Meta: 
+        ordering = ["next"]
+
+    def detail(self):
+        return reverse('pmi', args=[self.id])
+
+    def __str__(self):
+        return self.name

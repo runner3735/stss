@@ -266,6 +266,14 @@ class VideoThumbnailForm(forms.ModelForm):
         model = Video
         fields = ['thumbnail',]
 
+# Work
+        
+class WorkForm(forms.ModelForm):
+    class Meta:
+        model = Work
+        fields = ['date', 'hours', 'summary']
+        widgets = {'date': DateInput()}
+
 # class ComponentForm(forms.ModelForm):
 #     class Meta:
 #         model = Component
