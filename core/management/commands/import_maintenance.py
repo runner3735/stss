@@ -3,76 +3,54 @@
 
 import pickle
 from django.core.management.base import BaseCommand
-from ...models import Department, Person, Room
+from ...models import Person, PMI, Job
 
 maintenance = {} # ['ID', 'Frequency', 'Creator']
-people = {}
-departments = {}
-names = {}
-dualnames = {}
-rooms = {}
 
 def LoadPickles():
     global maintenance
     maintenance = pickle.load(open('/www/db/maintenance.p', 'rb'))
 
 def ImportMaintenance():
+    PMI.objects.all().delete()
     for m in maintenance.values():
-        print(m)
-        break
+        username = m['Creator'][5:].lower()
+        creator = GetPerson(username)
+        reference = Job.objects.get(identifier=m['ID'])
+        frequency = int(m['Frequency'])
+        if not reference.opened: continue
+        pmi = PMI()
+        pmi.last = reference.opened
+        pmi.creator = creator
+        pmi.frequency = frequency
+        pmi.name = reference.name
+        pmi.details = reference.details
+        pmi.location = reference.location
+        pmi.save()
+        pmi.customers.set(reference.customers.all())
+        pmi.departments.set(reference.departments.all())
+        pmi.rooms.set(reference.rooms.all())
+        pmi.assets.set(reference.assets.all())
+        print('Imported:', reference)
 
-def ImportPeople():
-    for p in people.values():
-        person = GetPerson(p['Name'])
-        if not person: continue
-        AddEmail(person, p['Email'])
-        AddPhone(person, p['Phone'])
-        AddDepartments(person, p['Department'])
-        AddOffice(person, p['Office'])
-        person.save()
-
-def GetPerson(text):
-    if not text: return
-    first, last = names[text]
-    person, created = Person.objects.get_or_create(first=first, last=last)
-    return person
-
-def AddEmail(person, text):
-    if not text: return
-    if '@' in text: person.email = text
-    else: person.email = text + '@middlebury.edu'
-
-def AddPhone(person, text):
-    if not text: return
-    person.phone = text
-
-def AddDepartments(person, text):
-    if not text: return
-    for part in text.split('/'):
-        dept = departments[part.strip()]
-        D, created = Department.objects.get_or_create(name=dept)
-        person.departments.add(D)
-
-def AddOffice(person, text):
-    if text in ['Left', 'Retired']: return
-    person.status = 5
-    if not text: return
-    room = rooms[text]
-    if room:
-        R, created = Room.objects.get_or_create(text=room)
-        person.office = R
-    else:
-        print('Ignoring Office text:', text)
+def GetPerson(username):
+    if username == 'jodys': return Person.objects.get(first='Jody', last='Smith')
+    if username == 'goodrich': return Person.objects.get(first='Chris', last='Goodrich')
+    if username == 'cdonohue': return Person.objects.get(first='Carrie', last='Donohue')
+    if username == 'cacarr': return Person.objects.get(first='Caitlin', last='Carr')
+    if username == 'ejmcmahon': return Person.objects.get(first='Eamon', last='McMahon')
+    if username == 'kbooth': return Person.objects.get(first='Kevin', last='Booth')
+    if username == 'twicklan': return Person.objects.get(first='Tim', last='Wickland')
+    if username == 'cekstrom': return Person.objects.get(first='Cathy', last='Ekstrom')
+    if username.endswith('\lance'): return Person.objects.get(first='Lance', last='Ritchie')
+    if username == 'gsharon': return Person.objects.get(first='Greg', last='Sharon')
+    print('Not Found:', username)
 
 class Command(BaseCommand):
 
     def import_maintenance(self):
         LoadPickles()
         ImportMaintenance()
-
-    def import_people(self):
-        LoadPickles()
-        ImportPeople()
 
     def handle(self, *args, **options):
         self.import_maintenance()

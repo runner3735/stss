@@ -9,7 +9,7 @@ instruments = ['AssetTag', 'InventoryDate', 'InstrumentName', 'Nickname', 'Manuf
 jobs = ['ID', 'Opened', 'Customer', 'Tag', 'Details', 'Type', 'Category', 'Deadline', 'Status', 'Technician',
 'Course', 'Budget', 'Instrument', 'Closed', 'Hours', 'Comments', 'Location', 'Department', 'DBStatus']
 
-maintenance = 
+maintenance = ['ID', 'Frequency', 'Creator']
 
 **** helper tables ****
 

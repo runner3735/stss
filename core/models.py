@@ -1,5 +1,5 @@
 
-import hashlib, os
+import datetime, hashlib, os
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -367,7 +367,7 @@ class PMI(models.Model):
     last = models.DateField(blank=True, null=True)
     creator = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
     frequency = models.IntegerField()
-    next = models.DateField(blank=True, null=True)
+    next = models.DateField(blank=True, null=True, editable=False)
     
     name = models.CharField(max_length=128, blank=True)
     details = models.TextField(max_length=4096, blank=True)
@@ -385,3 +385,7 @@ class PMI(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.next = self.last + datetime.timedelta(days=self.frequency)
+        super(PMI, self).save(*args, **kwargs)

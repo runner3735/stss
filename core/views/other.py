@@ -18,6 +18,7 @@ def home(request):
   context['pictures'] = Picture.objects.all().count()
   context['documents'] = Document.objects.all().count()
   context['videos'] = Video.objects.all().count()
+  context['pmis'] = PMI.objects.all().count()
   return render(request, 'home.html', context)
 
 # Vendor
