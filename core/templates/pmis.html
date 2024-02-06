@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block html %}<html lang="en" class="has-navbar-fixed-bottom">{% endblock %}
+{% block content %}
+
+<section class="section has-background-info-dark">
+    <h1 class="title has-text-light has-text-centered">Preventative Maintenance Items List</h1>
+    <table id="pmi-table" class="table is-fullwidth is-narrow is-striped">
+        <thead>
+            <tr>
+                <th>Creator</th>
+                <th>Last</th>
+                <th>Frequency</th>
+                <th>Next</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pmi in pmis %}
+            <tr>
+                <td>{{ pmi.creator.last }}</td>
+                <td>{{ pmi.last | date:"Y-m-d" }}</td>
+                <td>{{ pmi.frequency }}</td>
+                <td>{{ pmi.next | date:"Y-m-d" }}</td>
+                <td>{{ pmi.name }}</td>
+                <td>{{ pmi.status }}</td>
+                <td class="has-text-centered">
+                    <a href="">
+                        <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<script src="https://unpkg.com/htmx.org@1.7.0"></script>
+{% endblock %}

@@ -22,6 +22,7 @@ urlpatterns = [
   path('vendors/<int:page>/', views.vendor_list, name='vendor-list'),
   path('rooms/', views.RoomList.as_view(), name='rooms'),
   path('tags/', views.TagList.as_view(), name='tags'),
+  path('pmis/', views.PMIList.as_view(), name='pmis'),
 
 # Asset
   path('asset/new/', views.asset_new, name='asset-new'),

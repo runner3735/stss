@@ -379,6 +379,12 @@ class PMI(models.Model):
 
     class Meta: 
         ordering = ["next"]
+    
+    @property
+    def status(self):
+       if datetime.date.today() > self.next: return 'Overdue'
+       if datetime.date.today() + datetime.timedelta(days=14) > self.next: return 'Coming Due Soon'
+       return 'Up To Date'
 
     def detail(self):
         return reverse('pmi', args=[self.id])

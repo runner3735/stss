@@ -48,6 +48,11 @@ class RoomList(ListView):
     template_name = 'rooms.html'
     context_object_name = 'rooms'
 
+class PMIList(ListView):
+    model = PMI
+    template_name = 'pmis.html'
+    context_object_name = 'pmis'
+
 class TagList(ListView):
     model = Tag
     template_name = 'tags.html'
