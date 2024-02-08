@@ -17,6 +17,8 @@ def ImportMaintenance():
         username = m['Creator'][5:].lower()
         creator = GetPerson(username)
         reference = Job.objects.get(identifier=m['ID'])
+        print(reference.status)
+        continue
         frequency = int(m['Frequency'])
         if not reference.opened: continue
         pmi = PMI()

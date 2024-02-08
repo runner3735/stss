@@ -1,0 +1,19 @@
+
+    {% if pictures %}
+    <div class="columns is-multiline" hx-target="#picture-modal">
+        {% for picture in pictures %}
+        <div class="column is-narrow">
+            <div class="card has-background-black has-text-white has-text-centered">
+                <div class="card-image px-2 pt-2" hx-get="{% url 'picture-modal' picture.id linkable.modeltype linkable.id %}">
+                    <img src="{{ picture.thumb300h.url }}" alt="picture">
+                </div>
+                <div class="content mx-4 pb-2">{{ picture.name }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="modal" _="on htmx:afterSwap add .is-active to me">
+        <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
+        <div id="picture-modal" class="columns is-overlay is-vcentered" _="on click remove .is-active from closest .modal"></div>
+    </div>
+    {% endif %}

@@ -16,8 +16,13 @@ def picture_detail(request, pk):
   picture = get_object_or_404(Picture, pk=pk)
   return render(request, 'picture.html', {'picture': picture})
 
-def picture_modal(request, picture, model, pk):
+def picture_modal_old(request, picture, model, pk):
   picture = get_object_or_404(Picture, pk=picture)
+  linkable = get_instance(model, pk)
+  return render(request, 'picture-modal.html', {'picture': picture, 'linkable': linkable})
+
+def picture_modal(request, picture, model, pk):
+  picture = get_object_or_404(File, pk=picture)
   linkable = get_instance(model, pk)
   return render(request, 'picture-modal.html', {'picture': picture, 'linkable': linkable})
 
@@ -51,7 +56,7 @@ def picture_delete(request, pk):
     picture.delete()
   return HttpResponseRedirect(request.GET.get('next'))
 
-def picture_remove(request, picture, model, pk):
+def picture_remove_old(request, picture, model, pk):
   picture = get_object_or_404(Picture, pk=picture)
   if request.user != picture.contributor: return HttpResponse(status=204)
   linkable = get_instance(model, pk)
@@ -65,7 +70,7 @@ def upload(request, model="", pk=""):
   return render(request, 'upload.html', {'model': model, 'pk': pk})
 
 @login_required
-def file_upload(request):
+def file_upload_old(request):
   if request.method == 'POST':
     file = request.FILES.get('file')
     model = request.POST.get('model', None)
@@ -86,6 +91,32 @@ def file_upload(request):
     return HttpResponse('')
   print('ERROR: file_upload called not using post!')
   return JsonResponse({'post':'false'})
+
+@login_required
+def file_upload(request):
+  if request.method == 'POST':
+    upload = request.FILES.get('file')
+    model = request.POST.get('model', None)
+    pk = request.POST.get('pk', None)
+    if model:
+      attachable = get_instance(model, pk)
+    else:
+      attachable = None
+    create_file(request, upload, attachable)
+  return HttpResponse('')
+
+@login_required
+def create_file(request, upload, attachable):
+  contributor = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  name, ext = os.path.splitext(upload.name)
+  file = File()
+  file.contributor = contributor
+  file.content = upload
+  if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = upload
+  file.name = name
+  file.save()
+  print('created file', file.id)
+  if attachable: attachable.files.add(file)
 
 @login_required
 def create_document(request, file, documentable):
@@ -133,6 +164,17 @@ def document_edit_name(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'documentChanged'})
   return render(request, 'document-edit-name.html', {'form': form})
 
+
+
+def document_remove(request, document, model, pk):
+  document = get_object_or_404(Document, pk=document)
+  if request.user != document.contributor: return HttpResponse(status=204)
+  linkable = get_instance(model, pk)
+  linkable.documents.remove(document)
+  if linkable.documents.count(): return HttpResponse('')
+  if model == 'purchase': return HttpResponse('', headers={'HX-Retarget': '#documents'})
+  return HttpResponse('', headers={'HX-Retarget': '#document-table'})
+
 def get_attachment(model, pk):
   if model == 'document':
     instance = get_object_or_404(Document, pk=pk)
@@ -143,3 +185,38 @@ def get_attachment(model, pk):
   else:
     instance = None
   return instance
+
+# File
+
+@login_required
+def file_name_edit(request, pk):
+  file = get_object_or_404(File, pk=pk)
+  user = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if user != file.contributor: return HttpResponse(status=204)
+  form = FileNameForm(request.POST or None, instance=file)
+  if request.method == 'POST':
+    if form.is_valid():
+      form.save()
+      return HttpResponse(status=204, headers={'HX-Trigger': 'fileChanged'})
+  return render(request, 'file-name-edit.html', {'form': form})
+
+@login_required
+def file_remove(request, file, model, pk):
+  file = get_object_or_404(File, pk=file)
+  user = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if user != file.contributor: return HttpResponse(status=204)
+  linkable = get_instance(model, pk)
+  linkable.files.remove(file)
+  return HttpResponse('') # lines below are used to clear the whole table if there are no files left, but this is a problem for the gallery view
+  if linkable.files.count(): return HttpResponse('')
+  if model == 'purchase': return HttpResponse('', headers={'HX-Retarget': '#files'})
+  return HttpResponse('', headers={'HX-Retarget': '#file-table'})
+
+@login_required
+def picture_remove(request, file, model, pk):
+  file = get_object_or_404(File, pk=file)
+  user = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if user != file.contributor: return HttpResponse(status=204)
+  linkable = get_instance(model, pk)
+  linkable.files.remove(file)
+  return HttpResponse(status=204, headers={'HX-Trigger': 'galleryChanged'})

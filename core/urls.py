@@ -64,6 +64,8 @@ urlpatterns = [
   path('job/<int:pk>/works/', views.job_works, name='job-works'),
   path('job/<int:pk>/notes/', views.job_notes, name='job-notes'),
   path('job/<int:pk>/pictures/', views.job_pictures, name='job-pictures'),
+  path('job/<int:pk>/files/', views.job_files, name='job-files'),
+  path('job/<int:pk>/gallery/', views.job_gallery, name='job-gallery'),
   path('job/<int:pk>/documents/', views.job_documents, name='job-documents'),
   path('job/<int:pk>/videos/', views.job_videos, name='job-videos'),
 
@@ -147,7 +149,7 @@ urlpatterns = [
 # Picture
   path('picture/<int:pk>/', views.picture_detail, name='picture'),
   path('picture/<int:picture>/modal/<str:model>/<int:pk>/', views.picture_modal, name='picture-modal'),
-  path('picture/<int:picture>/remove/<str:model>/<int:pk>/', views.picture_remove, name='picture-remove'),
+  
   path('picture/<int:pk>/edit/', views.picture_edit, name='picture-edit'),
 #   path('picture/<int:pk>/rotate/<int:degrees>/', views.picture_rotate, name='picture-rotate'),
   path('picture/<int:pk>/delete/', views.picture_delete, name='picture-delete'),
@@ -164,6 +166,11 @@ urlpatterns = [
 # Document
   path('document/<int:pk>/name/edit/', views.document_edit_name, name='document-edit-name'),
   path('document/<int:document>/remove/<str:model>/<int:pk>/', views.document_remove, name='document-remove'),
+
+# File
+  path('file/<int:pk>/name/edit/', views.file_name_edit, name='file-name-edit'),
+  path('file/<int:file>/remove/<str:model>/<int:pk>/', views.file_remove, name='file-remove'),
+  path('picture/<int:file>/remove/<str:model>/<int:pk>/', views.picture_remove, name='picture-remove'),
 
 # Work
   path('work/<int:pk>/edit/', views.work_edit, name='work-edit'),

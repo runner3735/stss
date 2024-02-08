@@ -41,6 +41,11 @@ class JobDetail(DetailView):
   context_object_name = 'job'
   template_name = 'job.html'
 
+class PMIDetail(DetailView):
+  model = PMI
+  context_object_name = 'pmi'
+  template_name = 'pmi.html'
+
 # List
 
 class RoomList(ListView):

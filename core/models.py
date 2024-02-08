@@ -242,6 +242,43 @@ class Person(models.Model):
     def __str__(self):
         return self.first + ' ' + self.last
 
+class File(models.Model):
+  name = models.CharField(max_length=200)
+  contributor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True)
+  created = models.DateTimeField(auto_now_add=True)
+  url = models.URLField(blank=True, null=True)
+  content = models.FileField(upload_to='files/%Y/%m/', blank=True, null=True)
+  picture = models.ImageField(upload_to='pictures/%Y/%m/', blank=True, null=True)
+
+  thumb225h = ImageSpecField(source='picture', processors=[ResizeToFit(height=225, upscale=True)], format='JPEG', options={'quality': 60})
+  thumb300h = ImageSpecField(source='picture', processors=[ResizeToFit(height=300, upscale=True)], format='JPEG', options={'quality': 60})
+  thumb450h = ImageSpecField(source='picture', processors=[ResizeToFit(height=450, upscale=False)], format='JPEG', options={'quality': 80})
+
+  class Meta: 
+    ordering = ["-created"]
+
+  def __str__(self):
+    return self.content.name
+  
+  def filepath(self):
+    return os.path.join(settings.MEDIA_ROOT, self.content.name)
+  
+  def filename(self):
+    return os.path.basename(self.content.name)
+
+  def extension(self):
+    return os.path.splitext(self.content.name)[1].lower()
+
+  def thumbname(self):
+    return os.path.basename(self.picture.name)
+
+  def thumbpath(self):
+    return os.path.join(settings.MEDIA_ROOT, self.picture.name)
+  
+  def detail(self):
+    return reverse('file', args=[str(self.id)])
+
+
 class Purchase(models.Model):
     method_choices = [(1, 'Credit Card'), (2, 'Purchase Order'), (3, 'Invoice')]
     funding_choices = [(1, 'Grant Funded'), (2, 'Capital Equipment'), (3, 'Start-up')]
@@ -286,6 +323,7 @@ class Asset(models.Model):
     contacts = models.ManyToManyField(Person, related_name='assets', editable=False)
     tags = models.ManyToManyField(Tag, related_name='assets', editable=False)
     notes = models.ManyToManyField(Note, related_name='assets', editable=False)
+    files = models.ManyToManyField(File, related_name='assets', editable=False)
     documents = models.ManyToManyField(Document, related_name='assets', editable=False)
     pictures = models.ManyToManyField(Picture, related_name='assets', editable=False)
     videos = models.ManyToManyField(Video, related_name='assets', editable=False)
@@ -337,6 +375,7 @@ class Job(models.Model):
     departments = models.ManyToManyField(Department, related_name='jobs', editable=False)
     assets = models.ManyToManyField(Asset, related_name='jobs', editable=False)
     notes = models.ManyToManyField(Note, related_name='jobs', editable=False)
+    files = models.ManyToManyField(File, related_name='jobs', editable=False)
     documents = models.ManyToManyField(Document, related_name='jobs', editable=False)
     pictures = models.ManyToManyField(Picture, related_name='jobs', editable=False)
     videos = models.ManyToManyField(Video, related_name='jobs', editable=False)
@@ -376,6 +415,8 @@ class PMI(models.Model):
     rooms = models.ManyToManyField(Room, related_name='+', editable=False)
     departments = models.ManyToManyField(Department, related_name='+', editable=False)
     assets = models.ManyToManyField(Asset, related_name='+', editable=False)
+    files = models.ManyToManyField(File, related_name='+', editable=False)
+    job = models.OneToOneField(Job, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta: 
         ordering = ["next"]

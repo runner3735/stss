@@ -1,0 +1,38 @@
+{% if files %}
+<table id="file-table" class="table is-fullwidth">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Contributor</th>
+            <th>FileNew</th>
+            <th class="has-text-centered">Edit</th>
+            <th class="has-text-centered">Unlink</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.name }}</td>
+            <td>{{ file.contributor.first }}
+                {{ file.contributor.last }}</td>
+            <td><a href="{{ file.content.url }}">{{ file.filename }}</a></td>
+            {% if user.first_name == file.contributor.first and user.last_name == file.contributor.last %}
+            <td class="has-text-centered">
+                <a hx-get="{% url 'file-name-edit' file.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+            <td class="has-text-centered">
+                <a hx-get="{% url 'file-remove' file.id linkable.modeltype linkable.id %}" hx-target="closest tr" hx-swap="outerHTML">
+                    <span class="icon is-small"><i class="fas fa-unlink"></i></span>
+                </a>
+            </td>
+            {% else %}
+            <td></td>
+            <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

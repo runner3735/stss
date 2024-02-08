@@ -280,6 +280,16 @@ def job_notes(request, pk):
   notes = job.notes.all()
   return render(request, 'note-list.html', {'notes': notes})
 
+def job_files(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  files = job.files.all()
+  return render(request, 'file-list.html', {'files': files, 'linkable': job})
+
+def job_gallery(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  pictures = job.files.exclude(picture='')
+  return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': job})
+
 def job_pictures(request, pk):
   job = get_object_or_404(Job, pk=pk)
   pictures = job.pictures.all()

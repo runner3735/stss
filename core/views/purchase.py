@@ -113,12 +113,5 @@ def purchase_edit(request, pk):
       return redirect('purchase', pk)
   return render(request, 'purchase-edit.html', {'purchase': purchase, 'form': form})
 
-def document_remove(request, document, model, pk):
-  document = get_object_or_404(Document, pk=document)
-  if request.user != document.contributor: return HttpResponse(status=204)
-  linkable = get_instance(model, pk)
-  linkable.documents.remove(document)
-  if linkable.documents.count(): return HttpResponse('')
-  if model == 'purchase': return HttpResponse('', headers={'HX-Retarget': '#documents'})
-  return HttpResponse('', headers={'HX-Retarget': '#document-table'})
+
 

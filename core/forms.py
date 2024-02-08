@@ -192,9 +192,10 @@ class DocumentForm(forms.ModelForm):
         model = Document
         fields = ['name', 'file']
 
-class DocumentNameForm(forms.ModelForm):
+# File
+class FileNameForm(forms.ModelForm):
     class Meta:
-        model = Document
+        model = File
         fields = ['name',]
 
 # Note
