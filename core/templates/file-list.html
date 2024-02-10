@@ -1,16 +1,17 @@
-{% if files %}
+{% if linkable.files.all %}
+<h3 class="subtitle has-text-white has-text-weight-semibold has-text-centered">Files</h3>
 <table id="file-table" class="table is-fullwidth">
     <thead>
         <tr>
             <th>Description</th>
             <th>Contributor</th>
-            <th>FileNew</th>
+            <th>Filename</th>
             <th class="has-text-centered">Edit</th>
             <th class="has-text-centered">Unlink</th>
         </tr>
     </thead>
     <tbody>
-        {% for file in files %}
+        {% for file in linkable.files.all %}
         <tr>
             <td>{{ file.name }}</td>
             <td>{{ file.contributor.first }}

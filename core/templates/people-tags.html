@@ -1,0 +1,11 @@
+{% for person in choices %}
+{% if person in selected %}
+<span class="tag is-danger is-medium">
+    {{ person }}<a href="{% url 'person-remove' person.id linkable.modeltype linkable.id %}"
+        class="delete is-small has-background-black"></a>
+</span>
+{% else %}
+<a href="{% url 'person-add' person.id linkable.modeltype linkable.id %}"
+    class="tag has-background-danger-dark has-text-light is-medium">{{ person }}</a>
+{% endif %}
+{% endfor %}

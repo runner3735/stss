@@ -1,7 +1,7 @@
 
 # this script imports the people table, and creates Person, Department, and Room objects
 
-import pickle
+import datetime, pickle
 from django.core.management.base import BaseCommand
 from ...models import Person, PMI, Job
 
@@ -17,17 +17,20 @@ def ImportMaintenance():
         username = m['Creator'][5:].lower()
         creator = GetPerson(username)
         reference = Job.objects.get(identifier=m['ID'])
-        print(reference.status)
-        continue
         frequency = int(m['Frequency'])
-        if not reference.opened: continue
         pmi = PMI()
-        pmi.last = reference.opened
+        if reference.status == 3 and reference.closed:
+            pmi.last = reference.closed
+            pmi.next = reference.closed + datetime.timedelta(days=frequency)
+        elif reference.status == 3:
+            print('Import Error: reference job is complete, but there is no closed date!')
+            print(reference.identifier)
         pmi.creator = creator
         pmi.frequency = frequency
         pmi.name = reference.name
         pmi.details = reference.details
         pmi.location = reference.location
+        pmi.job = reference
         pmi.save()
         pmi.customers.set(reference.customers.all())
         pmi.departments.set(reference.departments.all())

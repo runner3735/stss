@@ -171,6 +171,8 @@ def get_instance(model, pk):
     instance = get_object_or_404(Person, pk=pk)
   elif model == 'purchase':
     instance = get_object_or_404(Purchase, pk=pk)
+  elif model == 'pmi':
+    instance = get_object_or_404(PMI, pk=pk)
   else:
     instance = None
   return instance

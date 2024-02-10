@@ -1,0 +1,39 @@
+{% if linkable.assets.all %}
+<h3 class="subtitle has-text-white has-text-weight-semibold has-text-centered">Assets</h3>
+<table id="asset-table" class="table">
+    <thead>
+        <tr>
+            <th>Asset Tag</th>
+            <th>Name</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>Room</th>
+            <th>View</th>
+            <th>Unlink</th>
+        </tr>
+    </thead>
+    <tbody hx-target="closest tr" hx-swap="outerHTML">
+        {% for asset in linkable.assets.all %}
+        <tr>
+            <td>{{ asset.identifier }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ asset.manufacturer }}</td>
+            <td>{{ asset.model }}</td>
+            <td>{{ asset.serial }}</td>
+            <td>{{ asset.room }}</td>
+            <td class="has-text-centered">
+                <a href="{% url 'asset' asset.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                </a>
+            </td>
+            <td class="has-text-centered">
+                <a hx-get="{% url 'asset-remove' asset.id linkable.modeltype linkable.id %}">
+                    <span class="icon is-small"><i class="fas fa-unlink"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

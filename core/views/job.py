@@ -183,21 +183,35 @@ def job_deadline_edit(request, pk):
 
 @login_required
 def job_closed_edit(request, pk):
-  j=get_object_or_404(Job, pk=pk)
-  form = JobClosedForm(request.POST or None, instance=j)
+  job=get_object_or_404(Job, pk=pk)
+  if not job.closed and job.status < 3: return HttpResponse(status=204)
+  form = JobClosedForm(request.POST or None, instance=job)
   if request.method == 'POST':
     if 'today' in request.POST:
-      j.closed = datetime.date.today()
-      j.save()
+      job.closed = datetime.date.today()
+      job.save()
+      update_pmi(job)
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
     if 'clear' in request.POST:
-      j.closed = None
-      j.save()
+      if not job.closed: return HttpResponse(status=204)
+      job.closed = None
+      job.save()
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
     if form.is_valid():
       form.save()
+      update_pmi(job)
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
   return render(request, 'job-closed-edit.html', {'form': form})
+
+def update_pmi(job):
+  if job.category != 5: return
+  if job.status != 3: return
+  if not job.closed: return
+  pmi = job.pmi
+  if not pmi: return
+  pmi.last = job.closed
+  pmi.next = job.closed + datetime.timedelta(days=pmi.frequency)
+  pmi.save()
 
 @login_required
 def job_status_edit(request, pk):
@@ -205,6 +219,7 @@ def job_status_edit(request, pk):
   form = JobStatusForm(request.POST or None, instance=job)
   if request.method == 'POST':
     if form.is_valid():
+      if job.closed and form.cleaned_data['status'] < 3: return HttpResponse(status=204)
       form.save()
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobStatusChanged'})
   return render(request, 'job-status-edit.html', {'form': form})
@@ -282,8 +297,7 @@ def job_notes(request, pk):
 
 def job_files(request, pk):
   job = get_object_or_404(Job, pk=pk)
-  files = job.files.all()
-  return render(request, 'file-list.html', {'files': files, 'linkable': job})
+  return render(request, 'file-list.html', {'linkable': job})
 
 def job_gallery(request, pk):
   job = get_object_or_404(Job, pk=pk)
@@ -354,3 +368,30 @@ def job_new(request):
   job.save()
   return HttpResponseRedirect(reverse('job-details-edit', args=[job.id]))
   
+@login_required
+def job_rooms_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = RoomForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      room = form.cleaned_data['room']
+      if 'add' in request.POST:
+        job.rooms.add(room)
+      elif 'remove' in request.POST:
+        job.rooms.remove(room)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'roomsChanged'})
+  return render(request, 'rooms-edit.html', {'form': form})
+
+@login_required
+def job_departments_edit(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  form = DepartmentForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      department = form.cleaned_data['department']
+      if 'add' in request.POST:
+        job.departments.add(department)
+      elif 'remove' in request.POST:
+        job.departments.remove(department)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
+  return render(request, 'departments-edit.html', {'form': form})

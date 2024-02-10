@@ -79,44 +79,8 @@
             </div>
             {% endif %}
 
-            <div id="assets" class="mt-4">
-                {% if purchase.lineitem_set.all %}
-                <h3 class="subtitle has-text-light">Assets</h3>
-                <table id="asset-table" class="table">
-                    <thead>
-                        <tr>
-                            <th>Cost</th>
-                            <th>Asset Tag</th>
-                            <th>Item</th>
-                            <th>Model</th>
-                            <th>Room</th>
-                            <th>View</th>
-                            <th>Unlink</th>
-                        </tr>
-                    </thead>
-                    <tbody hx-target="closest tr" hx-swap="outerHTML">
-                        {% for item in purchase.lineitem_set.all %}
-                        <tr>
-                            <td>{{ item.cost }}</td>
-                            <td>{{ item.asset.identifier }}</td>
-                            <td>{{ item.asset }}</td>
-                            <td>{{ item.asset.model }}</td>
-                            <td>{{ item.asset.room }}</td>
-                            <td class="has-text-centered">
-                                <a href="{% url 'asset' item.asset.id %}">
-                                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
-                                </a>
-                            </td>
-                            <td class="has-text-centered">
-                                <a hx-get="{% url 'asset-remove' item.asset.id 'purchase' purchase.id %}">
-                                    <span class="icon is-small"><i class="fas fa-unlink"></i></span>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% endif %}
+            <div id="assets" class="mt-4" hx-get="{% url 'purchase-assets' purchase.id %}" hx-trigger="assetsChanged from:body">
+                {% include "purchase-assets.html" %}
             </div>
 
         </div>

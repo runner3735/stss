@@ -355,5 +355,6 @@ def asset_remove(request, asset, model, pk):
   linkable = get_instance(model, pk)
   linkable.assets.remove(asset)
   if linkable.assets.count(): return HttpResponse('')
-  return HttpResponse('', headers={'HX-Retarget': '#assets'})
+  #return HttpResponse('', headers={'HX-Retarget': '#assets'})
+  return HttpResponse(status=204, headers={'HX-Trigger': 'assetsChanged'})
 

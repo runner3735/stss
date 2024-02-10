@@ -1,0 +1,120 @@
+
+<table class="table is-striped has-text-weight-bold">
+    <tbody>
+        <tr><td><div class="tag is-success is-medium">PMI Properties</div></td><td>
+            
+        </td><td></td></tr>
+        <tr>
+            <th>Created By</th>
+            <td>{{ pmi.creator }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Frequency (Days)</th>
+            <td hx-trigger="pmiFrequencyChanged from:body" hx-get="{% url 'pmi-frequency' pmi.id %}" hx-target="this">
+                {{ pmi.frequency }}
+            </td>
+            <td>
+                <a hx-get="{% url 'pmi-frequency-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Last Job</th>
+            <td>{{ pmi.job.identifier }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Last Service</th>
+            <td hx-trigger="pmiLastChanged from:body" hx-get="{% url 'pmi-last' pmi.id %}" hx-target="this">
+                {{ pmi.last | date:"F j, Y" }}
+            </td>
+            <td>
+                <a hx-get="{% url 'pmi-last-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Next Service</th>
+            <td hx-trigger="pmiNextChanged from:body" hx-get="{% url 'pmi-next' pmi.id %}" hx-target="this">
+                {{ pmi.next | date:"F j, Y" }}
+            </td>
+            <td>
+                <a hx-get="{% url 'pmi-next-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr><td><div class="tag is-success is-medium">Job Properties</div></td><td></td><td></td></tr>
+        <tr>
+            <th>Name</th>
+            <td hx-trigger="pmiNameChanged from:body" hx-get="{% url 'pmi-name' pmi.id %}" hx-target="this">
+                {{ pmi.name }}
+            </td>
+            <td><a hx-get="{% url 'pmi-name-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Customers</th>
+            <td>
+                <div class="tags has-text-weight-normal">
+                    {% for p in pmi.customers.all %}
+                    <a href="{% url 'person' p.id %}" class="tag is-danger is-medium">{{ p }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td><a href="{% url 'people-select' 'pmi' pmi.id %}"><span class="icon is-small"><i
+                            class="fas fa-edit"></i></span></a></td>
+        </tr>
+        <tr>
+            <th>Departments</th>
+            <td hx-trigger="departmentsChanged from:body" hx-get="{% url 'pmi-departments' pmi.id %}" hx-target="this">
+                <div class="tags has-text-weight-normal">
+                    {% for dept in pmi.departments.all %}
+                    <a href="" class="tag is-link is-medium">{{ dept }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td>
+                <a hx-get="{% url 'pmi-departments-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Rooms</th>
+            <td hx-trigger="roomsChanged from:body" hx-get="{% url 'pmi-rooms' pmi.id %}" hx-target="this">
+                <div class="tags has-text-weight-normal">
+                    {% for room in pmi.rooms.all %}
+                    <a href="" class="tag is-danger is-medium">{{ room }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td>
+                <a hx-get="{% url 'pmi-rooms-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td hx-trigger="pmiLocationChanged from:body" hx-get="{% url 'pmi-location' pmi.id %}" hx-target="this">
+                {{ pmi.location }}
+            </td>
+            <td><a hx-get="{% url 'pmi-location-edit' pmi.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div>
+    <a hx-get="{% url 'pmi-asset-add' pmi.id %}" hx-target="#dialog" class="button is-link mr-4">Add Asset</a>
+    <a href="{% url 'pmi-schedule' pmi.id %}" class="button is-link mr-4">Schedule</a>
+    <a href="{% url 'upload-to' 'pmi' pmi.id %}" class="button is-link mr-4">Add Files</a>
+</div>

@@ -207,10 +207,8 @@ def file_remove(request, file, model, pk):
   if user != file.contributor: return HttpResponse(status=204)
   linkable = get_instance(model, pk)
   linkable.files.remove(file)
-  return HttpResponse('') # lines below are used to clear the whole table if there are no files left, but this is a problem for the gallery view
   if linkable.files.count(): return HttpResponse('')
-  if model == 'purchase': return HttpResponse('', headers={'HX-Retarget': '#files'})
-  return HttpResponse('', headers={'HX-Retarget': '#file-table'})
+  return HttpResponse(status=204, headers={'HX-Trigger': 'fileChanged'})
 
 @login_required
 def picture_remove(request, file, model, pk):

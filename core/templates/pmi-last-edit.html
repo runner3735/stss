@@ -1,0 +1,17 @@
+
+{% load widget_tweaks %}
+
+<form hx-post="{{ request.path }}">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label has-text-link-light">Last Service Date</label>
+        <div class="control">{% render_field form.last class="input" type="date" %}</div>
+    </div>
+    <div class="control">
+        <button class="button is-danger">Update</button>
+    </div>
+    <div class="control mt-4">
+        <button class="button is-danger mr-4" name="today">Set To Today</button>
+        <button class="button is-danger mr-4" name="clear">Clear</button>
+    </div>
+</form>

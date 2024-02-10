@@ -158,6 +158,38 @@ class JobDetailsForm(forms.ModelForm):
         model = Job
         fields = ['details',]
 
+# PMI
+
+class PMINameForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['name',]        
+
+class PMIFrequencyForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['frequency',] 
+
+class PMILocationForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['location',]        
+
+class PMILastForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['last',]
+
+class PMINextForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['next',]        
+
+class PMIDetailsForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['details',]   
+
 # Person
         
 class PersonNewForm(forms.ModelForm):

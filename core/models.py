@@ -376,9 +376,6 @@ class Job(models.Model):
     assets = models.ManyToManyField(Asset, related_name='jobs', editable=False)
     notes = models.ManyToManyField(Note, related_name='jobs', editable=False)
     files = models.ManyToManyField(File, related_name='jobs', editable=False)
-    documents = models.ManyToManyField(Document, related_name='jobs', editable=False)
-    pictures = models.ManyToManyField(Picture, related_name='jobs', editable=False)
-    videos = models.ManyToManyField(Video, related_name='jobs', editable=False)
     
     class Meta: 
         ordering = ["-id"]
@@ -406,7 +403,7 @@ class PMI(models.Model):
     last = models.DateField(blank=True, null=True)
     creator = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
     frequency = models.IntegerField()
-    next = models.DateField(blank=True, null=True, editable=False)
+    next = models.DateField(blank=True, null=True)
     
     name = models.CharField(max_length=128, blank=True)
     details = models.TextField(max_length=4096, blank=True)
@@ -415,7 +412,7 @@ class PMI(models.Model):
     rooms = models.ManyToManyField(Room, related_name='+', editable=False)
     departments = models.ManyToManyField(Department, related_name='+', editable=False)
     assets = models.ManyToManyField(Asset, related_name='+', editable=False)
-    files = models.ManyToManyField(File, related_name='+', editable=False)
+    files = models.ManyToManyField(File, related_name='pmis', editable=False)
     job = models.OneToOneField(Job, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta: 
@@ -423,9 +420,10 @@ class PMI(models.Model):
     
     @property
     def status(self):
-       if datetime.date.today() > self.next: return 'Overdue'
-       if datetime.date.today() + datetime.timedelta(days=14) > self.next: return 'Coming Due Soon'
-       return 'Up To Date'
+        if not self.next: return self.job.get_status_display()
+        if datetime.date.today() > self.next: return 'Overdue'
+        if datetime.date.today() + datetime.timedelta(days=14) > self.next: return 'Coming Due Soon'
+        return 'Up To Date'
 
     def detail(self):
         return reverse('pmi', args=[self.id])
@@ -433,6 +431,9 @@ class PMI(models.Model):
     def __str__(self):
         return self.name
     
+    def modeltype(self):
+      return 'pmi'
+    
     def save(self, *args, **kwargs):
-        self.next = self.last + datetime.timedelta(days=self.frequency)
+        #self.next = self.last + datetime.timedelta(days=self.frequency)
         super(PMI, self).save(*args, **kwargs)

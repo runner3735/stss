@@ -13,6 +13,7 @@
                 <th>Frequency</th>
                 <th>Next</th>
                 <th>Name</th>
+                <th>Last Job</th>
                 <th>Status</th>
                 <th>View</th>
             </tr>
@@ -25,9 +26,10 @@
                 <td>{{ pmi.frequency }}</td>
                 <td>{{ pmi.next | date:"Y-m-d" }}</td>
                 <td>{{ pmi.name }}</td>
+                <td>{{ pmi.job.identifier }}</td>
                 <td>{{ pmi.status }}</td>
                 <td class="has-text-centered">
-                    <a href="">
+                    <a href="{% url 'pmi' pmi.id %}">
                         <span class="icon is-small"><i class="fas fa-eye"></i></span>
                     </a>
                 </td>

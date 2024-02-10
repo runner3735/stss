@@ -101,6 +101,32 @@ urlpatterns = [
   path('job/<int:pk>/asset/<int:asset>/remove/', views.job_asset_remove, name='job-asset-remove'),
   path('job/<int:pk>/work/new/', views.work_new, name='work-new'),
 
+# PMI
+
+  path('pmi/<int:pk>/', views.PMIDetail.as_view(), name='pmi'),
+
+  path('pmi/<int:pk>/frequency/', views.pmi_frequency, name='pmi-frequency'),
+  path('pmi/<int:pk>/last/', views.pmi_last, name='pmi-last'),
+  path('pmi/<int:pk>/next/', views.pmi_next, name='pmi-next'),
+  path('pmi/<int:pk>/name/', views.pmi_name, name='pmi-name'),
+  path('pmi/<int:pk>/location/', views.pmi_location, name='pmi-location'),
+  path('pmi/<int:pk>/departments/', views.pmi_departments, name='pmi-departments'),
+  path('pmi/<int:pk>/rooms/', views.pmi_rooms, name='pmi-rooms'),
+  path('pmi/<int:pk>/files/', views.pmi_files, name='pmi-files'),
+  path('pmi/<int:pk>/assets/', views.pmi_assets, name='pmi-assets'),
+
+  path('pmi/<int:pk>/frequency/edit/', views.pmi_frequency_edit, name='pmi-frequency-edit'),
+  path('pmi/<int:pk>/last/edit/', views.pmi_last_edit, name='pmi-last-edit'),
+  path('pmi/<int:pk>/next/edit/', views.pmi_next_edit, name='pmi-next-edit'),
+  path('pmi/<int:pk>/name/edit/', views.pmi_name_edit, name='pmi-name-edit'),
+  path('pmi/<int:pk>/location/edit/', views.pmi_location_edit, name='pmi-location-edit'),
+  path('pmi/<int:pk>/departments/edit/', views.pmi_departments_edit, name='pmi-departments-edit'),
+  path('pmi/<int:pk>/rooms/edit/', views.pmi_rooms_edit, name='pmi-rooms-edit'),
+  path('pmi/<int:pk>/details/edit/', views.pmi_details_edit, name='pmi-details-edit'),
+
+  path('pmi/<int:pk>/asset/add/', views.pmi_asset_add, name='pmi-asset-add'),
+  path('pmi/<int:pk>/schedule/', views.pmi_schedule, name='pmi-schedule'),
+
 # Room
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
   path('room/<str:model>/<int:pk>/', views.edit_room, name='edit-room'),
@@ -121,10 +147,12 @@ urlpatterns = [
   path('person/<int:pk>/department/edit/', views.person_edit_department, name='person-edit-department'),
   path('person/<int:pk>/status/edit/', views.person_edit_status, name='person-edit-status'),
   path('person/<int:pk>/status/', views.person_status, name='person-status'),
-  path('contacts/<str:model>/<int:pk>/', views.edit_contacts, name='edit-contacts'),
-  path('contact/list/<str:model>/<int:pk>/', views.contact_list, name='contact-list'),
-  path('uncontact/<str:model>/<int:pk>/<int:contact>/', views.uncontact, name='uncontact'),
-  path('addcontact/<str:model>/<int:pk>/<int:contact>/', views.addcontact, name='addcontact'),
+  path('people/select/<str:model>/<int:pk>/', views.people_select, name='people-select'),
+  path('people/tags/<str:model>/<int:pk>/', views.people_tags, name='people-tags'),
+
+  path('person/<int:person>/remove/<str:model>/<int:pk>/', views.person_remove, name='person-remove'),
+  path('person/<int:person>/add/<str:model>/<int:pk>/', views.person_add, name='person-add'),
+
   path('technicians/edit/<int:pk>/', views.edit_technicians, name='edit-technicians'),
   path('technician/list/<int:pk>/', views.technician_list, name='technician-list'),
   path('add/technician/<int:pk>/<int:technician>/', views.add_technician, name='add-technician'),
@@ -135,6 +163,7 @@ urlpatterns = [
 # Purchase
   path('purchase/new/', views.purchase_new, name='purchase-new'),
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
+  path('purchase/<int:pk>/assets/', views.purchase_assets, name='purchase-assets'),
   path('purchase/<int:pk>/documents/', views.purchase_documents, name='purchase-documents'),
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),

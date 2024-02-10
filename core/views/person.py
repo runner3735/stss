@@ -140,33 +140,7 @@ def person_edit_department(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
   return render(request, 'departments-edit.html', {'form': form})
 
-@login_required
-def job_rooms_edit(request, pk):
-  job = get_object_or_404(Job, pk=pk)
-  form = RoomForm(request.POST or None)
-  if request.method == 'POST':
-    if form.is_valid():
-      room = form.cleaned_data['room']
-      if 'add' in request.POST:
-        job.rooms.add(room)
-      elif 'remove' in request.POST:
-        job.rooms.remove(room)
-      return HttpResponse(status=204, headers={'HX-Trigger': 'roomsChanged'})
-  return render(request, 'rooms-edit.html', {'form': form})
 
-@login_required
-def job_departments_edit(request, pk):
-  job = get_object_or_404(Job, pk=pk)
-  form = DepartmentForm(request.POST or None)
-  if request.method == 'POST':
-    if form.is_valid():
-      department = form.cleaned_data['department']
-      if 'add' in request.POST:
-        job.departments.add(department)
-      elif 'remove' in request.POST:
-        job.departments.remove(department)
-      return HttpResponse(status=204, headers={'HX-Trigger': 'departmentsChanged'})
-  return render(request, 'departments-edit.html', {'form': form})
 
 @login_required
 def add_technician(request, pk, technician):
@@ -181,43 +155,38 @@ def remove_technician(request, pk, technician):
   return HttpResponseRedirect(reverse('edit-technicians', args=[pk]))
 
 @login_required
-def addcontact(request, model, pk, contact):
-  contactable = get_instance(model, pk)
-  if model == 'job': contactable.customers.add(contact)
-  else: contactable.contacts.add(contact)
-  return HttpResponseRedirect(reverse('edit-contacts', args=[model, pk]))
+def person_add(request, person, model, pk):
+  linkable = get_instance(model, pk)
+  if model == 'job': linkable.customers.add(person)
+  elif model == 'pmi': linkable.customers.add(person)
+  else: linkable.contacts.add(person)
+  return HttpResponseRedirect(reverse('people-select', args=[model, pk]))
 
 @login_required
-def uncontact(request, model, pk, contact):
-  contactable = get_instance(model, pk)
-  if model == 'job': contactable.customers.remove(contact)
-  else: contactable.contacts.remove(contact)
-  return HttpResponseRedirect(reverse('edit-contacts', args=[model, pk]))
+def person_remove(request, person, model, pk):
+  linkable = get_instance(model, pk)
+  if model == 'job': linkable.customers.remove(person)
+  elif model == 'pmi': linkable.customers.remove(person)
+  else: linkable.contacts.remove(person)
+  return HttpResponseRedirect(reverse('people-select', args=[model, pk]))
 
 @login_required
-def edit_contacts(request, model, pk):
-  contactable = get_instance(model, pk)
-  return render(request, 'edit-contacts.html', {'contactable': contactable})
+def people_select(request, model, pk):
+  linkable = get_instance(model, pk)
+  return render(request, 'people-select.html', {'linkable': linkable})
 
-def contact_list(request, model, pk):
-  contactable = get_instance(model, pk)
-  if model == 'job': selected = contactable.customers.all()
-  else: selected = contactable.contacts.all()
-  choices = person_page(request)
+def people_tags(request, model, pk):
+  linkable = get_instance(model, pk)
+  if model == 'asset': selected = linkable.contacts.all()
+  else: selected = linkable.customers.all()
+  choices = person_choices(request)
   if not choices: choices = selected
-  return render(request, 'contact-list.html', {'contactable': contactable, 'contacts': choices, 'selected': selected})
+  return render(request, 'people-tags.html', {'linkable': linkable, 'choices': choices, 'selected': selected})
 
-def person_page(request):
-  q = Person.objects.exclude(status=0)
-  page = request.GET.get('page','1')
-  method = request.GET.get('method','')
+def person_choices(request):
+  method = request.GET.get('method', '')
   search = request.GET.get('search', '')
-  if search and method == '1': q = q.filter(last__istartswith=search)
-  elif search: q = q.filter(first__icontains=search)
-  else: return
-  paginator = Paginator(q, 20)
-  try:
-    return paginator.page(page)
-  except EmptyPage:
-    return
+  if not search: return
+  if method == '1': return Person.objects.exclude(status=0).filter(last__istartswith=search)
+  return Person.objects.exclude(status=0).filter(first__icontains=search)
 

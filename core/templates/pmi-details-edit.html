@@ -1,0 +1,20 @@
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Edit Details</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Edit Details</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field mt-5">
+    <div class="control">{% render_field form.details class="textarea" rows="30" placeholder="Enter PMI details here..." %}</div>
+</div>
+<div class="control">
+    <button class="button is-success">Update</button>
+    <a href="{% url 'pmi' pmi.id %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}
