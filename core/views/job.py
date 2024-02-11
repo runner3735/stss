@@ -190,7 +190,6 @@ def job_closed_edit(request, pk):
     if 'today' in request.POST:
       job.closed = datetime.date.today()
       job.save()
-      update_pmi(job)
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
     if 'clear' in request.POST:
       if not job.closed: return HttpResponse(status=204)
@@ -199,19 +198,8 @@ def job_closed_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
     if form.is_valid():
       form.save()
-      update_pmi(job)
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
   return render(request, 'job-closed-edit.html', {'form': form})
-
-def update_pmi(job):
-  if job.category != 5: return
-  if job.status != 3: return
-  if not job.closed: return
-  pmi = job.pmi
-  if not pmi: return
-  pmi.last = job.closed
-  pmi.next = job.closed + datetime.timedelta(days=pmi.frequency)
-  pmi.save()
 
 @login_required
 def job_status_edit(request, pk):
@@ -352,6 +340,31 @@ def job_asset_remove(request, pk, asset):
 
 @login_required
 def job_new(request):
+  job = job_create()
+  if job: return HttpResponseRedirect(reverse('job-details-edit', args=[job.id]))
+  return HttpResponse(status=204, headers={'HX-Trigger': 'jobNotCreated'})
+
+@login_required
+def pmi_schedule(request, pk):
+  pmi = get_object_or_404(PMI, pk=pk)
+  job = job_create()
+  if not job: return HttpResponse(status=204, headers={'HX-Trigger': 'jobNotCreated'})
+  job.name = pmi.name
+  job.location = pmi.location
+  job.details = pmi.details
+  job.deadline = pmi.next
+  job.category = 5
+  job.customers.set(pmi.customers.all())
+  job.departments.set(pmi.departments.all())
+  job.rooms.set(pmi.rooms.all())
+  job.files.set(pmi.files.all())
+  job.assets.set(pmi.assets.all())
+  job.save()
+  pmi.job = job
+  pmi.save()
+  return HttpResponseRedirect(job.detail())
+
+def job_create():
   now = datetime.date.today()
   fiscal_year = now.year
   if now.month > 6: fiscal_year += 1
@@ -361,13 +374,13 @@ def job_new(request):
   else: suffix = '001'
   next_identifier = prefix + suffix
   job, created = Job.objects.get_or_create(identifier=next_identifier)
-  if not created: return HttpResponseRedirect(job.detail())
+  if not created: return
   job.year = fiscal_year
   job.status = 1
   job.opened = now
   job.save()
-  return HttpResponseRedirect(reverse('job-details-edit', args=[job.id]))
-  
+  return job
+
 @login_required
 def job_rooms_edit(request, pk):
   job = get_object_or_404(Job, pk=pk)

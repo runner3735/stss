@@ -20,17 +20,20 @@ def ImportMaintenance():
         frequency = int(m['Frequency'])
         pmi = PMI()
         if reference.status == 3 and reference.closed:
+            pmi.last_job = reference.identifier
             pmi.last = reference.closed
             pmi.next = reference.closed + datetime.timedelta(days=frequency)
         elif reference.status == 3:
             print('Import Error: reference job is complete, but there is no closed date!')
             print(reference.identifier)
+            pmi.job = reference
+        else:
+            pmi.job = reference
         pmi.creator = creator
         pmi.frequency = frequency
         pmi.name = reference.name
         pmi.details = reference.details
         pmi.location = reference.location
-        pmi.job = reference
         pmi.save()
         pmi.customers.set(reference.customers.all())
         pmi.departments.set(reference.departments.all())

@@ -9,11 +9,12 @@
         <thead>
             <tr>
                 <th>Creator</th>
-                <th>Last</th>
-                <th>Frequency</th>
-                <th>Next</th>
                 <th>Name</th>
+                <th>Frequency</th>
                 <th>Last Job</th>
+                <th>Last Service</th>
+                <th>Next Service</th>
+                <th>Scheduled Job</th>
                 <th>Status</th>
                 <th>View</th>
             </tr>
@@ -22,10 +23,11 @@
             {% for pmi in pmis %}
             <tr>
                 <td>{{ pmi.creator.last }}</td>
-                <td>{{ pmi.last | date:"Y-m-d" }}</td>
-                <td>{{ pmi.frequency }}</td>
-                <td>{{ pmi.next | date:"Y-m-d" }}</td>
                 <td>{{ pmi.name }}</td>
+                <td>{{ pmi.frequency }}</td>
+                <td>{{ pmi.last_job }}</td>
+                <td>{{ pmi.last | date:"Y-m-d" }}</td>
+                <td>{{ pmi.next | date:"Y-m-d" }}</td>
                 <td>{{ pmi.job.identifier }}</td>
                 <td>{{ pmi.status }}</td>
                 <td class="has-text-centered">

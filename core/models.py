@@ -404,6 +404,7 @@ class PMI(models.Model):
     creator = models.ForeignKey(Person, on_delete=models.SET_NULL, blank=True, null=True)
     frequency = models.IntegerField()
     next = models.DateField(blank=True, null=True)
+    last_job = models.CharField(max_length=16, blank=True)
     
     name = models.CharField(max_length=128, blank=True)
     details = models.TextField(max_length=4096, blank=True)
@@ -420,7 +421,8 @@ class PMI(models.Model):
     
     @property
     def status(self):
-        if not self.next: return self.job.get_status_display()
+        if self.job: return self.job.get_status_display()
+        if not self.next: return 'Unknown'
         if datetime.date.today() > self.next: return 'Overdue'
         if datetime.date.today() + datetime.timedelta(days=14) > self.next: return 'Coming Due Soon'
         return 'Up To Date'

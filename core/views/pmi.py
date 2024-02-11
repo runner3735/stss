@@ -22,11 +22,6 @@ def pmi_location(request, pk):
   pmi = get_object_or_404(PMI, pk=pk)
   return HttpResponse(pmi.location)
 
-def pmi_last(request, pk):
-  pmi=get_object_or_404(PMI, pk=pk)
-  if pmi.last: return HttpResponse(pmi.last.strftime('%B %-d, %Y'))
-  return HttpResponse('')
-
 def pmi_next(request, pk):
   pmi=get_object_or_404(PMI, pk=pk)
   if pmi.next: return HttpResponse(pmi.next.strftime('%B %-d, %Y'))
@@ -64,31 +59,12 @@ def pmi_location_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'pmiLocationChanged'})
   return render(request, 'job-location-edit.html', {'form': form})
 
-@login_required
-def pmi_last_edit(request, pk):
-  pmi=get_object_or_404(PMI, pk=pk)
-  form = PMILastForm(request.POST or None, instance=pmi)
-  if request.method == 'POST':
-    if 'today' in request.POST:
-      pmi.last = datetime.date.today()
-      pmi.save()
-      return HttpResponse(status=204, headers={'HX-Trigger': 'pmiLastChanged'})
-    if 'clear' in request.POST:
-      pmi.last = None
-      pmi.save()
-      return HttpResponse(status=204, headers={'HX-Trigger': 'pmiLastChanged'})
-    if form.is_valid():
-      form.save()
-      return HttpResponse(status=204, headers={'HX-Trigger': 'pmiLastChanged'})
-  return render(request, 'pmi-last-edit.html', {'form': form})
-
 def pmi_files(request, pk):
   pmi = get_object_or_404(PMI, pk=pk)
   return render(request, 'file-list.html', {'linkable': pmi})
 
 def pmi_assets(request, pk):
   pmi = get_object_or_404(PMI, pk=pk)
-  #assets = pmi.assets.all()
   return render(request, 'asset-list.html', {'linkable': pmi})
 
 # Edit
@@ -125,8 +101,15 @@ def pmi_asset_add(request, pk):
   return render(request, 'form-asset-add.html', {'form': form})
 
 @login_required
-def pmi_schedule(request, pk):
+def pmi_completed(request, pk):
   pmi = get_object_or_404(PMI, pk=pk)
+  if pmi.job and pmi.job.closed and pmi.job.status == 3:
+    pmi.last_job = pmi.job.identifier
+    pmi.last = pmi.job.closed
+    pmi.next = pmi.job.closed + datetime.timedelta(days=pmi.frequency)
+    pmi.job = None
+    pmi.save()
+    return HttpResponseRedirect(reverse('pmis'))
   return HttpResponse(status=204)
 
 def pmi_departments(request, pk):

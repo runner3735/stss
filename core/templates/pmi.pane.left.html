@@ -22,19 +22,13 @@
         </tr>
         <tr>
             <th>Last Job</th>
-            <td>{{ pmi.job.identifier }}</td>
+            <td>{{ pmi.last_job }}</td>
             <td></td>
         </tr>
         <tr>
             <th>Last Service</th>
-            <td hx-trigger="pmiLastChanged from:body" hx-get="{% url 'pmi-last' pmi.id %}" hx-target="this">
-                {{ pmi.last | date:"F j, Y" }}
-            </td>
-            <td>
-                <a hx-get="{% url 'pmi-last-edit' pmi.id %}" hx-target="#dialog">
-                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                </a>
-            </td>
+            <td>{{ pmi.last | date:"F j, Y" }}</td>
+            <td></td>
         </tr>
         <tr>
             <th>Next Service</th>
@@ -46,6 +40,11 @@
                     <span class="icon is-small"><i class="fas fa-edit"></i></span>
                 </a>
             </td>
+        </tr>
+        <tr>
+            <th>Scheduled Job</th>
+            <td>{% if pmi.job %}{{ pmi.job.identifier }}{% endif %}</td>
+            <td></td>
         </tr>
         <tr><td><div class="tag is-success is-medium">Job Properties</div></td><td></td><td></td></tr>
         <tr>
@@ -115,6 +114,10 @@
 
 <div>
     <a hx-get="{% url 'pmi-asset-add' pmi.id %}" hx-target="#dialog" class="button is-link mr-4">Add Asset</a>
-    <a href="{% url 'pmi-schedule' pmi.id %}" class="button is-link mr-4">Schedule</a>
     <a href="{% url 'upload-to' 'pmi' pmi.id %}" class="button is-link mr-4">Add Files</a>
+    {% if not pmi.job %}
+    <a href="{% url 'pmi-schedule' pmi.id %}" class="button is-link mr-4">Schedule</a>
+    {% elif pmi.job.closed and pmi.job.status == 3 %}
+    <a href="{% url 'pmi-completed' pmi.id %}" class="button is-link mr-4">Mark Complete</a>
+    {% endif %}
 </div>

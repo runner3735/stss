@@ -106,7 +106,6 @@ urlpatterns = [
   path('pmi/<int:pk>/', views.PMIDetail.as_view(), name='pmi'),
 
   path('pmi/<int:pk>/frequency/', views.pmi_frequency, name='pmi-frequency'),
-  path('pmi/<int:pk>/last/', views.pmi_last, name='pmi-last'),
   path('pmi/<int:pk>/next/', views.pmi_next, name='pmi-next'),
   path('pmi/<int:pk>/name/', views.pmi_name, name='pmi-name'),
   path('pmi/<int:pk>/location/', views.pmi_location, name='pmi-location'),
@@ -116,7 +115,6 @@ urlpatterns = [
   path('pmi/<int:pk>/assets/', views.pmi_assets, name='pmi-assets'),
 
   path('pmi/<int:pk>/frequency/edit/', views.pmi_frequency_edit, name='pmi-frequency-edit'),
-  path('pmi/<int:pk>/last/edit/', views.pmi_last_edit, name='pmi-last-edit'),
   path('pmi/<int:pk>/next/edit/', views.pmi_next_edit, name='pmi-next-edit'),
   path('pmi/<int:pk>/name/edit/', views.pmi_name_edit, name='pmi-name-edit'),
   path('pmi/<int:pk>/location/edit/', views.pmi_location_edit, name='pmi-location-edit'),
@@ -126,6 +124,7 @@ urlpatterns = [
 
   path('pmi/<int:pk>/asset/add/', views.pmi_asset_add, name='pmi-asset-add'),
   path('pmi/<int:pk>/schedule/', views.pmi_schedule, name='pmi-schedule'),
+  path('pmi/<int:pk>/completed/', views.pmi_completed, name='pmi-completed'),
 
 # Room
   path('room/<int:pk>/', views.RoomDetail.as_view(), name='room'),
