@@ -8,18 +8,16 @@ from django.core.paginator import Paginator, EmptyPage
 
 from ..models import *
 from ..forms import *
-from .other import get_instance
 
 # Purchase
-
-def purchase_documents(request, pk):
-  purchase = get_object_or_404(Purchase, pk=pk)
-  documents = purchase.documents.all()
-  return render(request, 'document-list.html', {'documents': documents, 'linkable': purchase})
 
 def purchase_assets(request, pk):
   purchase = get_object_or_404(Purchase, pk=pk)
   return render(request, 'purchase-assets.html', {'purchase': purchase})
+
+def purchase_files(request, pk):
+  linkable = get_object_or_404(Purchase, pk=pk)
+  return render(request, 'file-list.html', {'linkable': linkable})
 
 def purchases(request):
   form = PurchaseSearchForm()

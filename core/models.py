@@ -291,6 +291,7 @@ class Purchase(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     shipping = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     documents = models.ManyToManyField(Document, related_name='purchases', editable=False)
+    files = models.ManyToManyField(File, related_name='purchases', editable=False)
     vreference = models.CharField(max_length=128, blank=True)
     funding = models.SmallIntegerField(choices=funding_choices, blank=True, null=True)
     edorda = models.CharField(max_length=128, blank=True)

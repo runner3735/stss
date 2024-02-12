@@ -1,0 +1,32 @@
+
+<div class="tabs is-toggle is-fullwidth" id="tabs" hx-target="#tab-contents"
+                _="on click remove .is-active from <li/> then add .has-background-light to <li/>
+                on htmx:afterOnLoad add .is-active to closest <li/> to event.target then remove .has-background-light from closest <li/> to event.target">
+                <ul>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-notes' asset.id %}">
+                            <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
+                            <span>Notes</span>
+                        </a>
+                    </li>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-purchases' asset.id %}">
+                            <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
+                            <span>Purchasing Info</span>
+                        </a>
+                    </li>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-files' asset.id %}" hx-trigger="click, fileChanged from:body">
+                            <span class="icon is-small"><i class="far fa-file-alt"></i></span>
+                            <span>Files</span>
+                        </a>
+                    </li>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-gallery' asset.id %}" hx-trigger="click, galleryChanged from:body">
+                            <span class="icon is-small"><i class="fas fa-image"></i></span>
+                            <span>Gallery</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="tab-contents" class="content"></div>

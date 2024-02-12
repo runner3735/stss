@@ -212,19 +212,8 @@ class PersonStatusForm(forms.ModelForm):
         model = Person
         fields = ['status',]
 
-# Document
-        
-class DocumentNameForm(forms.ModelForm):
-    class Meta:
-        model = Document
-        fields = ['name',]
-
-class DocumentForm(forms.ModelForm):
-    class Meta:
-        model = Document
-        fields = ['name', 'file']
-
 # File
+
 class FileNameForm(forms.ModelForm):
     class Meta:
         model = File
@@ -236,18 +225,6 @@ class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['text',]
-
-# Picture
-        
-class PictureForm(forms.ModelForm):
-    class Meta:
-        model = Picture
-        fields = ['name', 'file']
-
-class PictureNameForm(forms.ModelForm):
-    class Meta:
-        model = Picture
-        fields = ['name',]
 
 # Tag
         
@@ -276,28 +253,6 @@ class PurchaseEditForm(forms.ModelForm):
         model = Purchase
         fields = ['date', 'purchaser', 'method', 'reference', 'vendor', 'vreference', 'funding', 'edorda', 'total', 'shipping']
         widgets = {'date': DateInput()}
-
-# Video
-        
-class VideoForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ['file', 'name']
-
-class YoutubeForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ['url',]
-
-class VideoNameForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ['name',]
-
-class VideoThumbnailForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ['thumbnail',]
 
 # Work
         

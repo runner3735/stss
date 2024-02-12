@@ -38,9 +38,8 @@ urlpatterns = [
   path('asset/name/options', views.asset_name_options, name='asset-name-options'),
   path('asset/<int:pk>/clone/', views.asset_clone, name='asset-clone'),
   path('asset/<int:pk>/notes/', views.asset_notes, name='asset-notes'),
-  path('asset/<int:pk>/pictures/', views.asset_pictures, name='asset-pictures'),
-  path('asset/<int:pk>/documents/', views.asset_documents, name='asset-documents'),
-  path('asset/<int:pk>/videos/', views.asset_videos, name='asset-videos'),
+  path('asset/<int:pk>/files/', views.asset_files, name='asset-files'),
+  path('asset/<int:pk>/gallery/', views.asset_gallery, name='asset-gallery'),
   path('asset/<int:pk>/purchases/', views.asset_purchases, name='asset-purchases'),
   path('asset/<int:pk>/manufacturer/edit/', views.asset_edit_manufacturer, name='asset-edit-manufacturer'),
   path('asset/<int:pk>/manufacturer/', views.asset_manufacturer, name='asset-manufacturer'),
@@ -63,11 +62,8 @@ urlpatterns = [
   path('job/<int:pk>/assets/', views.job_assets, name='job-assets'),
   path('job/<int:pk>/works/', views.job_works, name='job-works'),
   path('job/<int:pk>/notes/', views.job_notes, name='job-notes'),
-  path('job/<int:pk>/pictures/', views.job_pictures, name='job-pictures'),
   path('job/<int:pk>/files/', views.job_files, name='job-files'),
   path('job/<int:pk>/gallery/', views.job_gallery, name='job-gallery'),
-  path('job/<int:pk>/documents/', views.job_documents, name='job-documents'),
-  path('job/<int:pk>/videos/', views.job_videos, name='job-videos'),
 
   path('job/<int:pk>/name/', views.job_name, name='job-name'),
   path('job/<int:pk>/budget/', views.job_budget, name='job-budget'),
@@ -163,7 +159,7 @@ urlpatterns = [
   path('purchase/new/', views.purchase_new, name='purchase-new'),
   path('purchase/<int:pk>/', views.PurchaseDetail.as_view(), name='purchase'),
   path('purchase/<int:pk>/assets/', views.purchase_assets, name='purchase-assets'),
-  path('purchase/<int:pk>/documents/', views.purchase_documents, name='purchase-documents'),
+  path('purchase/<int:pk>/files/', views.purchase_files, name='purchase-files'),
   path('purchase/<int:pk>/edit/', views.purchase_edit, name='purchase-edit'),
   path('purchase/<int:pk>/asset', views.purchase_add_asset, name='purchase-add-asset'),
   path('purchase/<int:pk>/total', views.purchase_update_total, name='purchase-update-total'),
@@ -174,14 +170,6 @@ urlpatterns = [
   path('tag/<int:tag>/add/<str:model>/<int:pk>/', views.tag_add, name='tag-add'),
   path('tags/edit/<str:model>/<int:pk>/', views.tags_edit, name='tags-edit'),
 
-# Picture
-  path('picture/<int:pk>/', views.picture_detail, name='picture'),
-  path('picture/<int:picture>/modal/<str:model>/<int:pk>/', views.picture_modal, name='picture-modal'),
-  
-  path('picture/<int:pk>/edit/', views.picture_edit, name='picture-edit'),
-#   path('picture/<int:pk>/rotate/<int:degrees>/', views.picture_rotate, name='picture-rotate'),
-  path('picture/<int:pk>/delete/', views.picture_delete, name='picture-delete'),
-
 # Note
   path('note/new/<str:model>/<int:pk>/', views.add_note, name='add-note'),
   path('note/<int:pk>/edit/', views.note_edit, name='note-edit'),
@@ -191,14 +179,11 @@ urlpatterns = [
   path('upload/to/<str:model>/<int:pk>/', views.upload, name='upload-to'),
   path('file/upload/', views.file_upload, name='file-upload'),
 
-# Document
-  path('document/<int:pk>/name/edit/', views.document_edit_name, name='document-edit-name'),
-  path('document/<int:document>/remove/<str:model>/<int:pk>/', views.document_remove, name='document-remove'),
-
 # File
   path('file/<int:pk>/name/edit/', views.file_name_edit, name='file-name-edit'),
   path('file/<int:file>/remove/<str:model>/<int:pk>/', views.file_remove, name='file-remove'),
   path('picture/<int:file>/remove/<str:model>/<int:pk>/', views.picture_remove, name='picture-remove'),
+  path('picture/<int:picture>/modal/<str:model>/<int:pk>/', views.picture_modal, name='picture-modal'),
 
 # Work
   path('work/<int:pk>/edit/', views.work_edit, name='work-edit'),

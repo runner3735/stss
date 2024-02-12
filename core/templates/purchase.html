@@ -67,17 +67,12 @@
 
             <div>
                 <a href="{% url 'purchase-add-asset' purchase.id %}" class="button is-link mr-4">Add Asset</a>
-                <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mr-4">Add Attachments</a>
+                <a href="{% url 'upload-to' 'purchase' purchase.id %}" class="button is-link mr-4">Add Files</a>
                 <a href="{% url 'purchase-update-total' purchase.id %}" class="button is-link mr-4">Update Total</a>
                 <a href="{% url 'purchase-edit' purchase.id %}" class="button is-link mr-4">Edit Purchase</a>
             </div>
 
-            {% if purchase.documents.count %}
-            <div id="documents" class="mt-4">
-                <h3 class="subtitle has-text-light">Attachments</h3>
-                <div hx-get="{% url 'purchase-documents' purchase.id %}" hx-trigger="load, documentChanged from:body"></div>
-            </div>
-            {% endif %}
+            <div id="files" class="mt-4" hx-get="{% url 'purchase-files' purchase.id %}" hx-trigger="load, fileChanged from:body"></div>
 
             <div id="assets" class="mt-4" hx-get="{% url 'purchase-assets' purchase.id %}" hx-trigger="assetsChanged from:body">
                 {% include "purchase-assets.html" %}

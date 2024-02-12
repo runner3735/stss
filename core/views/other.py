@@ -15,9 +15,7 @@ def home(request):
   context['assets'] = Asset.objects.all().count()
   context['jobs'] = Job.objects.all().count()
   context['people'] = Person.objects.all().count()
-  context['pictures'] = Picture.objects.all().count()
-  context['documents'] = Document.objects.all().count()
-  context['videos'] = Video.objects.all().count()
+  context['files'] = File.objects.all().count()
   context['pmis'] = PMI.objects.all().count()
   return render(request, 'home.html', context)
 

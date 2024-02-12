@@ -59,20 +59,13 @@ def asset_notes(request, pk):
   notes = asset.notes.all()
   return render(request, 'note-list.html', {'notes': notes})
 
-def asset_pictures(request, pk):
-  asset = get_object_or_404(Asset, pk=pk)
-  pictures = asset.pictures.all()
-  return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': asset})
+def asset_files(request, pk):
+  linkable = get_object_or_404(Asset, pk=pk)
+  return render(request, 'file-list.html', {'linkable': linkable})
 
-def asset_documents(request, pk):
-  asset = get_object_or_404(Asset, pk=pk)
-  documents = asset.documents.all()
-  return render(request, 'document-list.html', {'documents': documents, 'linkable': asset})
-
-def asset_videos(request, pk):
-  asset = get_object_or_404(Asset, pk=pk)
-  videos = asset.videos.all()
-  return render(request, 'video-list.html', {'videos': videos})
+def asset_gallery(request, pk):
+  linkable = get_object_or_404(Asset, pk=pk)
+  return HttpResponse(status=204)
 
 def asset_purchases(request, pk):
   asset = get_object_or_404(Asset, pk=pk)

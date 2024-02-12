@@ -292,21 +292,6 @@ def job_gallery(request, pk):
   pictures = job.files.exclude(picture='')
   return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': job})
 
-def job_pictures(request, pk):
-  job = get_object_or_404(Job, pk=pk)
-  pictures = job.pictures.all()
-  return render(request, 'picture-list.html', {'pictures': pictures, 'linkable': job})
-
-def job_documents(request, pk):
-  job = get_object_or_404(Job, pk=pk)
-  documents = job.documents.all()
-  return render(request, 'document-list.html', {'documents': documents, 'linkable': job})
-
-def job_videos(request, pk):
-  job = get_object_or_404(Job, pk=pk)
-  videos = job.videos.all()
-  return render(request, 'video-list.html', {'videos': videos})
-
 @login_required
 def job_assets_edit(request, pk):
   job = get_object_or_404(Job, pk=pk)
