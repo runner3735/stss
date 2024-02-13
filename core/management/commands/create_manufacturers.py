@@ -85,4 +85,4 @@ class Command(BaseCommand):
         TestManufacturers()
 
     def handle(self, *args, **options):
-        self.test_manufacturers()
+        self.add_manufacturers()
