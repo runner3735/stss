@@ -1,4 +1,5 @@
 # this script sets the method and cleans up the reference fields for Purchase objects
+# must import people and purchases first
 
 import re
 from django.core.management.base import BaseCommand

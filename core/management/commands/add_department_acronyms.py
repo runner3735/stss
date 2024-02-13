@@ -1,12 +1,13 @@
 
 # this script adds a 4-character acronym to the Department objects
+# Department objecs must already be created
 
 import pickle
 from django.core.management.base import BaseCommand
 from ...models import Department
 
 def AddAcronyms():
-    departments = pickle.load(open('/www/stss/db/departments.p', 'rb'))
+    departments = pickle.load(open('/www/db/departments.p', 'rb'))
     acronyms = {}
     for acronym, name in departments.items():
         if len(acronym) == 4:

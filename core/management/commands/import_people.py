@@ -13,11 +13,11 @@ rooms = {}
 
 def LoadPickles():
     global people, departments, names, dualnames, rooms
-    people = pickle.load(open('/www/stss/db/people.p', 'rb'))
-    departments = pickle.load(open('/www/stss/db/departments.p', 'rb'))
-    names = pickle.load(open('/www/stss/db/names.p', 'rb'))
-    dualnames = pickle.load(open('/www/stss/db/dualnames.p', 'rb'))
-    rooms = pickle.load(open('/www/stss/db/rooms.p', 'rb'))
+    people = pickle.load(open('/www/db/people.p', 'rb'))
+    departments = pickle.load(open('/www/db/departments.p', 'rb'))
+    names = pickle.load(open('/www/db/names.p', 'rb'))
+    dualnames = pickle.load(open('/www/db/dualnames.p', 'rb'))
+    rooms = pickle.load(open('/www/db/rooms.p', 'rb'))
 
 def ImportPeople():
     for p in people.values():
@@ -52,10 +52,10 @@ def AddDepartments(person, text):
         person.departments.add(D)
 
 def AddOffice(person, text):
-    if text in ['Left', 'Retired']: return
+    if text in ['Left', 'Retired', 'Student']: return
     person.status = 5
     if not text: return
-    room = rooms[text]
+    room = rooms.get(text,"")
     if room:
         R, created = Room.objects.get_or_create(text=room)
         person.office = R
@@ -69,6 +69,4 @@ class Command(BaseCommand):
         ImportPeople()
 
     def handle(self, *args, **options):
-        #self.list_dualnames()
-        #self.list_names()
         self.import_people()

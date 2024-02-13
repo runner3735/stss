@@ -17,25 +17,25 @@ locwords = {}
 
 def LoadDatabase():
     global people, instruments, jobs
-    people = pickle.load(open('/www/stss/db/people.p', 'rb'))
-    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
-    jobs = pickle.load(open('/www/stss/db/jobs.p', 'rb'))
+    people = pickle.load(open('/www/db/people.p', 'rb'))
+    instruments = pickle.load(open('/www/db/instruments.p', 'rb'))
+    jobs = pickle.load(open('/www/db/jobs.p', 'rb'))
 
 def LoadRooms():
     global rooms, locations, locwords
-    rooms = pickle.load(open('/www/stss/db/rooms.p', 'rb'))
+    rooms = pickle.load(open('/www/db/rooms.p', 'rb'))
     print('Room Count:', len(rooms))
-    #locations = pickle.load(open('/www/stss/db/locations.p', 'rb'))
+    #locations = pickle.load(open('/www/db/locations.p', 'rb'))
     print('Location Count:', len(locations))
-    locwords = pickle.load(open('/www/stss/db/locwords.p', 'rb'))
+    locwords = pickle.load(open('/www/db/locwords.p', 'rb'))
     print('Location Word Count:', len(locwords))
 
 def SaveRooms():
-    pickle.dump(rooms, open('/www/stss/db/rooms.p', 'wb'))
+    pickle.dump(rooms, open('/www/db/rooms.p', 'wb'))
     print('Room Count:', len(rooms))
-    pickle.dump(locations, open('/www/stss/db/locations.p', 'wb'))
+    pickle.dump(locations, open('/www/db/locations.p', 'wb'))
     print('Location Count:', len(locations))
-    pickle.dump(locwords, open('/www/stss/db/locwords.p', 'wb'))
+    pickle.dump(locwords, open('/www/db/locwords.p', 'wb'))
     print('Location Word Count:', len(locwords))
 
 def AddRooms():
@@ -105,7 +105,7 @@ def CreateLocwords():
     for k in locations:
         if rx_num.match(k): continue
         locwords[k] = locations[k]
-    pickle.dump(locwords, open('/www/stss/db/locwords.p', 'wb'))
+    pickle.dump(locwords, open('/www/db/locwords.p', 'wb'))
     print('Location Word Count:', len(locwords))
     for k, v in rooms.items():
         if len(v) == 3 and rx_num.match(v): continue
@@ -114,7 +114,7 @@ def CreateLocwords():
 class Command(BaseCommand):
 
     def list_locations(self):
-        jobs = pickle.load(open('/www/stss/db/jobs.p', 'rb'))
+        jobs = pickle.load(open('/www/db/jobs.p', 'rb'))
         for k in jobs.keys():
             location = jobs[k]['Location']
             if location: print(location)

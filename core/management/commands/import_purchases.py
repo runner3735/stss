@@ -1,5 +1,6 @@
 
-# this script imports the instruments table, and creates Person, Department, Room, Manufacturer, Purchase, Tag, Note and Asset objects
+# this script uses the instruments table to create Purchase and Vendor objects
+# should import assets first, or it will create empty Asset objects as needed
 
 import pickle, re
 from django.core.management.base import BaseCommand
@@ -18,8 +19,8 @@ vendors = {}
 
 def LoadPickles():
     global instruments, vendors
-    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
-    vendors = pickle.load(open('/www/stss/db/vendors.p', 'rb'))
+    instruments = pickle.load(open('/www/db/instruments.p', 'rb'))
+    vendors = pickle.load(open('/www/db/vendors.p', 'rb'))
 
 def DeletePurchases():
     deleted = 0

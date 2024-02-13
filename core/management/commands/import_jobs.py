@@ -1,5 +1,9 @@
 
-# this script imports the jobs table, and creates Job and Work objects
+# this script imports the jobs table, and creates Job, Work, Note, Room, Department, and Person objects
+# should import people and assets first
+# requires User object with username "admin"
+
+# there are many jobs with no closed date, so check that later
 
 import pickle, re
 from django.core.management.base import BaseCommand
@@ -198,7 +202,6 @@ def AddOpenedDeadlineClosed(job, opened, deadline, closed):
     else: print("NO OPENED DATE:", job.identifier)
     if deadline: job.deadline = deadline
     if closed: job.closed = closed
-    else: print("NO CLOSED DATE:", job.identifier)
 
 def AddDepartments(job, text):
     if not text: return
@@ -239,10 +242,12 @@ def AddCustomer(job, text):
     if text in names:
         first, last = names[text]
         person, created = Person.objects.get_or_create(first=first, last=last)
-        if created: print("CREATED PERSON:", first, last)
+        if created:
+            if not first: print("CREATED PERSON WITH NO FIRST NAME:", last)
+            if not last: print("CREATED PERSON WITH NO LAST NAME:", first)
         job.customers.add(person)
     else:
-        print("Not Found In Names Dictionary:", text)
+        print("**NOT FOUND IN NAMES DICTIONARY:", text)
 
 def AddTechnicians(job, text):
     if not text: return

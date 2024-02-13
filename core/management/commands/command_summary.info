@@ -1,0 +1,11 @@
+
+
+
+import_users		creates User
+import_people		creates Person, Department, Room
+import_assets		creates Asset, Person, Department, Room, Tag, Note, Manufacturer	gets User
+import_purchases	creates Purchase, Vendor						                    uses Asset					
+import_jobs		    creates Job, Work, Note, Room, Department, Person			        uses Asset				
+import_maintenance	creates PMI								                            uses Job, Person
+add_department_acronyms                                                                 uses Department
+clean_purchases                                                                         uses Person      

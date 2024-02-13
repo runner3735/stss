@@ -11,8 +11,8 @@ def CreateUser(username, first, last):
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        #CreateUser('lritchie', 'Lance', 'Ritchie')
-        #CreateUser('jodys', 'Jody', 'Smith')
+        CreateUser('lritchie', 'Lance', 'Ritchie')
+        CreateUser('jodys', 'Jody', 'Smith')
         CreateUser('cdonohue', 'Carrie', 'Donohue')
         CreateUser('cacarr', 'Caitlin', 'Carr')
         CreateUser('ejmcmahon', 'Eamon', 'McMahon')

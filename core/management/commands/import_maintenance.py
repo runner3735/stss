@@ -1,5 +1,6 @@
 
-# this script imports the people table, and creates Person, Department, and Room objects
+# this script imports the maintenance table, and creates PMI objects
+# must import people and jobs first
 
 import datetime, pickle
 from django.core.management.base import BaseCommand

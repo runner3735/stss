@@ -1,5 +1,6 @@
 
 # this script imports the instruments table, and creates Person, Department, Room, Manufacturer, Purchase, Tag, Note and Asset objects
+# must have a User object with username admin to be author for the Notes
 
 import pickle, re
 from django.core.management.base import BaseCommand
@@ -23,12 +24,12 @@ rx_job = re.compile(r"^\d\d-\d\d\d$")
 
 def LoadPickles():
     global instruments, departments, names, dualnames, manufacturers, rooms
-    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
-    departments = pickle.load(open('/www/stss/db/departments.p', 'rb'))
-    names = pickle.load(open('/www/stss/db/names.p', 'rb'))
-    dualnames = pickle.load(open('/www/stss/db/dualnames.p', 'rb'))
-    manufacturers = pickle.load(open('/www/stss/db/manufacturers.p', 'rb'))
-    rooms = pickle.load(open('/www/stss/db/rooms.p', 'rb'))
+    instruments = pickle.load(open('/www/db/instruments.p', 'rb'))
+    departments = pickle.load(open('/www/db/departments.p', 'rb'))
+    names = pickle.load(open('/www/db/names.p', 'rb'))
+    dualnames = pickle.load(open('/www/db/dualnames.p', 'rb'))
+    manufacturers = pickle.load(open('/www/db/manufacturers.p', 'rb'))
+    rooms = pickle.load(open('/www/db/rooms.p', 'rb'))
 
 def DeleteAssets():
     for a in Asset.objects.all():

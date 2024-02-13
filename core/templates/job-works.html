@@ -16,7 +16,7 @@
             <td>{{ work.technician }}</td>
             <td>{{ work.hours }}</td>
             <td>{{ work.summary }}</td>
-            {% if work.technician == technician %}
+            {% if work.technician == requester %}
             <td class="has-text-centered">
                 <a href="{% url 'work-edit' work.id %}">
                     <span class="icon is-small"><i class="fas fa-edit"></i></span>

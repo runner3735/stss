@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage
+from django.contrib.auth.models import AnonymousUser
 
 from ..models import *
 from ..forms import *
@@ -275,8 +276,11 @@ def job_assets(request, pk):
 
 def job_works(request, pk):
   job = get_object_or_404(Job, pk=pk)
-  technician = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
-  return render(request, 'job-works.html', {'job': job, 'technician': technician})
+  if isinstance(request.user, AnonymousUser):
+    requester = None
+  else:
+    requester = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  return render(request, 'job-works.html', {'job': job, 'requester': requester})
 
 def job_notes(request, pk):
   job = get_object_or_404(Job, pk=pk)

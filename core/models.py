@@ -3,7 +3,7 @@ import datetime, hashlib, os
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from PIL import Image, ImageOps
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill, ResizeToFit
@@ -277,7 +277,6 @@ class File(models.Model):
   
   def detail(self):
     return reverse('file', args=[str(self.id)])
-
 
 class Purchase(models.Model):
     method_choices = [(1, 'Credit Card'), (2, 'Purchase Order'), (3, 'Invoice')]
