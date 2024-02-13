@@ -12,17 +12,17 @@ manufacturers = {}
 
 def LoadDatabase():
     global instruments
-    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
+    instruments = pickle.load(open('/www/db/instruments.p', 'rb'))
 
 def LoadManufacturers():
     global oldmanufacturers, manufacturers
-    oldmanufacturers = pickle.load(open('/www/stss/db/oldmanufacturers.p', 'rb'))
-    manufacturers = pickle.load(open('/www/stss/db/manufacturers.p', 'rb'))
+    oldmanufacturers = pickle.load(open('/www/db/oldmanufacturers.p', 'rb'))
+    manufacturers = pickle.load(open('/www/db/manufacturers.p', 'rb'))
     print('Oldmanufacturers Count:', len(oldmanufacturers))
     print('Manufacturers Count:', len(manufacturers))
 
 def SaveManufacturers():
-    pickle.dump(manufacturers, open('/www/stss/db/manufacturers.p', 'wb'))
+    pickle.dump(manufacturers, open('/www/db/manufacturers.p', 'wb'))
     print('Manufacturers Count:', len(manufacturers))
 
 def CheckManufacturer(text): # parse text, which represents a single manufacturer, and create entry in manufacturers dictionary
@@ -67,7 +67,7 @@ def TestManufacturers():
 class Command(BaseCommand):
 
     def list_manufacturers(self): #helper function just to look at manufacturers pickle
-        manufacturers = pickle.load(open('/www/stss/db/manufacturers.p', 'rb'))
+        manufacturers = pickle.load(open('/www/db/manufacturers.p', 'rb'))
         for k in manufacturers.keys():
             if k != manufacturers[k]:
                 print(k, ' --> ', manufacturers[k])

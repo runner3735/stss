@@ -18,9 +18,9 @@ lastnames = {}
 
 def LoadDatabase():
     global people, instruments, jobs
-    people = pickle.load(open('/www/stss/db/people.p', 'rb'))
-    instruments = pickle.load(open('/www/stss/db/instruments.p', 'rb'))
-    jobs = pickle.load(open('/www/stss/db/jobs.p', 'rb'))
+    people = pickle.load(open('/www/db/people.p', 'rb'))
+    instruments = pickle.load(open('/www/db/instruments.p', 'rb'))
+    jobs = pickle.load(open('/www/db/jobs.p', 'rb'))
     return
     for j in jobs.values():
         for k in j.keys(): print(k)
@@ -54,10 +54,10 @@ def PrintSet(name, s):
 
 def LoadNames():
     global lastnames, names, dualnames, oldnames
-    dualnames = pickle.load(open('/www/stss/db/dualnames.p', 'rb'))
-    oldnames = pickle.load(open('/www/stss/db/oldnames.p', 'rb'))
-    names = pickle.load(open('/www/stss/db/names.p', 'rb'))
-    lastnames = pickle.load(open('/www/stss/db/lastnames.p', 'rb'))
+    dualnames = pickle.load(open('/www/db/dualnames.p', 'rb'))
+    oldnames = pickle.load(open('/www/db/oldnames.p', 'rb'))
+    names = pickle.load(open('/www/db/names.p', 'rb'))
+    lastnames = pickle.load(open('/www/db/lastnames.p', 'rb'))
     print('Dualnames Count:', len(dualnames))
     print('Oldnames Count:', len(oldnames))
     print('Lastnames Count:', len(lastnames))
@@ -77,9 +77,9 @@ def SaveNames():
     print('Lastnames Count:', len(lastnames))
     print('Names Count:', len(names))
     if input('Save changes to disk? [n] > '):
-        pickle.dump(dualnames, open('/www/stss/db/dualnames.p', 'wb'))
-        pickle.dump(lastnames, open('/www/stss/db/lastnames.p', 'wb'))
-        pickle.dump(names, open('/www/stss/db/names.p', 'wb'))
+        pickle.dump(dualnames, open('/www/db/dualnames.p', 'wb'))
+        pickle.dump(lastnames, open('/www/db/lastnames.p', 'wb'))
+        pickle.dump(names, open('/www/db/names.p', 'wb'))
         print('data saved!')
 
 def AddNames():
@@ -159,11 +159,11 @@ def PrintNamepairsContaining(text): # print list of people with similar names
 class Command(BaseCommand):
 
     def list_names(self): #helper function just to look at names pickle
-        d = pickle.load(open('/www/stss/db/names.p', 'rb'))
+        d = pickle.load(open('/www/db/names.p', 'rb'))
         for k in d.keys(): print(k, ' --> ', d[k])
 
     def list_manufacturers(self): #helper function just to look at names pickle
-        manufacturers = pickle.load(open('/www/stss/db/oldmanufacturers.p', 'rb'))
+        manufacturers = pickle.load(open('/www/db/oldmanufacturers.p', 'rb'))
         for k in manufacturers.keys():
             if k != manufacturers[k]:
                 print(k, ' --> ', manufacturers[k])
