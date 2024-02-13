@@ -47,7 +47,8 @@ def AddPurchase(asset, instrument):
     date = instrument['PurchaseDate']
     if instrument['Vendor']:
         text = instrument['Vendor'].strip()
-        text = vendors[text]
+        if text in vendors: text = vendors[text]
+        else: print('Added New Vendor:', text)
         vendor, created = Vendor.objects.get_or_create(name=text)
     else:
         vendor = None
