@@ -54,28 +54,6 @@ def DeleteJobs():
     Job.objects.all().delete()
     print('Jobs records after deletion:', Job.objects.all().count())
 
-def CheckDepartments():
-    print('Departments Count:', len(departments))
-    for j in jobs.values():
-        text = j['Department']
-        if not text: continue
-        for line in text.splitlines():
-            for part in line.split('/'):
-                if part.strip() in departments:
-                    print(part.strip(), ' --> ', departments[part.strip()])
-                else:
-                    AddDepartmentString(part.strip())
-    print('Departments Count:', len(departments))
-    if input('Save changes to disk? [n] > '):
-        pickle.dump(departments, open('/www/stss/db/departments.p', 'wb'))
-        print('data saved!')
-
-def AddDepartmentString(text):
-    global departments
-    print('UNKNOWN DEPARTMENT:', text)
-    department = input('Enter Department Name: [ignore] > ')
-    if department: departments[text] = department
-
 def AnalyzeJobs():
     types = set()
     categories = set()
@@ -288,8 +266,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         LoadPickles()
         LoadChoices()
-        #CheckDepartments()
+
         #DeleteJobs()
         #AnalyzeJobs()
+
         ImportJobs()
         AddEquipmentNotes() # run this only once after importing jobs

@@ -43,12 +43,16 @@ def GetAsset(text):
     if not rx_job.match(text): print('Bad Asset Identifier:', text)
 
 def AddPurchase(asset, instrument):
+    global vendors
     if not HasPurchase(instrument): return
     date = instrument['PurchaseDate']
     if instrument['Vendor']:
         text = instrument['Vendor'].strip()
-        if text in vendors: text = vendors[text]
-        else: print('Added New Vendor:', text)
+        if text in vendors:
+            text = vendors[text]
+        else:
+            vendors[text] = text
+            print('Added New Vendor:', text)
         vendor, created = Vendor.objects.get_or_create(name=text)
     else:
         vendor = None
