@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Files</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+    <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+</head>
+
+<body class="has-background-link-dark">
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+            <h1 class="title has-text-centered">Upload Pictures, Documents, and Videos</h1>
+            <form enctype='multipart/form-data' action="{% url 'file-upload' %}" method='POST' class="dropzone is-primary" id="my-dropzone">
+                {% csrf_token %}
+            </form>
+            <div class="has-text-centered">
+                <a href="{% url 'home' %}" class="button is-link mt-4">Done</a>
+            </div>
+        </div>
+    </section>
+    <script>
+        Dropzone.autoDiscover = false;
+        const myDropzone = new Dropzone('#my-dropzone', {
+            url: "{% url 'file-upload' %}",
+            maxFiles: 20,
+        })
+    </script>
+</body>
+
+</html>

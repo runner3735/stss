@@ -178,6 +178,7 @@ urlpatterns = [
 #   path('upload/', views.upload, name='upload'),
   path('upload/to/<str:model>/<int:pk>/', views.upload, name='upload-to'),
   path('file/upload/', views.file_upload, name='file-upload'),
+  path('upload/test', views.upload_test, name='upload-test'),
 
 # File
   path('file/<int:pk>/name/edit/', views.file_name_edit, name='file-name-edit'),

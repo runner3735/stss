@@ -160,7 +160,7 @@ def work_edit(request, pk):
 
 # Helper
 
-def get_instance(model, pk):
+def get_instance(model, pk): # this function is imported into several other view files
   if model == 'job':
     instance = get_object_or_404(Job, pk=pk)
   elif model == 'asset':

@@ -22,12 +22,9 @@
                 <div class="column"></div>
                 <div class="column is-9 has-background-link-light">
                     <h1 class="title has-text-centered">Upload Pictures, Documents, and Videos</h1>
-                    <form enctype='multipart/form-data' action="{% url 'file-upload' %}" method='POST' class="dropzone is-primary"
-                        id="my-dropzone">
+                    <form enctype='multipart/form-data' action="{% url 'file-upload' %}" method='POST' class="dropzone is-primary" id="my-dropzone">
                         {% csrf_token %}
-                        <div class="fallback">
-                            <input name="file" type="file" multiple />
-                        </div>
+                        <div class="fallback"><input name="file" type="file" multiple /></div>
                         <input type="hidden" name="model" value="{{ model }}" />
                         <input type="hidden" name="pk" value="{{ pk }}" />
                     </form>
@@ -47,7 +44,7 @@
     <script>
         Dropzone.autoDiscover = false;
         const myDropzone = new Dropzone('#my-dropzone', {
-            url: '/stss/file/upload/',
+            url: "{% url 'file-upload' %}",
             maxFiles: 20,
         })
     </script>

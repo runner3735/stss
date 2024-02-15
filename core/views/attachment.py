@@ -1,5 +1,6 @@
-import os
+import hashlib, os
 import core.ffutil as ff
+from PIL import Image, ImageOps
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -16,6 +17,13 @@ def picture_modal(request, picture, model, pk):
   linkable = get_instance(model, pk)
   return render(request, 'picture-modal.html', {'picture': picture, 'linkable': linkable})
 
+def rotate(file, degrees):
+  try: image = Image.open(file.picture)
+  except: return
+  image = image.rotate(degrees, expand=True)
+  image.save(file.filepath())
+  checksum_rename(file)
+
 # Upload
 
 @login_required
@@ -23,15 +31,17 @@ def upload(request, model="", pk=""):
   return render(request, 'upload.html', {'model': model, 'pk': pk})
 
 @login_required
+def upload_test(request):
+  return render(request, 'upload-test.html')
+
+@login_required
 def file_upload(request):
   if request.method == 'POST':
     upload = request.FILES.get('file')
     model = request.POST.get('model', None)
     pk = request.POST.get('pk', None)
-    if model and pk:
-      attachable = get_instance(model, pk)
-    else:
-      attachable = None
+    if model and pk: attachable = get_instance(model, pk)
+    else: attachable = None
     create_file(request, upload, attachable)
   return HttpResponse('')
 
@@ -42,10 +52,19 @@ def create_file(request, upload, attachable):
   file = File()
   file.contributor = contributor
   file.content = upload
-  if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = upload
+  if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = file.content
   file.name = name
   file.save()
   if attachable: attachable.files.add(file)
+  path = file.filepath()
+  checksum = md5checksum(path)
+  matching = File.objects.filter(hash=checksum).first()
+  if matching:
+     os.unlink(path)
+     file.content = matching.content
+     if file.picture: file.picture = matching.content
+  file.hash = checksum
+  file.save()
 
 # File
 
@@ -79,3 +98,27 @@ def picture_remove(request, file, model, pk):
   linkable = get_instance(model, pk)
   linkable.files.remove(file)
   return HttpResponse(status=204, headers={'HX-Trigger': 'galleryChanged'})
+
+# Utility
+
+def checksum_rename(file):
+  folder, filename = os.path.split(file.content.name)
+  folderpath = os.path.join(settings.MEDIA_ROOT, folder)
+  ext = os.path.splitext(filename)[1]
+  oldpath = os.path.join(folderpath, filename)
+  newname = md5checksum(oldpath) + ext
+  newpath = os.path.join(folderpath, newname)
+  os.rename(oldpath, newpath)
+  file.content = os.path.join(folder, newname)
+  if file.picture: file.picture = os.path.join(folder, newname)
+  file.save()
+
+def md5checksum(filepath):
+    md5 = hashlib.md5()
+    with open(filepath, "rb") as f:
+        while True:
+            chunk = f.read(8388608)
+            if chunk:
+                md5.update(chunk)
+            else:
+                return md5.hexdigest()
