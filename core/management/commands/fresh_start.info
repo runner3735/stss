@@ -1,4 +1,0 @@
-
-delete docker volume with db
-run db service only (quit with ctrl-c)
-populate db using management command, in the order described in command_summary.info

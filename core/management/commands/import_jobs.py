@@ -1,13 +1,12 @@
 
 # this script imports the jobs table, and creates Job, Work, Note, Room, Department, and Person objects
 # should import people and assets first
-# requires User object with username "admin"
+# requires Person object with name "Database Administrator"
 
 # there are many jobs with no closed date, so check that later
 
 import pickle, re
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
 from ...models import Department, Person, Room, Note, Asset, Job, Work
 
 instruments = {}
@@ -21,6 +20,7 @@ choices = {}
 
 rx_asset = re.compile(r"^(M/C X\d\d\d\d|OE-\d\d\d\d)$")
 rx_job = re.compile(r"^\d\d-\d\d\d$")
+admin = Person.objects.get(first='Database', last='Administrator')
 
 def LoadPickles():
     global instruments, jobs, departments, names, dualnames, rooms, locations
@@ -71,9 +71,8 @@ def AnalyzeJobs():
 
 # Main Command
 def ImportJobs():
-    if not User.objects.get(username='admin'):
-        print('admin user not found. aborting.')
-        return
+    if admin: print('admin found')
+    else: return
     ids = []
     newids = []
     for id in jobs:
@@ -151,7 +150,7 @@ def CreateEquipmentNote(instrument):
     if info['SerialNumber']: lines.append("Serial Number: " + info['SerialNumber'])
     n = Note()
     n.text = '\n'.join(lines)
-    n.contributor = User.objects.get(username='admin')
+    n.author = admin
     n.save()
     return n
 
@@ -205,7 +204,7 @@ def AddNote(job, comments):
     if not comments: return
     n = Note()
     n.text = comments
-    n.contributor = User.objects.get(username='admin')
+    n.author = admin
     n.save()
     job.notes.add(n)
 

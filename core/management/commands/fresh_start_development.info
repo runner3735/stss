@@ -1,0 +1,21 @@
+
+quit vscode
+launch ubuntu commandline
+docker container prune (this deletes the containers)
+docker volume rm stss_db
+navigate to project dir
+docker-compose up db (this recreates the volume, and then creates a new database on it, takes only a few seconds)
+ctrl-c (stops the db container)
+launch vscode
+./entrypoint.sh (this will copy new static files and run migrations, server should be running with no objects created)
+ctrl-c (stops the server)
+python manage.py createsuperuser (create a superuser with username admin)
+(now, run the following scripts in order to create all the app objects)
+import_users            creates User and related Person objects
+import_people           creates Person, Department, Room
+import_assets           creates Asset, Person, Department, Room, Tag, Note, Manufacturer        gets User
+import_purchases        creates Purchase, Vendor                                                                    uses Asset
+import_jobs                 creates Job, Work, Note, Room, Department, Person                           uses Asset
+import_maintenance      creates PMI                                                                                         uses Job, Person
+add_department_acronyms                                                                 uses Department
+clean_purchases    

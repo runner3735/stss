@@ -3,7 +3,6 @@ import datetime, os
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill, ResizeToFit
 from django.core.validators import RegexValidator
@@ -92,7 +91,6 @@ class Person(models.Model):
 
 class Note(models.Model):
     text = models.TextField(max_length=4096)
-    contributor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True)
 

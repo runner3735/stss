@@ -4,10 +4,9 @@
         <div class="media-content">
             <div class="content">
                 <p>
-                    <strong>{{ note.contributor.first_name }}
-                        {{ note.contributor.last_name }}</strong>
+                    <strong>{{ note.author }}</strong>
                     <small>wrote on {{ note.created | date:"m-d-Y"}}</small>
-                    {% if user == note.contributor %}
+                    {% if user.first_name == note.author.first and user.last_name == note.author.last %}
                     <a hx-get="{% url 'note-edit' note.id %}" hx-target="#dialog">
                         <span class="icon is-small mx-2"><i class="fas fa-edit"></i></span>
                     </a>

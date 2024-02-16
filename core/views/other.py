@@ -66,37 +66,30 @@ def select_room(request, model, pk, room):
 def add_note(request, model, pk):
   notable = get_instance(model, pk)
   next = notable.detail()
-  note = Note()
-  note.contributor = request.user
+  form = NoteForm(request.POST or None)
   if request.method == 'POST':
-    form = NoteForm(request.POST, instance=note)
     if form.is_valid():
-      form.save()
+      author = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+      note = form.save()
+      note.author = author
+      note.save()
       notable.notes.add(note)
       return HttpResponseRedirect(next)
-  else:
-    form = NoteForm(instance=note)
   return render(request, 'note-new.html', {'form': form, 'next': next})
 
 @login_required
 def note_edit(request, pk):
   note=get_object_or_404(Note, pk=pk)
-  if request.user != note.contributor:
-    return HttpResponse(status=204)
-  elif request.method == 'POST':
+  editor = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if editor != note.author: return HttpResponse(status=204)
+  form = NoteForm(request.POST or None, instance=note)
+  if request.method == 'POST':
     if 'deleted' in request.POST:
       note.delete()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'noteChanged'
-      return response
-    form = NoteForm(request.POST, instance=note)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'noteChanged'})
     if form.is_valid():
       form.save()
-      response = HttpResponse(status=204)
-      response['HX-Trigger'] = 'noteChanged'
-      return response
-  else:
-    form = NoteForm(instance=note)
+      return HttpResponse(status=204, headers={'HX-Trigger': 'noteChanged'})
   return render(request, 'note-edit.html', {'form': form, 'note': note})
 
 # Tag

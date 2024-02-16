@@ -1,10 +1,9 @@
 
 # this script imports the instruments table, and creates Person, Department, Room, Manufacturer, Purchase, Tag, Note and Asset objects
-# must have a User object with username admin to be author for the Notes
+# must have a Person object named Database Administrator to be author for the Notes
 
 import pickle, re
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
 from ...models import Department, Person, Manufacturer, Tag, Room, Note, Asset
 
 # instrument fields
@@ -12,7 +11,6 @@ from ...models import Department, Person, Manufacturer, Tag, Room, Note, Asset
 # 'PurchaseOrder', 'Cost', 'Department', 'Contact', 'Room', 'OldRoom', 'DecommissionDate', 'OperatorManual', 'ServiceManual', 'Notes', 
 # 'RemovalReason', 'DBStatus']
 instruments = {}
-
 departments = {}
 names = {}
 dualnames = {}
@@ -21,6 +19,7 @@ rooms = {}
 
 rx_asset = re.compile(r"^(M/C X\d\d\d\d|OE-\d\d\d\d)$")
 rx_job = re.compile(r"^\d\d-\d\d\d$")
+admin = Person.objects.get(first='Database', last='Administrator')
 
 def LoadPickles():
     global instruments, departments, names, dualnames, manufacturers, rooms
@@ -37,7 +36,8 @@ def DeleteAssets():
         print(a.identifier, ' DELETED')
 
 def ImportInstruments():
-    if not User.objects.get(username='admin'): return
+    if admin: print('admin found')
+    else: return
     for i in instruments.values():
         asset = GetAsset(i['AssetTag'])
         if not asset: continue
@@ -146,7 +146,7 @@ def AddRemovalNote(asset, text):
 def AddNote(asset, text):
         n = Note()
         n.text = text
-        n.contributor = User.objects.get(username='admin')
+        n.author = admin
         n.save()
         asset.notes.add(n)
 
