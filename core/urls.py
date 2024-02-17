@@ -58,6 +58,7 @@ urlpatterns = [
 # Job
   path('job/new/', views.job_new, name='job-new'),
   path('job/<int:pk>/', views.JobDetail.as_view(), name='job'),
+  path('job/get/<str:identifier>/', views.job_get, name='job-get'),
   path('job/<int:pk>/details/', views.job_details, name='job-details'),
   path('job/<int:pk>/assets/', views.job_assets, name='job-assets'),
   path('job/<int:pk>/works/', views.job_works, name='job-works'),

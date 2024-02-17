@@ -9,8 +9,10 @@ from django.contrib.auth.models import AnonymousUser
 from ..models import *
 from ..forms import *
 
-# Jobs
-  
+def job_get(request, identifier):
+  job = get_object_or_404(Job, identifier=identifier)
+  return render(request, 'job.html', {'job': job})
+
 def jobs(request):
   form = JobSearchForm()
   return render(request, 'jobs.html', {'form': form})

@@ -22,7 +22,7 @@
         </tr>
         <tr>
             <th>Last Job</th>
-            <td>{{ pmi.last_job }}</td>
+            <td>{% if pmi.last_job %}<a href="{% url 'job-get' pmi.last_job %}" class="tag is-link is-medium has-text-weight-normal">{{ pmi.last_job }}</a>{% endif %}</td>
             <td></td>
         </tr>
         <tr>
@@ -43,7 +43,7 @@
         </tr>
         <tr>
             <th>Scheduled Job</th>
-            <td>{% if pmi.job %}{{ pmi.job.identifier }}{% endif %}</td>
+            <td>{% if pmi.job %}<a href="{% url 'job' pmi.job.id %}" class="tag is-link is-medium has-text-weight-normal">{{ pmi.job.identifier }}</a>{% endif %}</td>
             <td></td>
         </tr>
         <tr><td><div class="tag is-success is-medium">Job Properties</div></td><td></td><td></td></tr>
