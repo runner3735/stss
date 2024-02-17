@@ -1,0 +1,26 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>New PMI</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">New PMI</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">Reference Job</label>
+    <div class="control">{% render_field form.last_job class="input" %}</div>
+</div>
+<div class="field">
+    <label class="label">Frequency</label>
+    <div class="control">{% render_field form.frequency class="input" %}</div>
+</div>
+<div class="control">
+    <button class="button is-danger">Create</button>
+    <a href="{% url 'pmis' %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

@@ -8,6 +8,34 @@ from django.http import HttpResponse, HttpResponseRedirect
 from ..models import *
 from ..forms import *
 
+@login_required
+def pmi_new(request):
+  form = PMIForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      pmi = form.save()
+      pmi.creator = Person.objects.get(first=request.user.first_name, last=request.user.last_name)
+      if pmi.last_job:
+        job = Job.objects.get(identifier=pmi.last_job)
+        pmi.name = job.name
+        pmi.details = job.details
+        pmi.location = job.location
+        pmi.customers.set(job.customers.all())
+        pmi.departments.set(job.departments.all())
+        pmi.rooms.set(job.rooms.all())
+        pmi.files.set(job.files.all())
+        pmi.assets.set(job.assets.all())
+        if job.closed:
+          pmi.last = job.closed
+          pmi.next = job.closed + datetime.timedelta(days=pmi.frequency)
+        else:
+          pmi.last_job = ''
+          pmi.next = job.deadline
+          pmi.job = job
+      pmi.save()
+      return HttpResponseRedirect(reverse('pmi', args=[pmi.pk]))
+  return render(request, 'pmi-new.html', {'form': form})
+
 # Display
 
 def pmi_frequency(request, pk):

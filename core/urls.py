@@ -99,6 +99,7 @@ urlpatterns = [
 
 # PMI
 
+  path('pmi/new/', views.pmi_new, name='pmi-new'),
   path('pmi/<int:pk>/', views.PMIDetail.as_view(), name='pmi'),
 
   path('pmi/<int:pk>/frequency/', views.pmi_frequency, name='pmi-frequency'),

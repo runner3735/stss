@@ -160,6 +160,18 @@ class JobDetailsForm(forms.ModelForm):
 
 # PMI
 
+class PMIForm(forms.ModelForm):
+    class Meta:
+        model = PMI
+        fields = ['last_job', 'frequency']
+
+    def clean_last_job(self):
+        data = self.cleaned_data['last_job']
+        if self.instance.pk:
+            if not Job.objects.filter(identifier=data).exists():
+                raise forms.ValidationError("You must enter the identifier of an existing job, or leave blank.")
+        return data
+    
 class PMINameForm(forms.ModelForm):
     class Meta:
         model = PMI
@@ -261,15 +273,3 @@ class WorkForm(forms.ModelForm):
         model = Work
         fields = ['date', 'hours', 'summary']
         widgets = {'date': DateInput()}
-
-# class ComponentForm(forms.ModelForm):
-#     class Meta:
-#         model = Component
-#         fields = ['name',]
-    
-#     def clean_name(self):
-#         data = self.cleaned_data['name']
-#         if self.instance.pk:
-#             if data.lower() != self.instance.name.lower():
-#                 raise forms.ValidationError("You can only edit the casing of a Component object.  You cannot change its content.")
-#         return data
