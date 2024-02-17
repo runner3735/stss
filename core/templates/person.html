@@ -89,19 +89,19 @@
       on htmx:afterOnLoad add .is-active to closest <li/> to event.target then remove .has-background-light from closest <li/> to event.target">
         <ul>
           <li class="has-background-light">
-            <a hx-get="{% url 'person-tab' person.id 'assets' %}">
+            <a hx-get="{% url 'person-assets' person.id %}">
               <span class="icon is-small"><i class="fas fa-sticky-note"></i></span>
               <span>Assets</span>
             </a>
           </li>
           <li class="has-background-light">
-            <a hx-get="{% url 'person-tab' person.id 'jobs' %}">
+            <a hx-get="{% url 'person-jobs' person.id %}">
               <span class="icon is-small"><i class="fas fa-image"></i></span>
               <span>Jobs as Customer</span>
             </a>
           </li>
           <li class="has-background-light">
-            <a hx-get="{% url 'person-tab' person.id 'tasks' %}">
+            <a hx-get="{% url 'person-tasks' person.id %}">
               <span class="icon is-small"><i class="far fa-file-alt"></i></span>
               <span>Jobs as Technician</span>
             </a>
@@ -113,6 +113,7 @@
 
   </div>
 </section>
+
 <div class="modal" _="on htmx:afterSwap add .is-active to me">
   <div class="modal-background" _="on click remove .is-active from closest .modal"></div>
   <div class="modal-content" _="on htmx:beforeSwap(xhr) if xhr.status is 204 remove .is-active from closest .modal">

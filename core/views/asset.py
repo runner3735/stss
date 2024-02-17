@@ -59,6 +59,11 @@ def asset_notes(request, pk):
   notes = asset.notes.all()
   return render(request, 'note-list.html', {'notes': notes})
 
+def asset_jobs(request, pk):
+  asset = get_object_or_404(Asset, pk=pk)
+  jobs = asset.jobs.all()
+  return render(request, 'job-list.html', {'jobs': jobs})
+
 def asset_files(request, pk):
   linkable = get_object_or_404(Asset, pk=pk)
   return render(request, 'file-list.html', {'linkable': linkable})

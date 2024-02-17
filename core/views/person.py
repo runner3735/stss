@@ -35,15 +35,17 @@ def people_get_context(request):
   except EmptyPage:
     return {'people': [], 'status': status, 'search': search}
 
-def person_tab(request, pk, tab):
+def person_assets(request, pk):
   person = get_object_or_404(Person, pk=pk)
-  #time.sleep(2)
-  if tab == 'assets':
-    return render(request, 'person-assets.html', {'person': person})
-  if tab == 'jobs':
-    return render(request, 'person-jobs.html', {'person': person})
-  if tab == 'tasks':
-    return render(request, 'person-tasks.html', {'person': person})
+  return render(request, 'person-assets.html', {'person': person})
+
+def person_jobs(request, pk):
+  person = get_object_or_404(Person, pk=pk)
+  return render(request, 'job-list.html', {'jobs': person.jobs_as_customer.all()})
+
+def person_tasks(request, pk):
+  person = get_object_or_404(Person, pk=pk)
+  return render(request, 'job-list.html', {'jobs': person.jobs_as_technician.all()})
 
 @login_required
 def person_new(request):

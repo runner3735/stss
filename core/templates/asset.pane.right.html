@@ -27,6 +27,12 @@
                             <span>Gallery</span>
                         </a>
                     </li>
+                    <li class="has-background-light">
+                        <a hx-get="{% url 'asset-jobs' asset.id %}" hx-trigger="click">
+                            <span class="icon is-small"><i class="fas fa-image"></i></span>
+                            <span>Jobs</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div id="tab-contents" class="content"></div>

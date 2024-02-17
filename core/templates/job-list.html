@@ -1,0 +1,36 @@
+{% if jobs %}
+<table id="job-table" class="table is-fullwidth is-narrow is-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Opened</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Deadline</th>
+            <th>Closed</th>
+            <th>Status</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.identifier }}</td>
+            <td>{{ job.opened | date:"Y-m-d" }}</td>
+            <td>{{ job.name }}</td>
+            <td>{{ job.get_kind_display }}</td>
+            <td>{{ job.get_category_display }}</td>
+            <td>{{ job.deadline | date:"Y-m-d" }}</td>
+            <td>{{ job.closed | date:"Y-m-d" }}</td>
+            <td>{{ job.get_status_display }}</td>
+            <td class="has-text-centered">
+                <a href="{% url 'job' job.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}  
+    </tbody>
+</table>
+{% endif %}
