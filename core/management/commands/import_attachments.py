@@ -67,7 +67,7 @@ def create_file(attachable, folder, filename):
         print('duplicate:', filepath)
         os.unlink(filepath)
         file.content = matching.content
-        if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = matching.content
+        if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = matching.picture
     else:
         ts = os.path.getmtime(filepath)
         relfolder = datetime.utcfromtimestamp(ts).strftime('files/%Y/%m/')
