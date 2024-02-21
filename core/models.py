@@ -101,12 +101,12 @@ class Note(models.Model):
         return self.text.splitlines()[0]
     
 class File(models.Model):
-  name = models.CharField(max_length=200)
+  name = models.CharField(max_length=256)
   contributor = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True)
   created = models.DateTimeField(auto_now_add=True)
   url = models.URLField(blank=True, null=True)
-  content = models.FileField(upload_to='files/%Y/%m/', blank=True, null=True)
-  picture = models.ImageField(upload_to='files/%Y/%m/', blank=True, null=True)
+  content = models.FileField(upload_to='files/%Y/%m/', max_length=256, blank=True, null=True)
+  picture = models.ImageField(upload_to='files/%Y/%m/', max_length=256, blank=True, null=True)
   hash = models.CharField(max_length=32)
 
   thumb225h = ImageSpecField(source='picture', processors=[ResizeToFit(height=225, upscale=True)], format='JPEG', options={'quality': 60})
