@@ -1,6 +1,9 @@
 import hashlib, os
 import core.ffutil as ff
 from PIL import Image, ImageOps
+from pillow_heif import register_heif_opener
+
+register_heif_opener()
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -63,8 +66,23 @@ def create_file(request, upload, attachable):
      os.unlink(path)
      file.content = matching.content
      if file.picture: file.picture = matching.content
+  elif ext.lower() == 'heic':
+     convert_image(file)
   file.hash = checksum
   file.save()
+
+def convert_image(file):
+  try:
+      image = Image.open(file.content)
+  except:
+      print('unable to open:', file.content)
+      return
+  newpath = file.filepath() + '.jpg'
+  if os.path.exists(newpath): 
+    print('path already exists:', newpath)
+    return
+  image.save(newpath)
+  file.picture = file.content.name + '.jpg'   
 
 # File
 

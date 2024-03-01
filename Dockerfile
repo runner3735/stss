@@ -26,6 +26,7 @@ RUN pip install --upgrade pip \
 && pip install Pillow==9.2.0
 RUN pip install psycopg2-binary
 RUN pip install yt-dlp
+RUN pip install pillow-heif
 
 # set default user
 USER app
