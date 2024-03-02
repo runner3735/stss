@@ -34,6 +34,9 @@ class AssetNumberForm(forms.Form):
 class AssetIdentifierForm(forms.Form):
     identifier = forms.DecimalField(label='Asset Tag Number', max_digits=4, decimal_places=0)
 
+class JobIdentifierForm(forms.Form):
+    identifier = forms.CharField(label='Job ID', max_length=8)
+
 class AssetCloneForm(forms.Form):
     identifier = forms.DecimalField(label='Asset Tag Number', max_digits=4, decimal_places=0)
     serial = forms.CharField(max_length=128, required=False)

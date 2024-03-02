@@ -9,6 +9,14 @@ from django.contrib.auth.models import AnonymousUser
 from ..models import *
 from ..forms import *
 
+def job_find(request):
+  next = request.GET.get('next', '')
+  form = JobIdentifierForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      return HttpResponseRedirect(reverse('job-get', args=[form.cleaned_data['identifier']]))
+  return render(request, 'job-find.html', {'form': form, 'next': next})
+
 def job_get(request, identifier):
   job = get_object_or_404(Job, identifier=identifier)
   return render(request, 'job.html', {'job': job})
@@ -99,9 +107,8 @@ def job_closed(request, pk):
   if j.closed: return HttpResponse('<strong>' + j.closed.strftime('%B %-d, %Y') + '</strong>')
   return HttpResponse('')
 
-
-@login_required
 def job_name_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j = get_object_or_404(Job, pk=pk)
   if request.method == 'POST':
     form = JobNameForm(request.POST, instance=j)
@@ -112,8 +119,8 @@ def job_name_edit(request, pk):
     form = JobNameForm(instance=j)
   return render(request, 'job-name-edit.html', {'form': form})
 
-@login_required
 def job_budget_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j = get_object_or_404(Job, pk=pk)
   if request.method == 'POST':
     form = JobBudgetForm(request.POST, instance=j)
@@ -124,8 +131,8 @@ def job_budget_edit(request, pk):
     form = JobBudgetForm(instance=j)
   return render(request, 'job-budget-edit.html', {'form': form})
 
-@login_required
 def job_course_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j = get_object_or_404(Job, pk=pk)
   if request.method == 'POST':
     form = JobCourseForm(request.POST, instance=j)
@@ -136,8 +143,8 @@ def job_course_edit(request, pk):
     form = JobCourseForm(instance=j)
   return render(request, 'job-course-edit.html', {'form': form})
 
-@login_required
 def job_location_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j = get_object_or_404(Job, pk=pk)
   if request.method == 'POST':
     form = JobLocationForm(request.POST, instance=j)
@@ -148,8 +155,8 @@ def job_location_edit(request, pk):
     form = JobLocationForm(instance=j)
   return render(request, 'job-location-edit.html', {'form': form})
 
-@login_required
 def job_opened_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j=get_object_or_404(Job, pk=pk)
   form = JobOpenedForm(request.POST or None, instance=j)
   if request.method == 'POST':
@@ -166,8 +173,8 @@ def job_opened_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobOpenedChanged'})
   return render(request, 'job-opened-edit.html', {'form': form})
 
-@login_required
 def job_deadline_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   j=get_object_or_404(Job, pk=pk)
   form = JobDeadlineForm(request.POST or None, instance=j)
   if request.method == 'POST':
@@ -184,8 +191,8 @@ def job_deadline_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobDeadlineChanged'})
   return render(request, 'job-deadline-edit.html', {'form': form})
 
-@login_required
 def job_closed_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job=get_object_or_404(Job, pk=pk)
   if not job.closed and job.status < 3: return HttpResponse(status=204)
   form = JobClosedForm(request.POST or None, instance=job)
@@ -204,8 +211,8 @@ def job_closed_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobClosedChanged'})
   return render(request, 'job-closed-edit.html', {'form': form})
 
-@login_required
 def job_status_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job = get_object_or_404(Job, pk=pk)
   form = JobStatusForm(request.POST or None, instance=job)
   if request.method == 'POST':
@@ -215,8 +222,8 @@ def job_status_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobStatusChanged'})
   return render(request, 'job-status-edit.html', {'form': form})
 
-@login_required
 def job_category_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job = get_object_or_404(Job, pk=pk)
   form = JobCategoryForm(request.POST or None, instance=job)
   if request.method == 'POST':
@@ -225,8 +232,8 @@ def job_category_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'jobCategoryChanged'})
   return render(request, 'job-category-edit.html', {'form': form})
 
-@login_required
 def job_kind_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job = get_object_or_404(Job, pk=pk)
   form = JobKindForm(request.POST or None, instance=job)
   if request.method == 'POST':
@@ -320,7 +327,17 @@ def job_assets_page(request):
 @login_required
 def job_asset_add(request, pk, asset):
   job = get_object_or_404(Job, pk=pk)
+  a = get_object_or_404(Asset, pk=asset)
   job.assets.add(asset)
+  if a.location and job.location:
+    if a.location != job.location:
+      job_location = job.location + '; ' + a.location
+      job.location = job_location[:128]
+      job.save()
+  elif a.location:
+    job.location = a.location
+    job.save()
+  if a.room: job.rooms.add(a.room)
   return HttpResponseRedirect(reverse('job-assets-edit', args=[pk]))
 
 @login_required
@@ -372,8 +389,8 @@ def job_create():
   job.save()
   return job
 
-@login_required
 def job_rooms_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job = get_object_or_404(Job, pk=pk)
   form = RoomForm(request.POST or None)
   if request.method == 'POST':
@@ -386,8 +403,8 @@ def job_rooms_edit(request, pk):
       return HttpResponse(status=204, headers={'HX-Trigger': 'roomsChanged'})
   return render(request, 'rooms-edit.html', {'form': form})
 
-@login_required
 def job_departments_edit(request, pk):
+  if not request.user.is_authenticated: return HttpResponse(status=204)
   job = get_object_or_404(Job, pk=pk)
   form = DepartmentForm(request.POST or None)
   if request.method == 'POST':

@@ -31,6 +31,7 @@
           <a class="navbar-link"><strong>Jobs</strong></a>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="{% url 'jobs' %}">Browse</a>
+            <a class="navbar-item" href="{% url 'job-find' %}?next={{request.path}}">Get</a>
             <a class="navbar-item" href="{% url 'job-new' %}">New</a>
             <a class="navbar-item" href="{% url 'pmis' %}">Preventative Maintenance Items</a>
             <a class="navbar-item" href="{% url 'pmi-new' %}">New Preventative Maintenance Item</a>

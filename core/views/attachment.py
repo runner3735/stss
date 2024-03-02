@@ -66,7 +66,7 @@ def create_file(request, upload, attachable):
      os.unlink(path)
      file.content = matching.content
      if file.picture: file.picture = matching.content
-  elif ext.lower() == 'heic':
+  elif ext.lower() == '.heic':
      convert_image(file)
   file.hash = checksum
   file.save()

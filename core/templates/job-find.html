@@ -1,0 +1,26 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Get Job</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Get Job</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">Job ID</label>
+    <div class="control">{% render_field form.identifier class="input" %}</div>
+</div>
+<div class="control">
+    <button class="button is-danger">Get</button>
+    {% if next %}
+    <a href="{{ next }}" class="button is-link">Cancel</a>
+    {% else %}
+    <a href="{% url 'home' %}" class="button is-link">Cancel</a>
+    {% endif %}
+</div>
+{% endblock %}
