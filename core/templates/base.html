@@ -81,9 +81,9 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link"><strong>{{ user.get_username }}</strong></a>
           <div class="navbar-dropdown">
-            <a class="navbar-item" href="{% url 'home' %}">My Photos</a>
-            <a class="navbar-item" href="{% url 'home' %}">My Documents</a>
-            <a class="navbar-item" href="{% url 'home' %}">My Videos</a>
+            <a class="navbar-item" href="{% url 'me' %}">Me</a>
+            <a class="navbar-item" href="{% url 'home' %}">My Files</a>
+            <a class="navbar-item" href="{% url 'home' %}">My Gallery</a>
             <a class="navbar-item" href="{% url 'password_change'%}?next={{request.path}}">Change Password</a>
           </div>
         </div>

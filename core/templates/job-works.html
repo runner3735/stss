@@ -2,7 +2,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Date</th>
+            <th style="width: 110px">Date</th>
             <th>Technician</th>
             <th>Hours</th>
             <th>Summary</th>
@@ -12,8 +12,8 @@
     <tbody>
         {% for work in job.work_set.all %}
         <tr>
-            <td>{{ work.date }}</td>
-            <td>{{ work.technician }}</td>
+            <td>{{ work.date | date:"Y-m-d" }}</td>
+            <td>{{ work.technician.last }}</td>
             <td>{{ work.hours }}</td>
             <td>{{ work.summary }}</td>
             {% if work.technician == requester %}

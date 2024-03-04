@@ -135,6 +135,7 @@ urlpatterns = [
   path('vendor/<int:pk>/', views.VendorDetail.as_view(), name='vendor'),
 
 # Person
+  path('me/', views.me, name='me'),
   path('person/new/', views.person_new, name='person-new'),
   path('person/<int:pk>/', views.PersonDetail.as_view(), name='person'),
   path('person/<int:pk>/assets/', views.person_assets, name='person-assets'),

@@ -4,7 +4,7 @@
 {% else %}
 <tr>
 {% endif %}
-    <td>{{ job.identifier }}</td>
+    <td><a href="{% url 'job' job.id %}">{{ job.identifier }}</a></td>
     <td>{{ job.opened | date:"Y-m-d" }}</td>
     <td>{{ job.name }}</td>
     <td>{{ job.get_kind_display }}</td>

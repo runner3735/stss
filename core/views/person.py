@@ -12,6 +12,11 @@ from .other import get_instance
 
 # Person
 
+@login_required
+def me(request):
+  person = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  return render(request, 'person.html', {'person': person})
+
 def people(request):
   context = people_get_context(request)
   context['form'] = PeopleSearchForm(request.GET or None)
