@@ -140,15 +140,16 @@ def work_new(request, pk):
 @login_required
 def work_edit(request, pk):
   work = get_object_or_404(Work, pk=pk)
-  technician = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
-  if work.technician != technician: return HttpResponseRedirect(work.job.detail())
+  requester = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  if work.technician != requester: return HttpResponseRedirect(work.job.detail())
+  form = WorkForm(request.POST or None, instance=work)
   if request.method == 'POST':
-    form = WorkForm(request.POST, instance=work)
+    if 'delete' in request.POST:
+      work.delete()
+      return HttpResponseRedirect(work.job.detail())
     if form.is_valid():
       form.save()
       return HttpResponseRedirect(work.job.detail())
-  else:
-    form = WorkForm(instance=work)
   return render(request, 'work-edit.html', {'form': form, 'job': work.job})
 
 # Helper

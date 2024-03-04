@@ -26,7 +26,8 @@
     <div class="control">{% render_field form.summary class="textarea" rows="10" placeholder="Enter work summary here..." %}</div>
 </div>
 <div class="control">
-    <button class="button is-danger">Update</button>
+    <button class="button is-danger mr-4">Update</button>
+    <button class="button is-danger mr-4" name="delete">Delete</button>
     <a href="{% url 'job' job.id %}" class="button is-link">Cancel</a>
 </div>
 {% endblock %}
