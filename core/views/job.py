@@ -245,14 +245,23 @@ def job_kind_edit(request, pk):
 @login_required
 def job_details_edit(request, pk):
   job = get_object_or_404(Job, pk=pk)
+  form = JobDetailsForm(request.POST or None, instance=job)
   if request.method == 'POST':
-    form = JobDetailsForm(request.POST, instance=job)
     if form.is_valid():
       form.save()
-      return HttpResponseRedirect(job.detail())
-  else:
-    form = JobDetailsForm(instance=job)
+      if job.details: return HttpResponseRedirect(job.detail())
+      return HttpResponseRedirect(reverse('job-delete', args=[pk]))
   return render(request, 'job-details-edit.html', {'form': form, 'job': job})
+
+@login_required
+def job_delete(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  if job.details: return HttpResponseRedirect(job.detail())
+  if request.method == 'POST':
+    if 'delete' in request.POST:
+      job.delete()
+      return HttpResponseRedirect(reverse('jobs'))
+  return render(request, 'job-delete.html', {'job': job})
 
 def job_departments(request, pk):
   job = get_object_or_404(Job, pk=pk)

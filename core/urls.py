@@ -67,6 +67,7 @@ urlpatterns = [
   path('job/<int:pk>/notes/', views.job_notes, name='job-notes'),
   path('job/<int:pk>/files/', views.job_files, name='job-files'),
   path('job/<int:pk>/gallery/', views.job_gallery, name='job-gallery'),
+  path('job/<int:pk>/delete/', views.job_delete, name='job-delete'),
 
   path('job/<int:pk>/name/', views.job_name, name='job-name'),
   path('job/<int:pk>/budget/', views.job_budget, name='job-budget'),

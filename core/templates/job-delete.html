@@ -1,0 +1,16 @@
+{% extends "baseform.html" %}
+
+{% block title %}
+<title>Delete Job</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Delete Job {{ job.identifier }}?</h1>
+{% endblock %}
+
+{% block content %}
+<div class="control">
+    <button class="button is-danger mr-4" name="delete">Yes. Delete Job.</button>
+    <a href="{% url 'job' job.id %}" class="button is-link">Cancel</a>
+</div>
+{% endblock %}

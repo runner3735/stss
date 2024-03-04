@@ -46,6 +46,7 @@
         const myDropzone = new Dropzone('#my-dropzone', {
             url: "{% url 'file-upload' %}",
             maxFiles: 20,
+            maxFilesize: 5000,
         })
     </script>
 </body>
