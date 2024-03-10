@@ -6,6 +6,10 @@ urlpatterns = [
 # Home
   path('', views.home, name='home'),
 
+# Background Tasks
+  path("task/<task_id>/status/", views.get_status, name="task_status"),
+  path("task/run/", views.run_task, name="task_run"),
+  
 # List Views
   path('assets/', views.assets, name='assets'),
   path('asset/table/', views.asset_table, name='asset-table'),
@@ -196,40 +200,6 @@ urlpatterns = [
 
 # Work
   path('work/<int:pk>/edit/', views.work_edit, name='work-edit'),
-
-# Tag
-#   path('tags/', views.tags, name='tags'),
-#   path('tag/<int:pk>/', views.TagDetail.as_view(), name='tag'),
-#   path('tag/<int:tag>/edit/', views.tag_edit, name='tag-edit'),
-#   path('tag/<int:tag>/delete/', views.tag_delete, name='tag-delete'),
-
-# Video
-#   path('myvideos/', views.MyVideos.as_view(), name='my-videos'),
-#   path('videos/', views.Videos.as_view(), name='videos'),
-#   path('video/<int:pk>/', views.VideoDetail.as_view(), name='video'),
-#   path('video/upload/', views.video_upload, name='video-upload'),
-#   path('youtube/new/', views.youtube_new, name='youtube-new'),
-#   path('video/<int:pk>/name/edit', views.video_edit_name, name='video-edit-name'),
-#   path('video/<int:pk>/name/', views.video_name, name='video-name'),
-#   path('video/<int:pk>/thumbnail/', views.video_edit_thumbnail, name='video-edit-thumbnail'),
-#   path('video/<int:pk>/select/thumbnail/', views.video_select_thumbnail, name='video-select-thumbnail'),
-#   path('video/<int:pk>/delete/', views.video_delete, name='video-delete'),
-#   path('setup/<int:pk>/video/', views.setup_add_video, name='setup-add-video'),
-#   path('video/<int:pk>/demo/', views.VideoSelectDemo.as_view(), name='video-select-demo'),
-#   path('video/<int:pk>/setup/<int:setup>/', views.video_add_setup, name='video-add-setup'),
-  
-# Document
-#   path('mydocuments/', views.MyDocuments.as_view(), name='my-documents'),
-#   path('setup/<int:pk>/document/', views.setup_add_document, name='setup-add-document'),
-#   path('course/<int:pk>/document/', views.course_add_document, name='course-add-document'),
-#   path('document/<int:pk>/convert/', views.document_convert, name='document-convert'),
-#   path('document/<int:pk>/edit/', views.document_edit, name='document-edit'),
-#   path('document/<int:pk>/delete/', views.document_delete, name='document-delete'),
-#   path('setup/<int:pk>/document/<int:document>/', views.setup_remove_document, name='setup-remove-document'),
-#   path('course/<int:pk>/document/<int:document>/', views.course_remove_document, name='course-remove-document'),
-
-# Delete
-#   path('delete/<str:model>/<int:pk>/', views.delete, name='delete'),
 
 ]
 

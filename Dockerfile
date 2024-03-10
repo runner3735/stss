@@ -27,6 +27,8 @@ RUN pip install --upgrade pip \
 RUN pip install psycopg2-binary
 RUN pip install yt-dlp
 RUN pip install pillow-heif
+RUN pip install celery==5.2.7
+RUN pip install redis==4.4.0
 
 # set default user
 USER app

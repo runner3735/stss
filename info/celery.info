@@ -1,0 +1,34 @@
+
+how to implement celery in a django project
+
+reference: https://testdriven.io/blog/django-and-celery/
+
+modify Dockerfile:
+pip install celery and redis
+
+modify docker-compose.yml:
+add celery and redis services
+celery service is similar to app service, but no ports and different command
+celery service depends on app
+
+modify django settings:
+add CELERY_BROKER_URL and CELERY_RESULT_BACKEND
+
+in app directory, create tasks.py:
+put shared task functions here
+
+in django directory, create celery.py:
+this is where the celery app is initialized
+
+in django directory, modify __init__.py:
+ensure Celery app is imported when django starts
+
+modify views.py:
+put task trigger and status functions here
+these functions will call the shared task functions in tasks.py
+
+modify urls.py
+add urls that point to the trigger and status functions
+
+in project directory, create logs directory:
+create celery.log here, and update the celery command in the docker-compose file
