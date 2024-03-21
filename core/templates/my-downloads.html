@@ -1,0 +1,29 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="section has-background-info-dark">
+        <h1 class="title has-text-light has-text-centered">My Downloads</h1>
+        <table id="download-table" class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Created</th>
+                    <th>URL</th>
+                    <th>Updated</th>
+                    <th>Status</th>
+                    <th>Clear</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for download in downloads %}
+                {% if download.status == 'downloading video' or download.status == 'added to queue' %}
+                {% include 'download-pending.html' %}
+                {% else %}
+                {% include 'download-finished.html' %}
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+{% endblock %}

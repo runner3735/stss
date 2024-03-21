@@ -190,9 +190,17 @@ urlpatterns = [
 #   path('upload/', views.upload, name='upload'),
   path('upload/to/<str:model>/<int:pk>/', views.upload, name='upload-to'),
   path('file/upload/', views.file_upload, name='file-upload'),
-  path('upload/test', views.upload_test, name='upload-test'),
+  path('upload/test/', views.upload_test, name='upload-test'),
 
+# Youtube
+  path('youtube/new/', views.youtube_new, name='youtube-new'),
+  
 # File
+  path('file/<int:pk>/', views.do_nothing, name='file'),
+  path('my/files/', views.my_files, name='my-files'),
+  path('my/downloads/', views.my_downloads, name='my-downloads'),
+  path('download/<int:pk>/row/', views.download_row, name='download-row'),
+  path('download/<int:pk>/delete/', views.download_delete, name='download-delete'),
   path('file/<int:pk>/name/edit/', views.file_name_edit, name='file-name-edit'),
   path('file/<int:file>/remove/<str:model>/<int:pk>/', views.file_remove, name='file-remove'),
   path('picture/<int:file>/remove/<str:model>/<int:pk>/', views.picture_remove, name='picture-remove'),

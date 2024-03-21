@@ -152,6 +152,12 @@ def work_edit(request, pk):
       return HttpResponseRedirect(work.job.detail())
   return render(request, 'work-edit.html', {'form': form, 'job': work.job})
 
+# Development
+
+def do_nothing(request, **kwargs):
+  print(kwargs)
+  return HttpResponse(status=204)
+
 # Helper
 
 def get_instance(model, pk): # this function is imported into several other view files

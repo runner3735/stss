@@ -54,6 +54,13 @@ class DepartmentForm(forms.Form):
 class RoomForm(forms.Form):
     room = forms.ModelChoiceField(queryset=Room.objects.all(), empty_label=None)
 
+# Download
+
+class DownloadForm(forms.ModelForm):
+    class Meta:
+        model = Download
+        fields = ['url', 'quality']
+
 # Asset
 
 class AssetForm(forms.ModelForm):

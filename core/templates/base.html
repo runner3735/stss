@@ -73,8 +73,10 @@
           <a class="navbar-link"><strong>{{ user.get_username }}</strong></a>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="{% url 'me' %}">Me</a>
-            <a class="navbar-item" href="{% url 'home' %}">My Files</a>
+            <a class="navbar-item" href="{% url 'my-files' %}">My Files</a>
             <a class="navbar-item" href="{% url 'home' %}">My Gallery</a>
+            <a class="navbar-item" href="{% url 'youtube-new' %}">Add YouTube Video</a>
+            <a class="navbar-item" href="{% url 'my-downloads' %}">My Downloads</a>
             <a class="navbar-item" href="{% url 'password_change'%}?next={{request.path}}">Change Password</a>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import hashlib, os
 import core.ffutil as ff
+from datetime import datetime
 from PIL import Image, ImageOps
 from pillow_heif import register_heif_opener
 from django.views.decorators.csrf import csrf_exempt
@@ -8,13 +9,42 @@ register_heif_opener()
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 
 from ..models import *
 from ..forms import *
 from .other import get_instance
-from core.tasks import create_task
+from core.tasks import create_task, download_video
 from celery.result import AsyncResult
+
+# Youtube
+
+@login_required
+def youtube_new(request):
+  form = DownloadForm(request.POST or None)
+  if request.method == 'POST':
+    if form.is_valid():
+      download = form.save(commit=False)
+      download.downloader = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+      download.status = 'added to queue'
+      download.status_date = datetime.datetime.now()
+      download.save()
+      #download_video(download.id)
+      download_video.delay(download.id)
+      return HttpResponseRedirect(reverse('my-downloads'))
+  return render(request, 'youtube-new.html', {'form': form})
+
+@login_required
+def download_delete(request, pk):
+  download = get_object_or_404(Download, pk=pk)
+  download.delete()
+  return HttpResponse('')
+
+def download_row(request, pk):
+  download = get_object_or_404(Download, pk=pk)
+  if download.status == 'downloading video': return render(request, 'download-pending.html', {'download': download})
+  if download.status == 'added to queue': return render(request, 'download-pending.html', {'download': download})
+  return render(request, 'download-finished.html', {'download': download})
 
 # Background Tasks
 
@@ -107,6 +137,18 @@ def convert_image(file):
   file.picture = file.content.name + '.jpg'   
 
 # File
+
+@login_required
+def my_files(request):
+   requester = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+   files = File.objects.filter(contributor=requester)
+   return render(request, 'my-files.html', {'files': files})
+
+@login_required
+def my_downloads(request):
+   requester = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+   downloads = Download.objects.filter(downloader=requester).order_by('-id')
+   return render(request, 'my-downloads.html', {'downloads': downloads})
 
 @login_required
 def file_name_edit(request, pk):

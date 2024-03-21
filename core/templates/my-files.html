@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="section has-background-info-dark">
+        <h1 class="title has-text-light has-text-centered">My Files</h1>
+        <table id="file-table" class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Filename</th>
+                    <th class="has-text-centered">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td><a href="{{ file.content.url }}">{{ file.filename }}</a></td>
+                    <td class="has-text-centered">
+                        <a href="{% url 'file' file.id %}">
+                            <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

@@ -89,6 +89,16 @@ class Person(models.Model):
     def __str__(self):
         return self.first + ' ' + self.last
 
+class Download(models.Model):
+  quality_choices=[(0, '720p'), (1, '1080p')]
+
+  created = models.DateTimeField(auto_now_add=True)
+  downloader = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
+  url = models.URLField(null=True)
+  quality = models.SmallIntegerField(choices=quality_choices, default=0)
+  status_date = models.DateTimeField(null=True)
+  status = models.CharField(max_length=256, default="")
+
 class Note(models.Model):
     text = models.TextField(max_length=4096)
     created = models.DateTimeField(auto_now_add=True)

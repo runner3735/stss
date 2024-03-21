@@ -46,6 +46,11 @@ class PMIDetail(DetailView):
   context_object_name = 'pmi'
   template_name = 'pmi.html'
 
+class FileDetail(DetailView):
+  model = File
+  context_object_name = 'file'
+  template_name = 'file.html'
+
 # List
 
 class RoomList(ListView):

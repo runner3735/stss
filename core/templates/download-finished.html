@@ -1,0 +1,11 @@
+<tr hx-target="this">
+    <td>{{ download.created }}</td>
+    <td>{{ download.url }}</td>
+    <td>{{ download.status_date }}</td>
+    <td>{{ download.status }}</td>
+    <td class="has-text-centered">
+        <a hx-get="{% url 'download-delete' download.id %}" hx-swap="outerHTML">
+            <span class="icon is-small"><i class="fas fa-trash"></i></span>
+        </a>
+    </td>
+</tr>

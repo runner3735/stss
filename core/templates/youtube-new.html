@@ -1,0 +1,28 @@
+
+{% extends "baseform.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Add YouTube Video</title>
+{% endblock %}
+
+{% block heading %}
+<h1 class="title">Add YouTube Video</h1>
+{% endblock %}
+
+{% block content %}
+<div class="field">
+    <label class="label">YouTube Link</label>
+    <div class="control">{% render_field form.url class="input" placeholder="Paste a link to a YouTube video here..." %}</div>
+</div>
+<div class="field">
+    <label class="label">Preferred Quality</label>
+    <div class="control">
+        <div class="select">{% render_field form.quality class="select" %}</div>
+    </div>
+</div>
+<div class="control mt-5">
+    <button class="button is-danger">Submit</button>
+    <a href="{% url 'home' %}" class="button is-link ml-4">Cancel</a>
+</div>
+{% endblock %}

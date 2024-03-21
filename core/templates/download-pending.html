@@ -1,0 +1,7 @@
+<tr hx-get="{% url 'download-row' download.id %}" hx-target="this" hx-trigger="every 5s" hx-swap="outerHTML">
+    <td>{{ download.created }}</td>
+    <td>{{ download.url }}</td>
+    <td>{{ download.status_date }}</td>
+    <td>{{ download.status }}</td>
+    <td></td>
+</tr>
