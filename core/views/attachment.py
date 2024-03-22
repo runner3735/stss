@@ -40,6 +40,13 @@ def download_delete(request, pk):
   download.delete()
   return HttpResponse('')
 
+@login_required
+def downloads_delete(request):
+  requester = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+  downloads = Download.objects.filter(downloader=requester)
+  downloads.delete()
+  return HttpResponseRedirect(reverse('my-downloads'))
+
 def download_row(request, pk):
   download = get_object_or_404(Download, pk=pk)
   if download.status == 'downloading video': return render(request, 'download-pending.html', {'download': download})
@@ -82,26 +89,38 @@ def rotate(file, degrees):
 # Upload
 
 @login_required
-def upload(request, model="", pk=""):
-  return render(request, 'upload.html', {'model': model, 'pk': pk})
+def upload(request):
+  uplink = reverse('upload-file')
+  next = reverse('my-files')
+  return render(request, 'upload.html', {'uplink': uplink, 'next': next})
 
 @login_required
-def upload_test(request):
-  return render(request, 'upload-test.html')
+def upload_to(request, model, pk):
+  uplink = reverse('upload-file-to', args=[model, pk])
+  next = reverse(model, args=[pk])
+  return render(request, 'upload.html', {'uplink': uplink, 'next': next})
 
 @login_required
-def file_upload(request):
+def upload_file(request):
+  print('upload_file')
   if request.method == 'POST':
     upload = request.FILES.get('file')
-    model = request.POST.get('model', None)
-    pk = request.POST.get('pk', None)
-    if model and pk: attachable = get_instance(model, pk)
-    else: attachable = None
+    create_file(request, upload, None)
+  return HttpResponse('')
+
+@login_required
+def upload_file_to(request, model, pk):
+  print('params', model, pk)
+  if request.method == 'POST':
+    upload = request.FILES.get('file')
+    attachable = get_instance(model, pk)
+    print('name', attachable.name)
     create_file(request, upload, attachable)
   return HttpResponse('')
 
 @login_required
 def create_file(request, upload, attachable):
+  if attachable: print('attachable')
   contributor = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
   name, ext = os.path.splitext(upload.name)
   file = File()

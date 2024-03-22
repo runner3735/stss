@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-5.15.2-web/css/all.min.css">
     {% load static %}
     <link rel="shortcut icon" href="{% static 'physics/favicon.ico' %}" type="image/x-icon">
-
     <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
     <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
 </head>
@@ -22,19 +21,11 @@
                 <div class="column"></div>
                 <div class="column is-9 has-background-link-light">
                     <h1 class="title has-text-centered">Upload Pictures, Documents, and Videos</h1>
-                    <form enctype='multipart/form-data' action="{% url 'file-upload' %}" method='POST' class="dropzone is-primary" id="my-dropzone">
+                    <form enctype='multipart/form-data' action="{{ uplink }}" method='POST' class="dropzone is-primary" id="my-dropzone">
                         {% csrf_token %}
                         <div class="fallback"><input name="file" type="file" multiple /></div>
-                        <input type="hidden" name="model" value="{{ model }}" />
-                        <input type="hidden" name="pk" value="{{ pk }}" />
                     </form>
-                    <div class="has-text-centered">
-                        {% if model %}
-                        <a href="{% url model pk %}" class="button is-link mt-4">Done</a>
-                        {% else %}
-                        <a href="{% url 'home' %}" class="button is-link mt-4">Done</a>
-                        {% endif %}
-                    </div>
+                    <div class="has-text-centered"><a href="{{ next }}" class="button is-link mt-4">Done</a></div>
                 </div>
                 <div class="column"></div>
             </div>
@@ -44,7 +35,7 @@
     <script>
         Dropzone.autoDiscover = false;
         const myDropzone = new Dropzone('#my-dropzone', {
-            url: "{% url 'file-upload' %}",
+            url: "{{ uplink }}",
             maxFiles: 20,
             maxFilesize: 5000,
             timeout: 180000,

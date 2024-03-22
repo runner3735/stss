@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <section class="section has-background-info-dark">
+    <section class="section has-background-info">
         <h1 class="title has-text-light has-text-centered">My Downloads</h1>
         <table id="download-table" class="table is-fullwidth">
             <thead>
@@ -24,6 +24,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="has-text-centered"><a href="{% url 'downloads-delete' %}" class="button is-link mr-4">Clear All</a></div>
     </section>
     <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 {% endblock %}

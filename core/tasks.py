@@ -13,7 +13,7 @@ tempfolder = '/www/temp/'
 def update_status(download, status):
     download.status_date = datetime.now()
     download.status = status
-    download.save() 
+    download.save() # what happens if download has been deleted??
 
 def find_files(id):
     picture = ''
