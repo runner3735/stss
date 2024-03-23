@@ -1,12 +1,7 @@
-import hashlib, os
-import core.ffutil as ff
+import os
 from datetime import datetime
-from PIL import Image, ImageOps
-from pillow_heif import register_heif_opener
+from PIL import Image
 from django.views.decorators.csrf import csrf_exempt
-
-register_heif_opener()
-
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -14,7 +9,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from ..models import *
 from ..forms import *
 from .other import get_instance
-from core.tasks import create_task, download_video, download_video_to
+from core.tasks import create_task, download_video, download_video_to, post_process
 from celery.result import AsyncResult
 
 # Youtube
@@ -44,8 +39,8 @@ def download_new(request):
     download.status = 'added to queue'
     download.status_date = datetime.datetime.now()
     download.save()
-    download_video(download.id)
-    #download_video.delay(download.id)
+    #download_video(download.id)
+    download_video.delay(download.id)
     form = DownloadForm()
     return render(request, 'download-form.html', {'form': form})
   return HttpResponse(status=204)
@@ -60,8 +55,8 @@ def download_new_to(request, model, pk):
     download.status = 'added to queue'
     download.status_date = datetime.datetime.now()
     download.save()
-    download_video_to(download.id, model, pk)
-    #download_video_to.delay(download.id, model, pk)
+    #download_video_to(download.id, model, pk)
+    download_video_to.delay(download.id, model, pk)
     form = DownloadForm()
     return render(request, 'download-form.html', {'form': form})
   return HttpResponse(status=204)
@@ -97,7 +92,6 @@ def rotate(file, degrees):
   except: return
   image = image.rotate(degrees, expand=True)
   image.save(file.filepath())
-  checksum_rename(file)
 
 # Upload
 
@@ -122,7 +116,7 @@ def upload_to(request, model, pk):
 def upload_file(request):
   if request.method == 'POST':
     upload = request.FILES.get('file')
-    create_file(request, upload, None)
+    create_file(request, upload)
   return HttpResponse('')
 
 @login_required
@@ -130,11 +124,12 @@ def upload_file_to(request, model, pk):
   if request.method == 'POST':
     upload = request.FILES.get('file')
     attachable = get_instance(model, pk)
-    create_file(request, upload, attachable)
+    file = create_file(request, upload)
+    attachable.files.add(file)
   return HttpResponse('')
 
 @login_required
-def create_file(request, upload, attachable):
+def create_file(request, upload):
   contributor = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
   name, ext = os.path.splitext(upload.name)
   file = File()
@@ -143,26 +138,9 @@ def create_file(request, upload, attachable):
   if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: file.picture = file.content
   file.name = name
   file.save()
-  if attachable: attachable.files.add(file)
-  path = file.filepath()
-  checksum = md5checksum(path)
-  matching = File.objects.filter(hash=checksum).first()
-  if matching:
-     os.unlink(path)
-     file.content = matching.content
-     if file.picture: file.picture = matching.content
-  elif ext.lower() == '.heic':
-     convert_image(file)
-  file.hash = checksum
-  file.save()
-
-def convert_image(file):
-  try: image = Image.open(file.content)
-  except: return
-  newpath = file.filepath() + '.jpg'
-  if os.path.exists(newpath): return
-  image.save(newpath)
-  file.picture = file.content.name + '.jpg'
+  #post_process(file.id)
+  post_process.delay(file.id)
+  return file
 
 # File
 
@@ -228,26 +206,4 @@ def get_status(request, task_id):
     }
     return JsonResponse(result, status=200)
 
-# Utility
 
-def checksum_rename(file):
-  folder, filename = os.path.split(file.content.name)
-  folderpath = os.path.join(settings.MEDIA_ROOT, folder)
-  ext = os.path.splitext(filename)[1]
-  oldpath = os.path.join(folderpath, filename)
-  newname = md5checksum(oldpath) + ext
-  newpath = os.path.join(folderpath, newname)
-  os.rename(oldpath, newpath)
-  file.content = os.path.join(folder, newname)
-  if file.picture: file.picture = os.path.join(folder, newname)
-  file.save()
-
-def md5checksum(filepath):
-    md5 = hashlib.md5()
-    with open(filepath, "rb") as f:
-        while True:
-            chunk = f.read(8388608)
-            if chunk:
-                md5.update(chunk)
-            else:
-                return md5.hexdigest()

@@ -1,43 +1,19 @@
 
-import time
+import hashlib, time
 from celery import shared_task
+from PIL import Image
+from pillow_heif import register_heif_opener
+register_heif_opener()
 
 import json, os, yt_dlp
 from datetime import datetime
 
-from core.models import Download, File, Person, Job, Asset, PMI
+from core.models import Download, File, Job, Asset, PMI
 
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', '')
 tempfolder = '/www/temp/'
 
-def update_status(download, status):
-    download.status_date = datetime.now()
-    download.status = status
-    download.save() # what happens if download has been deleted??
-
-def find_files(id):
-    picture = ''
-    video = ''
-    for f in os.listdir(tempfolder):
-        base, ext = os.path.splitext(f)
-        if base != id: continue
-        if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: picture = f
-        elif ext.lower() in ['.webm', '.mp4', '.mkv']: video = f
-    return picture, video
-
-def existing_file(existing, download):
-    update_status(download, 'using existing video')
-    if existing.contributor == download.downloader: return existing
-    file, created = File.objects.get_or_create(url=existing.url, contributor=download.downloader)
-    if not created: return file
-    file.name = existing.name
-    file.content = existing.content
-    file.picture = existing.picture
-    file.save()
-    return file
-
-def valid_url(url):
-    if 'youtube' in url and '/watch?' in url: return True
+# Download
 
 @shared_task
 def download_video_to(download_id, model, pk):
@@ -86,6 +62,35 @@ def download_video(download_id):
     update_status(download, 'video download successful')
     return file
 
+def update_status(download, status):
+    download.status_date = datetime.now()
+    download.status = status
+    download.save() # what happens if download has been deleted??
+
+def find_files(id):
+    picture = ''
+    video = ''
+    for f in os.listdir(tempfolder):
+        base, ext = os.path.splitext(f)
+        if base != id: continue
+        if ext.lower() in ['.jpg', '.gif', '.webp', '.png', '.jpeg']: picture = f
+        elif ext.lower() in ['.webm', '.mp4', '.mkv']: video = f
+    return picture, video
+
+def existing_file(existing, download):
+    update_status(download, 'using existing video')
+    if existing.contributor == download.downloader: return existing
+    file, created = File.objects.get_or_create(url=existing.url, contributor=download.downloader)
+    if not created: return file
+    file.name = existing.name
+    file.content = existing.content
+    file.picture = existing.picture
+    file.save()
+    return file
+
+def valid_url(url):
+    if 'youtube' in url and '/watch?' in url: return True
+
 def attach_file(model, pk, file):
     if model == 'job': attachable = Job.objects.get(pk=pk)
     elif model == 'pmi': attachable = PMI.objects.get(pk=pk)
@@ -123,6 +128,42 @@ def ytdlp_options(quality):
     opts['noplaylist'] = True
     opts['merge_output_format'] = 'mp4'
     return opts
+
+# Process
+
+@shared_task
+def post_process(file_id):
+    file = File.objects.get(pk=file_id)
+    path = file.filepath()
+    checksum = md5checksum(path)
+    matching = File.objects.filter(hash=checksum).first()
+    if matching:
+        os.unlink(path)
+        print('deleted:', path)
+        file.content = matching.content
+        if file.picture: file.picture = matching.content
+    elif file.extension().lower() == '.heic':
+        convert_image(file)
+    file.hash = checksum
+    file.save()
+
+def md5checksum(filepath):
+    md5 = hashlib.md5()
+    with open(filepath, "rb") as f:
+        while True:
+            chunk = f.read(8388608)
+            if chunk:
+                md5.update(chunk)
+            else:
+                return md5.hexdigest()
+            
+def convert_image(file):
+    try: image = Image.open(file.content)
+    except: return
+    newpath = file.filepath() + '.jpg'
+    if os.path.exists(newpath): return
+    image.save(newpath)
+    file.picture = file.content.name + '.jpg'
 
 # Test
 
