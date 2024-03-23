@@ -194,6 +194,8 @@ urlpatterns = [
 
 # Youtube
   path('youtube/new/', views.youtube_new, name='youtube-new'),
+  path('download/new/', views.download_new, name='download-new'),
+  path('download/new/to/<str:model>/<int:pk>/', views.download_new_to, name='download-new-to'),
   
 # File
   path('file/<int:pk>/', views.do_nothing, name='file'),

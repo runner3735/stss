@@ -14,7 +14,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from ..models import *
 from ..forms import *
 from .other import get_instance
-from core.tasks import create_task, download_video
+from core.tasks import create_task, download_video, download_video_to
 from celery.result import AsyncResult
 
 # Youtube
@@ -35,6 +35,38 @@ def youtube_new(request):
   return render(request, 'youtube-new.html', {'form': form})
 
 @login_required
+def download_new(request):
+  if request.method != 'POST': return HttpResponse(status=204)
+  form = DownloadForm(request.POST)
+  if form.is_valid():
+    download = form.save(commit=False)
+    download.downloader = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+    download.status = 'added to queue'
+    download.status_date = datetime.datetime.now()
+    download.save()
+    download_video(download.id)
+    #download_video.delay(download.id)
+    form = DownloadForm()
+    return render(request, 'download-form.html', {'form': form})
+  return HttpResponse(status=204)
+
+@login_required
+def download_new_to(request, model, pk):
+  if request.method != 'POST': return HttpResponse(status=204)
+  form = DownloadForm(request.POST)
+  if form.is_valid():
+    download = form.save(commit=False)
+    download.downloader = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
+    download.status = 'added to queue'
+    download.status_date = datetime.datetime.now()
+    download.save()
+    download_video_to(download.id, model, pk)
+    #download_video_to.delay(download.id, model, pk)
+    form = DownloadForm()
+    return render(request, 'download-form.html', {'form': form})
+  return HttpResponse(status=204)
+   
+@login_required
 def download_delete(request, pk):
   download = get_object_or_404(Download, pk=pk)
   download.delete()
@@ -52,25 +84,6 @@ def download_row(request, pk):
   if download.status == 'downloading video': return render(request, 'download-pending.html', {'download': download})
   if download.status == 'added to queue': return render(request, 'download-pending.html', {'download': download})
   return render(request, 'download-finished.html', {'download': download})
-
-# Background Tasks
-
-@csrf_exempt
-def run_task(request):
-    if request.POST:
-        task_type = request.POST.get("type")
-        task = create_task.delay(int(task_type))
-        return JsonResponse({"task_id": task.id}, status=202)
-
-@csrf_exempt
-def get_status(request, task_id):
-    task_result = AsyncResult(task_id)
-    result = {
-        "task_id": task_id,
-        "task_status": task_result.status,
-        "task_result": task_result.result
-    }
-    return JsonResponse(result, status=200)
 
 # Picture
 
@@ -90,19 +103,23 @@ def rotate(file, degrees):
 
 @login_required
 def upload(request):
+  form = DownloadForm()
+  downlink = reverse('download-new')
   uplink = reverse('upload-file')
   next = reverse('my-files')
-  return render(request, 'upload.html', {'uplink': uplink, 'next': next})
+  return render(request, 'upload.html', {'downlink': downlink, 'uplink': uplink, 'next': next, 'form': form})
 
 @login_required
 def upload_to(request, model, pk):
   uplink = reverse('upload-file-to', args=[model, pk])
   next = reverse(model, args=[pk])
-  return render(request, 'upload.html', {'uplink': uplink, 'next': next})
+  if model == 'purchase': return render(request, 'upload.html', {'uplink': uplink, 'next': next})
+  form = DownloadForm()
+  downlink = reverse('download-new-to', args=[model, pk])
+  return render(request, 'upload.html', {'downlink': downlink, 'uplink': uplink, 'next': next, 'form': form})
 
 @login_required
 def upload_file(request):
-  print('upload_file')
   if request.method == 'POST':
     upload = request.FILES.get('file')
     create_file(request, upload, None)
@@ -110,17 +127,14 @@ def upload_file(request):
 
 @login_required
 def upload_file_to(request, model, pk):
-  print('params', model, pk)
   if request.method == 'POST':
     upload = request.FILES.get('file')
     attachable = get_instance(model, pk)
-    print('name', attachable.name)
     create_file(request, upload, attachable)
   return HttpResponse('')
 
 @login_required
 def create_file(request, upload, attachable):
-  if attachable: print('attachable')
   contributor = get_object_or_404(Person, first=request.user.first_name, last=request.user.last_name)
   name, ext = os.path.splitext(upload.name)
   file = File()
@@ -143,17 +157,12 @@ def create_file(request, upload, attachable):
   file.save()
 
 def convert_image(file):
-  try:
-      image = Image.open(file.content)
-  except:
-      print('unable to open:', file.content)
-      return
+  try: image = Image.open(file.content)
+  except: return
   newpath = file.filepath() + '.jpg'
-  if os.path.exists(newpath): 
-    print('path already exists:', newpath)
-    return
+  if os.path.exists(newpath): return
   image.save(newpath)
-  file.picture = file.content.name + '.jpg'   
+  file.picture = file.content.name + '.jpg'
 
 # File
 
@@ -199,6 +208,25 @@ def picture_remove(request, file, model, pk):
   linkable = get_instance(model, pk)
   linkable.files.remove(file)
   return HttpResponse(status=204, headers={'HX-Trigger': 'galleryChanged'})
+
+# Test
+
+@csrf_exempt
+def run_task(request):
+    if request.POST:
+        task_type = request.POST.get("type")
+        task = create_task.delay(int(task_type))
+        return JsonResponse({"task_id": task.id}, status=202)
+
+@csrf_exempt
+def get_status(request, task_id):
+    task_result = AsyncResult(task_id)
+    result = {
+        "task_id": task_id,
+        "task_status": task_result.status,
+        "task_result": task_result.result
+    }
+    return JsonResponse(result, status=200)
 
 # Utility
 

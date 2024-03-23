@@ -1,3 +1,6 @@
+
+{% load widget_tweaks %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,32 +9,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Upload Files</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-5.15.2-web/css/all.min.css">
-    {% load static %}
-    <link rel="shortcut icon" href="{% static 'physics/favicon.ico' %}" type="image/x-icon">
     <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
     <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
 </head>
 
-<body class="has-background-link-dark">
-    <section class="hero is-fullheight">
+<body class="has-background-success-dark">
+    
+    {% if downlink %}
+    <section class="hero">
         <div class="hero-body">
-        <div class="container">
-            <div class="columns">
-                <div class="column"></div>
-                <div class="column is-9 has-background-link-light">
+            <div class="container">
+                <div class="has-background-danger-light py-5 px-6">
+                    <h1 class="title has-text-centered">Add a YouTube Video</h1>
+                    <div id="video-form" hx-target="this" hx-include="this">
+                        {% csrf_token %}
+                        <div class="field has-addons has-addons-centered">
+                            <div class="control"><div class="select">{% render_field form.quality %}</div></div>
+                            <div class="control" hx-post="{{ downlink }}" hx-trigger="keyup[keyCode==13]">{% render_field form.url class="input" size="85" placeholder="Paste a link to a YouTube video here..." %}</div>
+                            <div class="control" hx-post="{{ downlink }}"><button class="button is-danger">Add</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container">
+                <div class="has-background-link-light py-5 px-6">
                     <h1 class="title has-text-centered">Upload Pictures, Documents, and Videos</h1>
-                    <form enctype='multipart/form-data' action="{{ uplink }}" method='POST' class="dropzone is-primary" id="my-dropzone">
+                    <form enctype='multipart/form-data' action="{{ uplink }}" method='POST' class="dropzone is-primary"
+                        id="my-dropzone">
                         {% csrf_token %}
                         <div class="fallback"><input name="file" type="file" multiple /></div>
                     </form>
                     <div class="has-text-centered"><a href="{{ next }}" class="button is-link mt-4">Done</a></div>
                 </div>
-                <div class="column"></div>
             </div>
         </div>
-    </div>
     </section>
+
     <script>
         Dropzone.autoDiscover = false;
         const myDropzone = new Dropzone('#my-dropzone', {
@@ -41,6 +60,7 @@
             timeout: 180000,
         })
     </script>
+    {% if downlink %}<script src="https://unpkg.com/htmx.org@1.7.0"></script>{% endif %}
 </body>
 
 </html>

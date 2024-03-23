@@ -5,7 +5,7 @@ from celery import shared_task
 import json, os, yt_dlp
 from datetime import datetime
 
-from core.models import Download, File, Person
+from core.models import Download, File, Person, Job, Asset, PMI
 
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', '')
 tempfolder = '/www/temp/'
@@ -38,6 +38,11 @@ def existing_file(existing, download):
 
 def valid_url(url):
     if 'youtube' in url and '/watch?' in url: return True
+
+@shared_task
+def download_video_to(download_id, model, pk):
+    video = download_video(download_id)
+    if video: attach_file(model, pk, video)
 
 @shared_task
 def download_video(download_id):
@@ -80,6 +85,13 @@ def download_video(download_id):
     file.save()
     update_status(download, 'video download successful')
     return file
+
+def attach_file(model, pk, file):
+    if model == 'job': attachable = Job.objects.get(pk=pk)
+    elif model == 'pmi': attachable = PMI.objects.get(pk=pk)
+    elif model == 'asset': attachable = Asset.objects.get(pk=pk)
+    else: attachable = None
+    if attachable: attachable.files.add(file)
 
 def write_json(info, year, month):
     folder = os.path.join(MEDIA_ROOT, 'files', year, month)

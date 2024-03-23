@@ -1,6 +1,5 @@
 
-
-enable adding youtube videos to assets, jobs, and pmis
+automatic backup of database and uploads
 
 get rid of naive datetime warnings
 add filter option to My Files

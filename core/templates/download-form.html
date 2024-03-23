@@ -1,0 +1,8 @@
+
+{% load widget_tweaks %}
+{% csrf_token %}
+<div class="field has-addons has-addons-centered">
+    <div class="control"><div class="select">{% render_field form.quality %}</div></div>
+    <div class="control" hx-post="{% url 'download-new' %}" hx-trigger="keyup[keyCode==13]">{% render_field form.url class="input" size="85" placeholder="Paste a link to a YouTube video here..." %}</div>
+    <div class="control" hx-post="{% url 'download-new' %}"><button class="button is-danger">Add</button></div>
+</div>
