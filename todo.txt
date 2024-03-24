@@ -1,5 +1,6 @@
 
 automatic backup of database and uploads
+rsync or scp to second server
 
 get rid of naive datetime warnings
 add filter option to My Files

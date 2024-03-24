@@ -1,0 +1,21 @@
+
+edit root crontab (sudo crontab -e) and add this to update channels on the 7th minute of every hour
+
+7 * * * * "/usr/local/bin/docker-compose" -f /project/directory exec -T app python manage.py fetch_new_videos > /project/directory/fetch.log 2>&1
+
+
+
+some example crontab entries from fatrobin (just crontab -e without sudo)
+
+0 * * * *  python3 ~/code/python3/transmission.py >> ~/data/transmission.log 2>&1
+0 12 * * *  ~/env/ytapi/bin/python ~/code/python3/cron/nbcnews2.py >> ~/data/nbcnews.log 2>&1
+7 5,8,11,14,17 * * * "/usr/local/bin/docker-compose" -f "/home/lance/docker/fatrobin/docker-compose.yml" exec -T app python manage.py fetch_new_videos > /home/lance/docker/fatrobin/fetch_videos.log 2>&1
+7 2 * * * "/usr/local/bin/docker-compose" -f "/home/lance/docker/fatrobin/docker-compose.yml" exec -T app python manage.py fetch_new_items > /home/lance/docker/fatrobin/fetch_items.log 2>&1
+7 4 * * * "/usr/local/bin/docker-compose" -f "/home/lance/docker/fatrobin/docker-compose.yml" exec -T app python manage.py fetch_news > /home/lance/docker/fatrobin/fetch_news.log 2>&1
+
+
+basic command that works when the container is running
+/usr/bin/docker-compose -f /home/lance/code/stss/docker-compose.yml exec -T app ./backup.sh >> /home/lance/logs/stss.backup.log 2>&1
+
+tips
+use "which docker-compose" to find path of docker-compose
