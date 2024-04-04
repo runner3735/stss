@@ -95,13 +95,13 @@
             </a>
           </li>
           <li class="has-background-light">
-            <a hx-get="{% url 'person-jobs' person.id %}">
+            <a hx-get="{% url 'person-jobs' person.id 0 %}">
               <span class="icon is-small"><i class="fas fa-image"></i></span>
               <span>Jobs as Customer</span>
             </a>
           </li>
           <li class="has-background-light">
-            <a hx-get="{% url 'person-tasks' person.id %}">
+            <a hx-get="{% url 'person-tasks' person.id 0 %}">
               <span class="icon is-small"><i class="far fa-file-alt"></i></span>
               <span>Jobs as Technician</span>
             </a>

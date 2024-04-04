@@ -1,0 +1,37 @@
+{% if jobs %}
+<form><input type="hidden" id="sortby" name="sortby" value="{{ sortby }}"></form>
+<table class="table is-fullwidth is-narrow is-striped">
+    <thead>
+        <tr hx-target="#tab-contents" hx-include="#sortby">
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 0 %}">ID</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 1 %}">Opened</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 2 %}">Name</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 3 %}">Type</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 4 %}">Category</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 5 %}">Deadline</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 6 %}">Closed</th>
+            <th class="is-clickable" hx-get="{% url 'person-jobs' person.id 7 %}">Status</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.identifier }}</td>
+            <td>{{ job.opened | date:"Y-m-d" }}</td>
+            <td>{{ job.name }}</td>
+            <td>{{ job.get_kind_display }}</td>
+            <td>{{ job.get_category_display }}</td>
+            <td>{{ job.deadline | date:"Y-m-d" }}</td>
+            <td>{{ job.closed | date:"Y-m-d" }}</td>
+            <td>{{ job.get_status_display }}</td>
+            <td class="has-text-centered">
+                <a href="{% url 'job' job.id %}">
+                    <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

@@ -44,13 +44,25 @@ def person_assets(request, pk):
   person = get_object_or_404(Person, pk=pk)
   return render(request, 'person-assets.html', {'person': person})
 
-def person_jobs(request, pk):
+def person_jobs(request, pk, column):
+  sortby = jobs_sortby(request, column)
   person = get_object_or_404(Person, pk=pk)
-  return render(request, 'job-list.html', {'jobs': person.jobs_as_customer.all()})
+  jobs = person.jobs_as_customer.order_by(sortby)
+  return render(request, 'person-jobs.html', {'person': person, 'jobs': jobs, 'sortby': sortby})
 
-def person_tasks(request, pk):
+def person_tasks(request, pk, column):
+  sortby = jobs_sortby(request, column)
   person = get_object_or_404(Person, pk=pk)
-  return render(request, 'job-list.html', {'jobs': person.jobs_as_technician.all()})
+  jobs = person.jobs_as_technician.order_by(sortby)
+  return render(request, 'person-tasks.html', {'person': person, 'jobs': jobs, 'sortby': sortby})
+
+def jobs_sortby(request, column):
+  sortby = request.GET.get('sortby', 'none')
+  if sortby == 'none': return '-id'
+  def_orders = ['-id', '-opened', 'name', 'kind', 'category', '-deadline', '-closed', 'status']
+  rev_orders = ['id', 'opened', '-name', '-kind', '-category', 'deadline', 'closed', '-status']
+  if sortby == def_orders[column]: return rev_orders[column]
+  return def_orders[column]
 
 @login_required
 def person_new(request):

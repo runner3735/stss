@@ -9,6 +9,14 @@ from django.contrib.auth.models import AnonymousUser
 from ..models import *
 from ..forms import *
 
+def job_data_less(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  return render(request, 'job.pane.left.less.html', {'job': job})
+
+def job_data_more(request, pk):
+  job = get_object_or_404(Job, pk=pk)
+  return render(request, 'job.pane.left.more.html', {'job': job})
+
 def job_find(request):
   next = request.GET.get('next', '')
   form = JobIdentifierForm(request.POST or None)
@@ -46,6 +54,8 @@ def jobs_get_context(request):
       q = q.filter(name__icontains=search)
     elif searchin == 'D': #details
       q = q.filter(details__icontains=search)
+    elif searchin == 'T': #notes
+      q = q.filter(notes__text__icontains=search)
     elif searchin == 'B': #budget
       q = q.filter(budget__icontains=search)
     elif searchin == 'C': #course

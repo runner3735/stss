@@ -1,0 +1,203 @@
+<table class="table is-striped">
+    <tbody>
+        <tr>
+            <th>Job ID</th>
+            <td><strong>{{ job.identifier }}</strong></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td hx-trigger="jobNameChanged from:body" hx-get="{% url 'job-name' job.id %}" hx-target="this">
+                <strong>{{ job.name }}</strong>
+            </td>
+            <td><a hx-get="{% url 'job-name-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% if job.budget %}
+        <tr>
+            <th>Budget</th>
+            <td hx-trigger="jobBudgetChanged from:body" hx-get="{% url 'job-budget' job.id %}" hx-target="this">
+                <strong>{{ job.budget }}</strong>
+            </td>
+            <td><a hx-get="{% url 'job-budget-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.customers.all %}
+        <tr>
+            <th>Customers</th>
+            <td>
+                <div class="tags">
+                    {% for p in job.customers.all %}
+                    <a href="{% url 'person' p.id %}" class="tag is-danger is-medium">{{ p }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td><a href="{% url 'people-select' 'job' job.id %}"><span class="icon is-small"><i
+                            class="fas fa-edit"></i></span></a></td>
+        </tr>
+        {% endif %}
+        {% if job.technicians.all %}
+        <tr>
+            <th>Technicians</th>
+            <td>
+                <div class="tags">
+                    {% for p in job.technicians.all %}
+                    <a href="{% url 'person' p.id %}" class="tag is-danger is-medium">{{ p }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td><a href="{% url 'edit-technicians' job.id %}"><span class="icon is-small"><i
+                            class="fas fa-edit"></i></span></a></td>
+        </tr>
+        {% endif %}
+        {% if job.departments.all %}
+        <tr>
+            <th>Departments</th>
+            <td hx-trigger="departmentsChanged from:body" hx-get="{% url 'job-departments' job.id %}" hx-target="this">
+                <div class="tags">
+                    {% for dept in job.departments.all %}
+                    <a href="" class="tag is-link is-medium">{{ dept }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-departments-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.rooms.all %}
+        <tr>
+            <th>Rooms</th>
+            <td hx-trigger="roomsChanged from:body" hx-get="{% url 'job-rooms' job.id %}" hx-target="this">
+                <div class="tags">
+                    {% for room in job.rooms.all %}
+                    <a href="" class="tag is-danger is-medium">{{ room }}</a>
+                    {% endfor %}
+                </div>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-rooms-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.category %}
+        <tr>
+            <th>Category</th>
+            <td hx-trigger="jobCategoryChanged from:body" hx-get="{% url 'job-category' job.id %}" hx-target="this">
+                <strong>{{ job.get_category_display }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-category-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.kind %}
+        <tr>
+            <th>Type</th>
+            <td hx-trigger="jobKindChanged from:body" hx-get="{% url 'job-kind' job.id %}" hx-target="this">
+                <strong>{{ job.get_kind_display }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-kind-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.opened %}
+        <tr>
+            <th>Opened</th>
+            <td hx-trigger="jobOpenedChanged from:body" hx-get="{% url 'job-opened' job.id %}" hx-target="this">
+                <strong>{{ job.opened | date:"F j, Y" }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-opened-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.deadline %}
+        <tr>
+            <th>Deadline</th>
+            <td hx-trigger="jobDeadlineChanged from:body" hx-get="{% url 'job-deadline' job.id %}" hx-target="this">
+                <strong>{{ job.deadline | date:"F j, Y" }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-deadline-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.closed %}
+        <tr>
+            <th>Closed</th>
+            <td hx-trigger="jobClosedChanged from:body" hx-get="{% url 'job-closed' job.id %}" hx-target="this">
+                <strong>{{ job.closed | date:"F j, Y" }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-closed-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Status</th>
+            <td hx-trigger="jobStatusChanged from:body" hx-get="{% url 'job-status' job.id %}" hx-target="this">
+                <strong>{{ job.get_status_display }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-status-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% if job.course %}
+        <tr>
+            <th>Course</th>
+            <td hx-trigger="jobCourseChanged from:body" hx-get="{% url 'job-course' job.id %}" hx-target="this">
+                <strong>{{ job.course }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-course-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% if job.location %}
+        <tr>
+            <th>Location</th>
+            <td hx-trigger="jobLocationChanged from:body" hx-get="{% url 'job-location' job.id %}" hx-target="this">
+                <strong>{{ job.location }}</strong>
+            </td>
+            <td><a hx-get="{% url 'job-location-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+<div>
+    <a hx-get="{% url 'job-data-more' job.id %}" hx-target="#jobtable" class="button is-link mr-4">More</a>
+    <a href="{% url 'work-new' job.id %}" class="button is-link mr-4">Add Hours</a>
+    <a href="{% url 'upload-to' 'job' job.id %}" class="button is-link mr-4">Add Files</a>
+</div>
+<div class="mt-4">
+    <a href="{% url 'job-assets-edit' job.id %}" class="button is-link mr-4">Add Assets</a>
+    <a href="{% url 'add-note' 'job' job.id %}" class="button is-link mr-4">Add Note</a>
+</div>

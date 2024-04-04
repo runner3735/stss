@@ -5,11 +5,11 @@
 <tr>
 {% endif %}
     <td><a href="{% url 'job' job.id %}">{{ job.identifier }}</a></td>
-    <td>{{ job.opened | date:"Y-m-d" }}</td>
+    <td>{{ job.technicians.first.last }}</td>
     <td>{{ job.name }}</td>
     <td>{{ job.get_kind_display }}</td>
     <td>{{ job.get_category_display }}</td>
-    <td>{{ job.deadline | date:"Y-m-d" }}</td>
+    <td>{{ job.customers.first.last }}</td>
     <td>{{ job.closed | date:"Y-m-d" }}</td>
     <td>{{ job.get_status_display }}</td>
     <td class="has-text-centered">

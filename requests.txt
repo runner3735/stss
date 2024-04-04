@@ -1,0 +1,12 @@
+
+
+*Job List: Include Technician and Customer as default columns.
+*Job List: Remove Open Date and Deadline from default columns.
+*Job List: Include Technician and Customer in the Sort By list.  
+*Job List: Include Notes as an option in the Search feature.
+
+*On a People page, when looking at the Jobs as Customer or Jobs as Technician, provide the option to sort this list. Specifically it would be good to be able to sort by Status, ID and Date Opened. 
+Add 'Parts' as a new type of object that can be associated with jobs. Eamon will have ideas about what fields would be best to include for this class of object and how it would be easiest to sort them. 
+*In the job details screen, a button that would hide incomplete categories would be helpful.
+*In the job details screen, move course and location to the bottom of the list. 
+Automate the process of PMs going from Coming Due Soon to Scheduled. 

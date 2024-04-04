@@ -30,27 +30,7 @@
                 </a>
             </td>
         </tr>
-        <tr>
-            <th>Course</th>
-            <td hx-trigger="jobCourseChanged from:body" hx-get="{% url 'job-course' job.id %}" hx-target="this">
-                <strong>{{ job.course }}</strong>
-            </td>
-            <td>
-                <a hx-get="{% url 'job-course-edit' job.id %}" hx-target="#dialog">
-                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <th>Location</th>
-            <td hx-trigger="jobLocationChanged from:body" hx-get="{% url 'job-location' job.id %}" hx-target="this">
-                <strong>{{ job.location }}</strong>
-            </td>
-            <td><a hx-get="{% url 'job-location-edit' job.id %}" hx-target="#dialog">
-                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                </a>
-            </td>
-        </tr>
+
         <tr>
             <th>Customers</th>
             <td>
@@ -175,11 +155,35 @@
                 </a>
             </td>
         </tr>
+        <tr>
+            <th>Course</th>
+            <td hx-trigger="jobCourseChanged from:body" hx-get="{% url 'job-course' job.id %}" hx-target="this">
+                <strong>{{ job.course }}</strong>
+            </td>
+            <td>
+                <a hx-get="{% url 'job-course-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td hx-trigger="jobLocationChanged from:body" hx-get="{% url 'job-location' job.id %}" hx-target="this">
+                <strong>{{ job.location }}</strong>
+            </td>
+            <td><a hx-get="{% url 'job-location-edit' job.id %}" hx-target="#dialog">
+                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                </a>
+            </td>
+        </tr>
     </tbody>
 </table>
 <div>
-    <a href="{% url 'job-assets-edit' job.id %}" class="button is-link mr-4">Select Assets</a>
-    <a href="{% url 'add-note' 'job' job.id %}" class="button is-link mr-4">Add Note</a>
+    <a hx-get="{% url 'job-data-less' job.id %}" hx-target="#jobtable" class="button is-link mr-4">Less</a>
     <a href="{% url 'work-new' job.id %}" class="button is-link mr-4">Add Hours</a>
     <a href="{% url 'upload-to' 'job' job.id %}" class="button is-link mr-4">Add Files</a>
+</div>
+<div class="mt-4">
+    <a href="{% url 'job-assets-edit' job.id %}" class="button is-link mr-4">Add Assets</a>
+    <a href="{% url 'add-note' 'job' job.id %}" class="button is-link mr-4">Add Note</a>
 </div>
