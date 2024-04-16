@@ -10,3 +10,5 @@ Add 'Parts' as a new type of object that can be associated with jobs. Eamon will
 *In the job details screen, a button that would hide incomplete categories would be helpful.
 *In the job details screen, move course and location to the bottom of the list. 
 Automate the process of PMs going from Coming Due Soon to Scheduled. 
+
+*add customer column to jobs as technician table

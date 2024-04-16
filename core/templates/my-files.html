@@ -4,6 +4,9 @@
 {% block content %}
     <section class="section has-background-info-dark">
         <h1 class="title has-text-light has-text-centered">My Files</h1>
+        <div class="columns"><div class="column is-5">
+            <input class="input" type="text" placeholder="Search..." _="on keyup show <tr/> in #filelist when its textContent.toLowerCase() contains my value" />
+        </div></div>
         <table id="file-table" class="table is-fullwidth">
             <thead>
                 <tr>
@@ -12,7 +15,7 @@
                     <th class="has-text-centered">Details</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="filelist">
                 {% for file in files %}
                 <tr>
                     <td>{{ file.name }}</td>
@@ -27,4 +30,5 @@
             </tbody>
         </table>
     </section>
+    <script src="https://unpkg.com/hyperscript.org@0.9.7"></script>
 {% endblock %}

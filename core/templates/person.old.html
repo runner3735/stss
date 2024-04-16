@@ -2,10 +2,12 @@
 {% load static %}
 
 {% block content %}
-<section class="section">
-
-
-          <table class="table is-striped">
+<section class="hero is-fullheight-with-navbar has-background-info">
+  <div class="hero-head">
+    <div class="container mt-6">
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <table class="table is-striped is-fullwidth">
             <tbody>
               <tr>
                 <th>First Name</th>
@@ -76,10 +78,12 @@
               </tr>
             </tbody>
           </table>
-
+        </div>
+      </div>
+    </div>
 
     
-
+    <div class="container my-4">
       <div class="tabs is-toggle is-fullwidth" id="tabs" hx-target="#tab-contents" 
       _="on click remove .is-active from <li/> then add .has-background-light to <li/> 
       on htmx:afterOnLoad add .is-active to closest <li/> to event.target then remove .has-background-light from closest <li/> to event.target">
@@ -105,9 +109,9 @@
         </ul>
       </div>
       <div id="tab-contents" class="content"></div>
+    </div>
 
-
-
+  </div>
 </section>
 
 <div class="modal" _="on htmx:afterSwap add .is-active to me">

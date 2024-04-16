@@ -1,23 +1,28 @@
 {% if jobs %}
 <form><input type="hidden" id="sortby" name="sortby" value="{{ sortby }}"></form>
+<div class="columns"><div class="column is-5">
+    <input class="input" type="text" placeholder="Search..." _="on keyup show <tr/> in #joblist when its textContent.toLowerCase() contains my value" />
+</div></div>
 <table class="table is-fullwidth is-narrow is-striped">
     <thead>
         <tr hx-target="#tab-contents" hx-include="#sortby">
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 0 %}">ID</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 1 %}">Opened</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 2 %}">Name</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 3 %}">Type</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 4 %}">Category</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 5 %}">Deadline</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 6 %}">Closed</th>
-            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 7 %}">Status</th>
-            <th>View</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 0 %}" style="width: 75px">ID</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 1 %}" style="width: 105px">Customer</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 2 %}" style="width: 105px">Opened</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 3 %}">Name</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 4 %}" style="width: 120px">Type</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 5 %}" style="width: 270px">Category</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 6 %}" style="width: 105px">Deadline</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 7 %}" style="width: 105px">Closed</th>
+            <th class="is-clickable" hx-get="{% url 'person-tasks' person.id 8 %}" style="width: 95px">Status</th>
+            <th style="width: 15px">View</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="joblist">
         {% for job in jobs %}
         <tr>
             <td>{{ job.identifier }}</td>
+            <td>{{ job.customers.first.last }}</td>
             <td>{{ job.opened | date:"Y-m-d" }}</td>
             <td>{{ job.name }}</td>
             <td>{{ job.get_kind_display }}</td>
